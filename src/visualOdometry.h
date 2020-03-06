@@ -30,9 +30,7 @@ void matchingFeatures(cv::Mat& imageLeft_t0, cv::Mat& imageRight_t0,
                       std::vector<cv::Point2f>&  pointsLeft_t0, 
                       std::vector<cv::Point2f>&  pointsRight_t0, 
                       std::vector<cv::Point2f>&  pointsLeft_t1, 
-                      std::vector<cv::Point2f>&  pointsRight_t1,
-                      int bucket_size=50,
-                      int features_per_bucket=4);
+                      std::vector<cv::Point2f>&  pointsRight_t1);
 
 
 void trackingFrame2Frame(cv::Mat& projMatrl, cv::Mat& projMatrr,

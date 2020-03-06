@@ -18,20 +18,19 @@ void display(int frame_id, cv::Mat &trajectory, cv::Mat &pose,
   // draw estimated trajectory
   int x = int(pose.at<double>(0)) + 300;
   int y = int(pose.at<double>(2)) + 100;
-  // std::cout << x << " " << y << std::endl;
   circle(trajectory, cv::Point(x, y), 1, CV_RGB(255, 0, 0), 2);
-  //
-  // if (show_gt) {
-  //   // draw ground truth trajectory
-  //   cv::Mat pose_gt = cv::Mat::zeros(1, 3, CV_64F);
-  //
-  //   pose_gt.at<double>(0) = pose_matrix_gt[frame_id].val[0][3];
-  //   pose_gt.at<double>(1) = pose_matrix_gt[frame_id].val[0][7];
-  //   pose_gt.at<double>(2) = pose_matrix_gt[frame_id].val[0][11];
-  //   x = int(pose_gt.at<double>(0)) + 300;
-  //   y = int(pose_gt.at<double>(2)) + 100;
-  //   circle(trajectory, cv::Point(x, y), 1, CV_RGB(255, 255, 0), 2);
-  // }
+
+  if (show_gt) {
+    // draw ground truth trajectory
+    cv::Mat pose_gt = cv::Mat::zeros(1, 3, CV_64F);
+
+    pose_gt.at<double>(0) = pose_matrix_gt[frame_id].val[0][3];
+    pose_gt.at<double>(1) = pose_matrix_gt[frame_id].val[0][7];
+    pose_gt.at<double>(2) = pose_matrix_gt[frame_id].val[0][11];
+    x = int(pose_gt.at<double>(0)) + 300;
+    y = int(pose_gt.at<double>(2)) + 100;
+    circle(trajectory, cv::Point(x, y), 1, CV_RGB(255, 255, 0), 2);
+  }
   // print info
 
   // rectangle( traj, Point(10, 30), Point(550, 50), CV_RGB(0,0,0), CV_FILLED);
@@ -60,7 +59,8 @@ void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
   cv::hconcat(rotation, translation_stereo, rigid_body_transformation);
   cv::vconcat(rigid_body_transformation, addup, rigid_body_transformation);
 
-  // std::cout << "translation_stereo" << translation_stereo << std::endl;
+  // std::cout << "rigid_body_transformation" << rigid_body_transformation <<
+  // std::endl;
 
   double scale = sqrt(
       (translation_stereo.at<double>(0)) * (translation_stereo.at<double>(0)) +

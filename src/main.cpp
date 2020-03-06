@@ -65,20 +65,24 @@ int main(int argc, char **argv) {
 
   Input input(projMatrl, projMatrr, pose_matrix_gt, display_ground_truth);
 
-  std::string left_topic = "/camera/left/image_raw";
-  std::string right_topic = "/camera/right/image_raw";
+  input.readImages(filepath);
 
-  message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
-                                                                 left_topic, 1);
-  message_filters::Subscriber<sensor_msgs::Image> right_image_sub(
-      nh_, right_topic, 1);
-  message_filters::Synchronizer<ImageSyncPolicy> imageSync(
-      ImageSyncPolicy(10), left_image_sub, right_image_sub);
+  // std::string left_topic = "/camera/left/image_raw";
+  // std::string right_topic = "/camera/right/image_raw";
   //
-  imageSync.registerCallback(
-      boost::bind(&Input::imageSyncCallback, &input, _1, _2));
-
-  input.run();
+  // message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
+  //                                                                left_topic,
+  //                                                                1);
+  // message_filters::Subscriber<sensor_msgs::Image> right_image_sub(
+  //     nh_, right_topic, 1);
+  // message_filters::Synchronizer<ImageSyncPolicy> imageSync(
+  //     ImageSyncPolicy(10), left_image_sub, right_image_sub);
+  // //
+  // imageSync.registerCallback(
+  //     boost::bind(&Input::imageSyncCallback, &input, _1, _2));
+  //
+  // ros::spin();
+  // input.run();
 
   // ------------------------
   // Load first images

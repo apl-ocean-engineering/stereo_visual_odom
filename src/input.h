@@ -32,6 +32,7 @@ public:
   Input(cv::Mat left, cv::Mat right, std::vector<Matrix> gt, bool display_gt);
   void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                          const sensor_msgs::ImageConstPtr &imgR);
+  void readImages(std::string filepath);
   cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
   void run();
 
