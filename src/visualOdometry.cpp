@@ -145,8 +145,8 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr,
                            cv::RANSAC, 0.999, 1.0, mask);
   cv::recoverPose(E, pointsLeft_t1, pointsLeft_t0, rotation, translation_mono,
                   focal, principle_point, mask);
-  std::cout << "recoverPose rotation: " << rotation << std::endl;
-  std::cout << "translation_mono: " << translation_mono << std::endl;
+  // std::cout << "recoverPose rotation: " << rotation << std::endl;
+  // std::cout << "translation_mono: " << translation_mono << std::endl;
 
   // ------------------------------------------------
   // Translation (t) estimation by use solvePnPRansac
@@ -189,7 +189,11 @@ void displayTracking(cv::Mat &imageLeft_t1,
   int radius = 2;
   cv::Mat vis;
 
-  cv::cvtColor(imageLeft_t1, vis, CV_GRAY2BGR, 3);
+  if (imageLeft_t1.channels() != 3) {
+    cv::cvtColor(imageLeft_t1, vis, CV_GRAY2BGR, 3);
+  } else {
+    vis = imageLeft_t1;
+  }
 
   for (int i = 0; i < pointsLeft_t0.size(); i++) {
     cv::circle(vis, cvPoint(pointsLeft_t0[i].x, pointsLeft_t0[i].y), radius,

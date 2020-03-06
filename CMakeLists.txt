@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  message_filters
 )
 
 
@@ -43,6 +44,8 @@ add_library(feature SHARED "src/feature.cpp")
 add_library(bucket SHARED "src/bucket.cpp")
 add_library(utils SHARED "src/utils.cpp")
 add_library(visualOdometry SHARED "src/visualOdometry.cpp")
+add_library(input SHARED "src/input.cpp")
+
 #
 #
 #
@@ -59,5 +62,5 @@ target_link_libraries( utils evaluate_odometry feature ${OpenCV_LIBS} )
 target_link_libraries( visualOdometry utils bucket feature ${OpenCV_LIBS})
 #
 #
-target_link_libraries( Frame ${OpenCV_LIBS} )
-target_link_libraries( run ${OpenCV_LIBS} bucket feature utils visualOdometry Frame  )
+target_link_libraries( Frame ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+target_link_libraries( run ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  )
