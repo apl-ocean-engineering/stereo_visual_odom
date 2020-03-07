@@ -41,6 +41,8 @@ void deleteUnmatchFeatures(std::vector<cv::Point2f>& points0, std::vector<cv::Po
 
 void featureDetectionFast(cv::Mat image, std::vector<cv::Point2f>& points);
 
+void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f>& points);
+
 void featureDetectionGoodFeaturesToTrack(cv::Mat image, std::vector<cv::Point2f>& points);
 
 void featureTracking(cv::Mat img_1, cv::Mat img_2, std::vector<cv::Point2f>& points1, std::vector<cv::Point2f>& points2, std::vector<uchar>& status);

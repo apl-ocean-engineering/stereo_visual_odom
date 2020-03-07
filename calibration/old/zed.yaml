@@ -5,13 +5,13 @@
 #--------------------------------------------------------------------------------------------
 
 # Camera calibration and distortion parameters (OpenCV) 
-Camera.fx: 684.36
-Camera.fy: 684.36
-Camera.cx: 689.89
-Camera.cy: 406.87
+Camera.fx: 718.8560
+Camera.fy: 718.8560
+Camera.cx: 607.1928
+Camera.cy: 185.2157
 
 # stereo baseline times fx
-Camera.bf: -82.12
+Camera.bf: -386.1448
 
 
 # Close/Far threshold. Baseline times.

@@ -19,6 +19,10 @@
 #include "feature.h"
 #include "utils.h"
 
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
+#include <opencv2/core/eigen.hpp>
+
 #include "visualOdometry.h"
 
 #include <cv_bridge/cv_bridge.h>

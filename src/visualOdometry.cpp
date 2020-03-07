@@ -1,5 +1,9 @@
 #include "visualOdometry.h"
 
+#include "g3_to_ros_logger/ROSLogSink.h"
+#include "g3_to_ros_logger/g3logger.h"
+
+
 cv::Mat euler2rot(cv::Mat &rotationMatrix, const cv::Mat &euler) {
 
   double x = euler.at<double>(0);
@@ -135,6 +139,9 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr,
   E = cv::findEssentialMat(pointsLeft_t0, pointsLeft_t1, focal, principle_point,
                            cv::RANSAC, 0.999, 1.0, mask);
   if (E.rows != 3 || E.cols != 3) {
+    LOG(WARNING) << "E not proper size";
+    LOG(INFO) << E;
+    LOG(INFO) << pointsLeft_t0;
     return;
   }
   // std::cout << E << std::endl;

@@ -8,6 +8,8 @@ project(stereo_visual_odom)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package( OpenCV REQUIRED )
+find_package(Eigen3 REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
@@ -17,13 +19,14 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   message_filters
+  g3log_catkin
 )
 
 
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES stereo_visual_odom
-#  CATKIN_DEPENDS cv_bridge geometry_msgs nav_msgs roscpp rospy sensor_msgs std_msgs
+CATKIN_DEPENDS g3log_catkin
 #  DEPENDS system_lib
 )
 
@@ -32,6 +35,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
 )
 
 add_subdirectory(src/evaluate)
