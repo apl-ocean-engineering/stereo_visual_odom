@@ -9,6 +9,7 @@ project(stereo_visual_odom)
 ## is used, also find other catkin packages
 find_package( OpenCV REQUIRED )
 find_package(Eigen3 REQUIRED)
+FIND_PACKAGE(PCL REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
@@ -27,6 +28,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES stereo_visual_odom
 CATKIN_DEPENDS g3log_catkin
+pcl_ros pcl
 #  DEPENDS system_lib
 )
 
@@ -36,6 +38,7 @@ CATKIN_DEPENDS g3log_catkin
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
 
 add_subdirectory(src/evaluate)
@@ -67,4 +70,4 @@ target_link_libraries( visualOdometry utils bucket feature ${OpenCV_LIBS})
 #
 #
 target_link_libraries( Frame ${catkin_LIBRARIES} ${OpenCV_LIBS} )
-target_link_libraries( run ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  )
+target_link_libraries( run ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  )

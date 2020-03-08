@@ -2,7 +2,17 @@
 
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
+#include <opencv2/core/eigen.hpp>
 
+#include <pcl/common/angles.h>
+#include <pcl/common/common.h>
+#include <pcl/common/transforms.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/registration/transformation_estimation_svd.h>
 
 cv::Mat euler2rot(cv::Mat &rotationMatrix, const cv::Mat &euler) {
 
@@ -88,7 +98,7 @@ void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
   if (currentVOFeatures.size() < 2000) {
 
     // append new features with old features
-    appendNewFeatures(imageLeft_t0, currentVOFeatures);
+    appendNewFeatures(imageLeft_t0, imageRight_t0, currentVOFeatures);
     // std::cout << "Current feature set size: " <<
     // currentVOFeatures.points.size() << std::endl;
   }
@@ -101,7 +111,7 @@ void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
   bucketingFeatures(imageLeft_t0, currentVOFeatures, bucket_size,
                     features_per_bucket);
 
-  pointsLeft_t0 = currentVOFeatures.points;
+  pointsLeft_t0 = currentVOFeatures.left_points;
 
   circularMatching(imageLeft_t0, imageRight_t0, imageLeft_t1, imageRight_t1,
                    pointsLeft_t0, pointsRight_t0, pointsLeft_t1, pointsRight_t1,
@@ -115,7 +125,66 @@ void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
   removeInvalidPoints(pointsRight_t0, status);
   removeInvalidPoints(pointsRight_t1, status);
 
-  currentVOFeatures.points = pointsLeft_t1;
+  // cv::Mat imgL = imageLeft_t1;
+  // cv::Mat imgR = imageLeft_t0;
+  // for (int i = 0; i < pointsLeft_t0.size(); i++) {
+  //   cv::Point2f l0 = pointsLeft_t1.at(i);
+  //   cv::Point2f r0 = pointsLeft_t0.at(i);
+  //   cv::circle(imgL, cv::Point2i(int(l0.x), int(l0.y)), 10,
+  //              cv::Scalar(255, 255, 255));
+  //   cv::circle(imgR, cv::Point2i(int(r0.x), int(r0.y)), 10,
+  //              cv::Scalar(255, 255, 255));
+  //   cv::imshow("imgL", imgL);
+  //   cv::imshow("imgR", imgR);
+  //   cv::waitKey();
+  // }
+
+  currentVOFeatures.left_points = pointsLeft_t1;
+}
+
+void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
+                         cv::Mat &rotation, cv::Mat &translation) {
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in(
+      new pcl::PointCloud<pcl::PointXYZ>());
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out(
+      new pcl::PointCloud<pcl::PointXYZ>());
+  cloud_in->width = points3D_t0.rows;
+  cloud_in->height = 1;
+  cloud_in->is_dense = false;
+  cloud_in->resize(cloud_in->width * cloud_in->height);
+
+  cloud_out->width = points3D_t0.rows;
+  cloud_out->height = 1;
+  cloud_out->is_dense = false;
+  cloud_out->resize(cloud_out->width * cloud_out->height);
+
+  for (int i = 0; i < points3D_t0.rows; i++) {
+    cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
+    cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
+
+    cloud_in->points[i].x = point0.x;
+    cloud_in->points[i].y = point0.y;
+    cloud_in->points[i].z = point0.z;
+
+    cloud_out->points[i].x = point1.x;
+    cloud_out->points[i].y = point1.y;
+    cloud_out->points[i].z = point1.z;
+  }
+  // LOG(WARNING) << p0 << std::endl << std::endl << p1;
+  pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>
+      TESVD;
+  pcl::registration::TransformationEstimationSVD<
+      pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
+  TESVD.estimateRigidTransformation(*cloud_in, *cloud_out, transformation2);
+  LOG(WARNING) << "The Estimated Rotation and translation matrices(using "
+                  "getTransformation function) are : \n"
+               << transformation2;
+
+  Eigen::Matrix3d R = transformation2.block<3, 3>(0, 0).cast<double>();
+  Eigen::Vector3d t = transformation2.block<3, 1>(0, 3).cast<double>();
+
+  eigen2cv(R, rotation);
+  eigen2cv(t, translation);
 }
 
 void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr,
@@ -188,6 +257,7 @@ void displayTracking(cv::Mat &imageLeft_t1,
   // -----------------------------------------
   // Display feature racking
   // -----------------------------------------
+  cv::namedWindow("vis", cv::WINDOW_NORMAL);
   int radius = 2;
   cv::Mat vis;
 

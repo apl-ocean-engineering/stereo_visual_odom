@@ -1,6 +1,9 @@
 #include "utils.h"
 #include "evaluate/evaluate_odometry.h"
 
+#include "g3_to_ros_logger/ROSLogSink.h"
+#include "g3_to_ros_logger/g3logger.h"
+
 // --------------------------------
 // Visualization
 // --------------------------------
@@ -59,6 +62,8 @@ void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
   cv::Mat addup = (cv::Mat_<double>(1, 4) << 0, 0, 0, 1);
 
   cv::hconcat(rotation, translation_stereo, rigid_body_transformation);
+  // LOG(WARNING) << rigid_body_transformation.type() << std::endl <<
+  // addup.type();
   cv::vconcat(rigid_body_transformation, addup, rigid_body_transformation);
 
   // std::cout << "rigid_body_transformation" << rigid_body_transformation <<
@@ -76,7 +81,7 @@ void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
   // if ((scale>0.1)&&(translation_stereo.at<double>(2) >
   // translation_stereo.at<double>(0)) && (translation_stereo.at<double>(2) >
   // translation_stereo.at<double>(1)))
-  if (scale > 0.05 && scale < 10) {
+  if (scale < 10) {
     // std::cout << "Rpose" << Rpose << std::endl;
 
     frame_pose = frame_pose * rigid_body_transformation;
