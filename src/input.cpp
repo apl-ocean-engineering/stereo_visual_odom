@@ -31,10 +31,10 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
   imageLeft_t1 = rosImage2CvMat(imgL);
   imageRight_t1 = rosImage2CvMat(imgR);
 
-  cv::resize(imageLeft_t1, imageLeft_t1,
-             cv::Size(imageLeft_t1.cols / 4, imageLeft_t1.rows / 4));
-  cv::resize(imageRight_t1, imageRight_t1,
-             cv::Size(imageRight_t1.cols / 4, imageRight_t1.rows / 4));
+  // cv::resize(imageLeft_t1, imageLeft_t1,
+  //            cv::Size(imageLeft_t1.cols / 4, imageLeft_t1.rows / 4));
+  // cv::resize(imageRight_t1, imageRight_t1,
+  //            cv::Size(imageRight_t1.cols / 4, imageRight_t1.rows / 4));
 
   if (frame_id > 0) {
     run();
@@ -225,10 +225,10 @@ void Input::run() {
   // // ---------------------
   // // Tracking transfomation
   // // ---------------------
-  trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
+  // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
 
-  // trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
-  //                     points3D_t0, rotation, translation, false);
+  trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
+                      points3D_t0, rotation, translation, false);
   displayTracking(imageLeft_t1, pointsLeft_t0, pointsLeft_t1);
   frame_pose.convertTo(frame_pose32, CV_32F);
   //

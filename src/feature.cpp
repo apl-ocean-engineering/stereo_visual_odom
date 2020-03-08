@@ -33,10 +33,13 @@ void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f> &points,
 
 void featureDetectionFast(cv::Mat image, std::vector<cv::Point2f> &points) {
   // uses FAST as for feature dection, modify parameters as necessary
+
   std::vector<cv::KeyPoint> keypoints;
-  int fast_threshold = 1;
+  int fast_threshold = 20;
   bool nonmaxSuppression = true;
   cv::FAST(image, keypoints, fast_threshold, nonmaxSuppression);
+
+
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
@@ -44,12 +47,11 @@ void featureDetectionGoodFeaturesToTrack(cv::Mat image,
                                          std::vector<cv::Point2f> &points) {
   // uses GoodFeaturesToTrack for feature dection, modify parameters as
   // necessary
-
   int maxCorners = 5000;
-  double qualityLevel = 0.01;
+  double qualityLevel = 0.0001;
   double minDistance = 5.;
-  int blockSize = 3;
-  bool useHarrisDetector = false;
+  int blockSize = 15;
+  bool useHarrisDetector = true;
   double k = 0.04;
   cv::Mat mask;
 
@@ -209,21 +211,26 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
                        FeatureSet &current_features) {
   cv::Mat descriptorsL, descriptorsR;
   std::vector<cv::Point2f> points_new;
-  // featureDetectionFast(image, points_new);
+  //featureDetectionFast(imageL, points_new);
   std::vector<cv::KeyPoint> keypointsL, keypointsR;
+
+  cv::Mat outImgL, outImgR;
   featureDetectionORB(imageL, points_new, keypointsL, descriptorsL);
   featureDetectionORB(imageR, points_new, keypointsR, descriptorsR);
+  // cv::drawKeypoints(imageL, keypointsL, outImgL);
+  // cv::drawKeypoints(imageR, keypointsR, outImgR);
+
+  //
   // cv::Ptr<cv::DescriptorMatcher> matcher =
   //     cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
   // std::vector<std::vector<cv::DMatch>> knn_matches;
   // matcher->knnMatch(descriptorsL, descriptorsR, knn_matches, 2);
   //
-  // const float ratio_thresh = 0.7f;
+  // const float ratio_thresh = 0.9f;
   // std::vector<cv::DMatch> good_matches;
   // for (size_t i = 0; i < knn_matches.size(); i++) {
   //   if (knn_matches[i][0].distance <
   //       ratio_thresh * knn_matches[i][1].distance) {
-  //     std::cout << knn_matches[i][0] << std::endl;
   //     good_matches.push_back(knn_matches[i][0]);
   //   }
   // }
@@ -233,7 +240,7 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
   //                 img_matches, cv::Scalar::all(-1), cv::Scalar::all(-1),
   //                 std::vector<char>(),
   //                 cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-  //-- Show detected matches
+  // //-- Show detected matches
   // cv::imshow("Good Matches", img_matches);
   // cv::waitKey();
 
@@ -245,15 +252,11 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
 }
 
 void appendNewFeatures(cv::Mat &image, FeatureSet &current_features) {
-  // cv::Mat descriptorsL;
-  // std::vector<cv::Point2f> points_new;
-  // // featureDetectionFast(image, points_new);
-  // featureDetectionORB(image, points_new, descriptorsL);
-  // current_features.left_points.insert(current_features.left_points.end(),
-  //                                     points_new.begin(), points_new.end());
-  // std::vector<int> ages_new(points_new.size(), 0);
-  // current_features.ages.insert(current_features.ages.end(), ages_new.begin(),
-  //                              ages_new.end());
+  std::vector<cv::Point2f>  points_new;
+  featureDetectionFast(image, points_new);
+  current_features.left_points.insert(current_features.left_points.end(), points_new.begin(), points_new.end());
+  std::vector<int>  ages_new(points_new.size(), 0);
+  current_features.ages.insert(current_features.ages.end(), ages_new.begin(), ages_new.end());
 }
 
 void appendNewFeatures(std::vector<cv::Point2f> points_new,

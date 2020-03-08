@@ -1,0 +1,840 @@
+		g3log created log at: Sun Mar 08 15:34:17 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] message		(uuu*: microseconds fractions of the seconds value)
+
+2020/03/08 15:34:17 167824	INFO [g3logger.h->logBanner:29]	Starting log.
+2020/03/08 15:34:17 173943	DEBUG [main.cpp->main:49]	Filepath: /home/mitchell/KITTI/data_odometry_gray/dataset/sequences/00/
+2020/03/08 15:34:17 173947	DEBUG [main.cpp->main:53]	Calibration Filepath: /home/mitchell/visual_odom_ws/src/visual_odom/calibration/zed.yaml
+2020/03/08 15:34:17 174023	INFO [main.cpp->main:67]	P_left: 
+[684.35999, 0, 689.89001, 0;
+ 0, 684.35999, 406.87, 0;
+ 0, 0, 1, 0]
+2020/03/08 15:34:17 174029	INFO [main.cpp->main:68]	P_right: 
+[684.35999, 0, 689.89001, -82.120003;
+ 0, 684.35999, 406.87, 0;
+ 0, 0, 1, 0]
+2020/03/08 15:34:17 261317	INFO [input.cpp->Input:22]	frame_pose [1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0;
+ 0, 0, 0, 1]
+2020/03/08 15:34:17 727451	INFO [input.cpp->run:173]	
+frame_id 1
+2020/03/08 15:34:17 734692	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:17 877835	INFO [input.cpp->run:173]	
+frame_id 2
+2020/03/08 15:34:17 880786	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:18 030766	INFO [input.cpp->run:173]	
+frame_id 3
+2020/03/08 15:34:18 034764	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999918   0.0046422   -0.011909   -0.250149
+-0.00462487    0.999988  0.00151536    -0.44262
+  0.0119159 -0.00146022    0.999928    0.840334
+          0           0           0           1
+2020/03/08 15:34:18 083916	INFO [input.cpp->run:235]	rotation: 
+[0.9999184608459473, 0.004642203450202942, -0.01190903782844543;
+ -0.004624873399734497, 0.9999882578849792, 0.001515358686447144;
+ 0.0119158923625946, -0.001460224390029907, 0.9999278783798218]
+2020/03/08 15:34:18 083968	INFO [input.cpp->run:256]	frame times (ms): 56.454
+2020/03/08 15:34:18 083972	INFO [input.cpp->run:257]	FPS: 17.7135
+2020/03/08 15:34:18 162928	INFO [input.cpp->run:173]	
+frame_id 4
+2020/03/08 15:34:18 164192	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999994 -0.00168531   -0.002992     129.135
+ 0.00171313    0.999955   0.0093102     69.9522
+ 0.00297627 -0.00931518    0.999952    -153.805
+          0           0           0           1
+2020/03/08 15:34:18 164276	INFO [input.cpp->run:235]	rotation: 
+[0.9999943375587463, -0.001685306429862976, -0.002992004156112671;
+ 0.00171312689781189, 0.9999553561210632, 0.009310200810432434;
+ 0.002976268529891968, -0.009315177798271179, 0.9999523758888245]
+2020/03/08 15:34:18 164292	INFO [input.cpp->run:256]	frame times (ms): 4.336
+2020/03/08 15:34:18 164302	INFO [input.cpp->run:257]	FPS: 230.627
+2020/03/08 15:34:18 294705	INFO [input.cpp->run:173]	
+frame_id 5
+2020/03/08 15:34:18 297474	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999919  -0.0117631 -0.00492036     0.55611
+  0.0117937    0.999911  0.00622287    0.424499
+ 0.00484675 -0.00628039    0.999969   -0.715264
+          0           0           0           1
+2020/03/08 15:34:18 297654	INFO [input.cpp->run:235]	rotation: 
+[0.9999189376831055, -0.01176314055919647, -0.004920363426208496;
+ 0.01179374754428864, 0.9999112486839294, 0.00622287392616272;
+ 0.004846751689910889, -0.006280392408370972, 0.9999685287475586]
+2020/03/08 15:34:18 297688	INFO [input.cpp->run:256]	frame times (ms): 8.311
+2020/03/08 15:34:18 297693	INFO [input.cpp->run:257]	FPS: 120.322
+2020/03/08 15:34:18 416700	INFO [input.cpp->run:173]	
+frame_id 6
+2020/03/08 15:34:18 418294	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:18 568242	INFO [input.cpp->run:173]	
+frame_id 7
+2020/03/08 15:34:18 571569	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999989 -0.00255145  -0.0039185    0.428925
+ 0.00256753    0.999988  0.00413632    0.259475
+  0.0039081 -0.00414649    0.999984   -0.516515
+          0           0           0           1
+2020/03/08 15:34:18 571769	INFO [input.cpp->run:235]	rotation: 
+[0.9999891519546509, -0.002551451325416565, -0.003918498754501343;
+ 0.002567529678344727, 0.9999881982803345, 0.004136323928833008;
+ 0.003908097743988037, -0.004146486520767212, 0.9999837875366211]
+2020/03/08 15:34:18 571808	INFO [input.cpp->run:256]	frame times (ms): 9.909
+2020/03/08 15:34:18 571817	INFO [input.cpp->run:257]	FPS: 100.918
+2020/03/08 15:34:18 719801	INFO [input.cpp->run:173]	
+frame_id 8
+2020/03/08 15:34:18 722784	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999944  0.00648448  0.00832948    0.350066
+-0.00642048     0.99995 -0.00771326    0.306444
+-0.00837895  0.00765947    0.999936   -0.582711
+          0           0           0           1
+2020/03/08 15:34:18 722943	INFO [input.cpp->run:235]	rotation: 
+[0.9999444484710693, 0.006484478712081909, 0.008329480886459351;
+ -0.006420478224754333, 0.9999499320983887, -0.007713258266448975;
+ -0.008378952741622925, 0.007659465074539185, 0.999935507774353]
+2020/03/08 15:34:18 722974	INFO [input.cpp->run:256]	frame times (ms): 9.519
+2020/03/08 15:34:18 722982	INFO [input.cpp->run:257]	FPS: 105.053
+2020/03/08 15:34:18 876707	INFO [input.cpp->run:173]	
+frame_id 9
+2020/03/08 15:34:18 882861	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+           1   0.00033316  0.000700623      0.85936
+-0.000332564            1  -0.00103813     0.597478
+-0.000700891   0.00103807     0.999999      -1.1317
+           0            0            0            1
+2020/03/08 15:34:18 883246	INFO [input.cpp->run:235]	rotation: 
+[0.9999997615814209, 0.0003331601619720459, 0.0007006227970123291;
+ -0.000332564115524292, 0.9999995827674866, -0.001038134098052979;
+ -0.0007008910179138184, 0.001038074493408203, 0.9999991655349731]
+2020/03/08 15:34:18 883312	INFO [input.cpp->run:256]	frame times (ms): 20.219
+2020/03/08 15:34:18 883320	INFO [input.cpp->run:257]	FPS: 49.4584
+2020/03/08 15:34:19 028916	INFO [input.cpp->run:173]	
+frame_id 10
+2020/03/08 15:34:19 032072	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:19 179945	INFO [input.cpp->run:173]	
+frame_id 11
+2020/03/08 15:34:19 183062	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.999828  0.0141739  0.0119172    0.40167
+-0.0139666   0.999753 -0.0173022   0.368563
+-0.0121599  0.0171328   0.999779    -0.6155
+         0          0          0          1
+2020/03/08 15:34:19 183227	INFO [input.cpp->run:235]	rotation: 
+[0.9998283386230469, 0.01417389512062073, 0.01191720366477966;
+ -0.01396656036376953, 0.9997526407241821, -0.0173022449016571;
+ -0.01215988397598267, 0.01713284850120544, 0.9997791051864624]
+2020/03/08 15:34:19 183267	INFO [input.cpp->run:256]	frame times (ms): 8.944
+2020/03/08 15:34:19 183272	INFO [input.cpp->run:257]	FPS: 111.807
+2020/03/08 15:34:19 338741	INFO [input.cpp->run:173]	
+frame_id 12
+2020/03/08 15:34:19 345177	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.996756 -0.0431196 -0.0679624  -0.878436
+ 0.0463527   0.997831   0.046736   -1.06238
+ 0.0657997 -0.0497347   0.996593    2.21554
+         0          0          0          1
+2020/03/08 15:34:19 345569	INFO [input.cpp->run:235]	rotation: 
+[0.9967555999755859, -0.04311957955360413, -0.06796243786811829;
+ 0.04635271430015564, 0.9978313446044922, 0.04673603177070618;
+ 0.06579971313476562, -0.04973471164703369, 0.9965927004814148]
+2020/03/08 15:34:19 345640	INFO [input.cpp->run:256]	frame times (ms): 17.827
+2020/03/08 15:34:19 345649	INFO [input.cpp->run:257]	FPS: 56.0947
+2020/03/08 15:34:19 496119	INFO [input.cpp->run:173]	
+frame_id 13
+2020/03/08 15:34:19 499662	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+           1 -0.000465557  0.000282735     0.533549
+ 0.000465289            1 -0.000179946     0.398332
+-0.000282735  0.000180066            1    -0.741724
+           0            0            0            1
+2020/03/08 15:34:19 499867	INFO [input.cpp->run:235]	rotation: 
+[1, -0.0004655569791793823, 0.0002827346324920654;
+ 0.0004652887582778931, 1.00000011920929, -0.0001799464225769043;
+ -0.0002827346324920654, 0.0001800656318664551, 1.00000011920929]
+2020/03/08 15:34:19 499907	INFO [input.cpp->run:256]	frame times (ms): 11.231
+2020/03/08 15:34:19 499916	INFO [input.cpp->run:257]	FPS: 89.0393
+2020/03/08 15:34:19 643148	INFO [input.cpp->run:173]	
+frame_id 14
+2020/03/08 15:34:19 646221	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:19 801971	INFO [input.cpp->run:173]	
+frame_id 15
+2020/03/08 15:34:19 805127	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:19 952526	INFO [input.cpp->run:173]	
+frame_id 16
+2020/03/08 15:34:19 955696	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999945  -0.0083127 -0.00640801     1.18207
+ 0.00835547    0.999943  0.00669634    0.784612
+ 0.00635186 -0.00674948    0.999957    -1.48306
+          0           0           0           1
+2020/03/08 15:34:19 955899	INFO [input.cpp->run:235]	rotation: 
+[0.999944806098938, -0.008312702178955078, -0.006408005952835083;
+ 0.008355468511581421, 0.9999426603317261, 0.006696343421936035;
+ 0.006351858377456665, -0.006749480962753296, 0.9999569058418274]
+2020/03/08 15:34:19 955941	INFO [input.cpp->run:256]	frame times (ms): 10.966
+2020/03/08 15:34:19 955965	INFO [input.cpp->run:257]	FPS: 91.191
+2020/03/08 15:34:20 112969	INFO [input.cpp->run:173]	
+frame_id 17
+2020/03/08 15:34:20 117068	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:20 269075	INFO [input.cpp->run:173]	
+frame_id 18
+2020/03/08 15:34:20 272897	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:20 421465	INFO [input.cpp->run:173]	
+frame_id 19
+2020/03/08 15:34:20 426537	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:20 561535	INFO [input.cpp->run:173]	
+frame_id 20
+2020/03/08 15:34:20 565267	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:20 717153	INFO [input.cpp->run:173]	
+frame_id 21
+2020/03/08 15:34:20 720071	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:20 872528	INFO [input.cpp->run:173]	
+frame_id 22
+2020/03/08 15:34:20 875494	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:21 025931	INFO [input.cpp->run:173]	
+frame_id 23
+2020/03/08 15:34:21 029493	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999963 -0.00244017  0.00830275     1.99879
+ 0.00244893    0.999996 -0.00104639     1.65523
+ -0.0083003  0.00106651    0.999965    -3.16233
+          0           0           0           1
+2020/03/08 15:34:21 029695	INFO [input.cpp->run:235]	rotation: 
+[0.9999626278877258, -0.002440169453620911, 0.008302748203277588;
+ 0.002448931336402893, 0.9999964833259583, -0.00104638934135437;
+ -0.008300304412841797, 0.001066505908966064, 0.9999650716781616]
+2020/03/08 15:34:21 029733	INFO [input.cpp->run:256]	frame times (ms): 9.77
+2020/03/08 15:34:21 029742	INFO [input.cpp->run:257]	FPS: 102.354
+2020/03/08 15:34:21 181636	INFO [input.cpp->run:173]	
+frame_id 24
+2020/03/08 15:34:21 184797	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999959  0.00457913   0.0077658    0.579876
+-0.00453874    0.999976 -0.00521165     0.52476
+-0.00778967  0.00517604    0.999956    -1.00609
+          0           0           0           1
+2020/03/08 15:34:21 184998	INFO [input.cpp->run:235]	rotation: 
+[0.9999594688415527, 0.004579126834869385, 0.007765799760818481;
+ -0.004538744688034058, 0.9999761581420898, -0.00521165132522583;
+ -0.007789671421051025, 0.005176037549972534, 0.9999563097953796]
+2020/03/08 15:34:21 185037	INFO [input.cpp->run:256]	frame times (ms): 10.479
+2020/03/08 15:34:21 185045	INFO [input.cpp->run:257]	FPS: 95.429
+2020/03/08 15:34:21 340225	INFO [input.cpp->run:173]	
+frame_id 25
+2020/03/08 15:34:21 343625	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:21 495836	INFO [input.cpp->run:173]	
+frame_id 26
+2020/03/08 15:34:21 499688	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:21 645728	INFO [input.cpp->run:173]	
+frame_id 27
+2020/03/08 15:34:21 649071	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:21 797527	INFO [input.cpp->run:173]	
+frame_id 28
+2020/03/08 15:34:21 800503	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.999997   0.00174074  -0.00176805     0.735491
+ -0.00174169     0.999998 -0.000600025     0.446549
+  0.00176698  0.000602782     0.999998     -0.85091
+           0            0            0            1
+2020/03/08 15:34:21 800705	INFO [input.cpp->run:235]	rotation: 
+[0.9999970197677612, 0.001740738749504089, -0.001768052577972412;
+ -0.001741692423820496, 0.9999980926513672, -0.0006000250577926636;
+ 0.001766979694366455, 0.0006027817726135254, 0.9999982118606567]
+2020/03/08 15:34:21 800744	INFO [input.cpp->run:256]	frame times (ms): 9.58
+2020/03/08 15:34:21 800754	INFO [input.cpp->run:257]	FPS: 104.384
+2020/03/08 15:34:21 952430	INFO [input.cpp->run:173]	
+frame_id 29
+2020/03/08 15:34:21 955465	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:22 104680	INFO [input.cpp->run:173]	
+frame_id 30
+2020/03/08 15:34:22 107909	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:22 268169	INFO [input.cpp->run:173]	
+frame_id 31
+2020/03/08 15:34:22 271080	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+           1 -0.000553921 -0.000178635     0.496354
+ 0.000554502     0.999995   0.00323182     0.286895
+ 0.000176877  -0.00323185     0.999995    -0.625085
+           0            0            0            1
+2020/03/08 15:34:22 271179	INFO [input.cpp->run:235]	rotation: 
+[1, -0.0005539208650588989, -0.0001786351203918457;
+ 0.000554502010345459, 0.9999949932098389, 0.003231823444366455;
+ 0.0001768767833709717, -0.003231853246688843, 0.9999949932098389]
+2020/03/08 15:34:22 271224	INFO [input.cpp->run:256]	frame times (ms): 7.159
+2020/03/08 15:34:22 271246	INFO [input.cpp->run:257]	FPS: 139.684
+2020/03/08 15:34:22 570370	INFO [input.cpp->run:173]	
+frame_id 32
+2020/03/08 15:34:22 573280	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:22 715963	INFO [input.cpp->run:173]	
+frame_id 33
+2020/03/08 15:34:22 718680	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:22 867650	INFO [input.cpp->run:173]	
+frame_id 34
+2020/03/08 15:34:22 870466	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:23 024897	INFO [input.cpp->run:173]	
+frame_id 35
+2020/03/08 15:34:23 028525	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:23 176175	INFO [input.cpp->run:173]	
+frame_id 36
+2020/03/08 15:34:23 179348	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:23 338807	INFO [input.cpp->run:173]	
+frame_id 37
+2020/03/08 15:34:23 343021	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999994 -0.00245212  0.00217518    0.376228
+ 0.00244822    0.999995  0.00179073    0.229819
+ -0.0021795  -0.0017854    0.999996   -0.446064
+          0           0           0           1
+2020/03/08 15:34:23 343293	INFO [input.cpp->run:235]	rotation: 
+[0.9999944567680359, -0.002452120184898376, 0.002175182104110718;
+ 0.002448216080665588, 0.999995231628418, 0.001790732145309448;
+ -0.002179503440856934, -0.001785397529602051, 0.9999960660934448]
+2020/03/08 15:34:23 343346	INFO [input.cpp->run:256]	frame times (ms): 13.896
+2020/03/08 15:34:23 343352	INFO [input.cpp->run:257]	FPS: 71.9632
+2020/03/08 15:34:23 497381	INFO [input.cpp->run:173]	
+frame_id 38
+2020/03/08 15:34:23 500467	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:23 640611	INFO [input.cpp->run:173]	
+frame_id 39
+2020/03/08 15:34:23 643401	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:23 800312	INFO [input.cpp->run:173]	
+frame_id 40
+2020/03/08 15:34:23 803729	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999921 -0.00260265   0.0122801    0.312076
+ 0.00263345    0.999993 -0.00248259    0.304644
+ -0.0122738   0.0025146    0.999922   -0.581512
+          0           0           0           1
+2020/03/08 15:34:23 803814	INFO [input.cpp->run:235]	rotation: 
+[0.9999213218688965, -0.002602651715278625, 0.01228013634681702;
+ 0.002633452415466309, 0.9999934434890747, -0.002482593059539795;
+ -0.01227381825447083, 0.00251460075378418, 0.9999216794967651]
+2020/03/08 15:34:23 803830	INFO [input.cpp->run:256]	frame times (ms): 8.793
+2020/03/08 15:34:23 803832	INFO [input.cpp->run:257]	FPS: 113.727
+2020/03/08 15:34:23 958321	INFO [input.cpp->run:173]	
+frame_id 41
+2020/03/08 15:34:23 962551	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.999606 0.00637586  0.0273206   0.204708
+-0.0060799   0.999922 -0.0108959   0.346484
+ -0.027388  0.0107255   0.999568  -0.730376
+         0          0          0          1
+2020/03/08 15:34:23 962821	INFO [input.cpp->run:235]	rotation: 
+[0.9996063113212585, 0.006375864148139954, 0.02732059359550476;
+ -0.006079897284507751, 0.9999220967292786, -0.01089590787887573;
+ -0.02738800644874573, 0.01072549819946289, 0.9995675086975098]
+2020/03/08 15:34:23 962874	INFO [input.cpp->run:256]	frame times (ms): 14.114
+2020/03/08 15:34:23 962886	INFO [input.cpp->run:257]	FPS: 70.8516
+2020/03/08 15:34:24 117688	INFO [input.cpp->run:173]	
+frame_id 42
+2020/03/08 15:34:24 122113	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.998835   0.028551  0.0388976    0.17751
+-0.0277012   0.999369  -0.022218   0.226516
+-0.0395074  0.0211145   0.998996   -0.69698
+         0          0          0          1
+2020/03/08 15:34:24 122339	INFO [input.cpp->run:235]	rotation: 
+[0.9988352656364441, 0.02855102717876434, 0.03889760375022888;
+ -0.02770118415355682, 0.9993692636489868, -0.02221804857254028;
+ -0.0395074188709259, 0.02111449837684631, 0.9989960193634033]
+2020/03/08 15:34:24 122380	INFO [input.cpp->run:256]	frame times (ms): 14.703
+2020/03/08 15:34:24 122384	INFO [input.cpp->run:257]	FPS: 68.0133
+2020/03/08 15:34:24 275786	INFO [input.cpp->run:173]	
+frame_id 43
+2020/03/08 15:34:24 281936	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.999939  -0.00714818   0.00839421     0.295803
+  0.00714107     0.999974  0.000849187     0.223736
+ -0.00840017 -0.000789315     0.999964    -0.421819
+           0            0            0            1
+2020/03/08 15:34:24 282322	INFO [input.cpp->run:235]	rotation: 
+[0.9999392032623291, -0.007148176431655884, 0.008394211530685425;
+ 0.007141068577766418, 0.9999740123748779, 0.0008491873741149902;
+ -0.008400171995162964, -0.0007893145084381104, 0.9999643564224243]
+2020/03/08 15:34:24 282396	INFO [input.cpp->run:256]	frame times (ms): 20.407
+2020/03/08 15:34:24 282404	INFO [input.cpp->run:257]	FPS: 49.0028
+2020/03/08 15:34:24 429926	INFO [input.cpp->run:173]	
+frame_id 44
+2020/03/08 15:34:24 434088	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999831 -0.00371529   0.0180091    0.293132
+ 0.00378366    0.999986 -0.00376201    0.334629
+ -0.0179947  0.00382957    0.999831   -0.634601
+          0           0           0           1
+2020/03/08 15:34:24 434357	INFO [input.cpp->run:235]	rotation: 
+[0.9998310208320618, -0.003715291619300842, 0.01800906658172607;
+ 0.003783658146858215, 0.9999858736991882, -0.003762006759643555;
+ -0.01799473166465759, 0.00382956862449646, 0.9998307228088379]
+2020/03/08 15:34:24 434410	INFO [input.cpp->run:256]	frame times (ms): 14.114
+2020/03/08 15:34:24 434416	INFO [input.cpp->run:257]	FPS: 70.8516
+2020/03/08 15:34:24 588263	INFO [input.cpp->run:173]	
+frame_id 45
+2020/03/08 15:34:24 592741	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999654  0.00397454   0.0259916    0.188711
+-0.00379711    0.999969 -0.00687245    0.231107
+ -0.0260181   0.0067713    0.999639   -0.530044
+          0           0           0           1
+2020/03/08 15:34:24 592946	INFO [input.cpp->run:235]	rotation: 
+[0.9996542930603027, 0.003974542021751404, 0.02599158883094788;
+ -0.00379711389541626, 0.9999692440032959, -0.006872445344924927;
+ -0.02601811289787292, 0.006771296262741089, 0.9996386766433716]
+2020/03/08 15:34:24 593047	INFO [input.cpp->run:256]	frame times (ms): 14.103
+2020/03/08 15:34:24 593056	INFO [input.cpp->run:257]	FPS: 70.9069
+2020/03/08 15:34:24 736826	INFO [input.cpp->run:173]	
+frame_id 46
+2020/03/08 15:34:24 740006	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+     0.99978  0.000264674    0.0209534     0.200753
+-0.000168681      0.99999  -0.00458941     0.195241
+  -0.0209543   0.00458494      0.99977    -0.417473
+           0            0            0            1
+2020/03/08 15:34:24 740217	INFO [input.cpp->run:235]	rotation: 
+[0.9997804164886475, 0.0002646744251251221, 0.02095335721969604;
+ -0.0001686811447143555, 0.9999895095825195, -0.00458940863609314;
+ -0.02095425128936768, 0.004584938287734985, 0.999769926071167]
+2020/03/08 15:34:24 740257	INFO [input.cpp->run:256]	frame times (ms): 9.817
+2020/03/08 15:34:24 740263	INFO [input.cpp->run:257]	FPS: 101.864
+2020/03/08 15:34:24 887210	INFO [input.cpp->run:173]	
+frame_id 47
+2020/03/08 15:34:24 890605	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999878 -0.00185291   0.0155161    0.350419
+ 0.00191636     0.99999 -0.00406414     0.28687
+ -0.0155085  0.00409344    0.999872   -0.524834
+          0           0           0           1
+2020/03/08 15:34:24 890811	INFO [input.cpp->run:235]	rotation: 
+[0.9998779296875, -0.001852914690971375, 0.01551613211631775;
+ 0.001916363835334778, 0.9999899864196777, -0.00406414270401001;
+ -0.01550853252410889, 0.004093438386917114, 0.9998716115951538]
+2020/03/08 15:34:24 890851	INFO [input.cpp->run:256]	frame times (ms): 11.426
+2020/03/08 15:34:24 890856	INFO [input.cpp->run:257]	FPS: 87.5197
+2020/03/08 15:34:25 050120	INFO [input.cpp->run:173]	
+frame_id 48
+2020/03/08 15:34:25 056067	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:25 187672	INFO [input.cpp->run:173]	
+frame_id 49
+2020/03/08 15:34:25 193407	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999601 -0.00161731   0.0281969   0.0768299
+ 0.00187951    0.999955 -0.00927168    0.209769
+ -0.0281805  0.00932108     0.99956   -0.340154
+          0           0           0           1
+2020/03/08 15:34:25 193678	INFO [input.cpp->run:235]	rotation: 
+[0.9996013045310974, -0.001617312431335449, 0.02819690108299255;
+ 0.001879513263702393, 0.9999554753303528, -0.009271681308746338;
+ -0.02818050980567932, 0.009321078658103943, 0.999559760093689]
+2020/03/08 15:34:25 193727	INFO [input.cpp->run:256]	frame times (ms): 16.834
+2020/03/08 15:34:25 193740	INFO [input.cpp->run:257]	FPS: 59.4036
+2020/03/08 15:34:25 339736	INFO [input.cpp->run:173]	
+frame_id 50
+2020/03/08 15:34:25 342881	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999805 -0.00238781   0.0195937    0.451961
+ 0.00251529    0.999976 -0.00648339    0.394328
+ -0.0195778  0.00653139    0.999787   -0.701143
+          0           0           0           1
+2020/03/08 15:34:25 343047	INFO [input.cpp->run:235]	rotation: 
+[0.9998053312301636, -0.00238780677318573, 0.01959365606307983;
+ 0.002515286207199097, 0.9999759793281555, -0.006483390927314758;
+ -0.01957777142524719, 0.006531387567520142, 0.9997869729995728]
+2020/03/08 15:34:25 343078	INFO [input.cpp->run:256]	frame times (ms): 9.859
+2020/03/08 15:34:25 343082	INFO [input.cpp->run:257]	FPS: 101.43
+2020/03/08 15:34:25 492383	INFO [input.cpp->run:173]	
+frame_id 51
+2020/03/08 15:34:25 495337	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.999955  -0.00698097   0.00638461     0.378578
+   0.0069842     0.999976 -0.000469595      0.24181
+ -0.00638133  0.000514194      0.99998     -0.37948
+           0            0            0            1
+2020/03/08 15:34:25 495446	INFO [input.cpp->run:235]	rotation: 
+[0.9999552965164185, -0.006980970501899719, 0.006384611129760742;
+ 0.006984204053878784, 0.9999756813049316, -0.000469595193862915;
+ -0.006381332874298096, 0.0005141943693161011, 0.9999796152114868]
+2020/03/08 15:34:25 495492	INFO [input.cpp->run:256]	frame times (ms): 9.584
+2020/03/08 15:34:25 495503	INFO [input.cpp->run:257]	FPS: 104.341
+2020/03/08 15:34:25 650262	INFO [input.cpp->run:173]	
+frame_id 52
+2020/03/08 15:34:25 654236	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:25 809829	INFO [input.cpp->run:173]	
+frame_id 53
+2020/03/08 15:34:25 814015	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.999559  0.0185623  0.0231978   0.667295
+-0.0180063   0.999551 -0.0239568   0.469094
+-0.0236319  0.0235285   0.999444  -0.788694
+         0          0          0          1
+2020/03/08 15:34:25 814282	INFO [input.cpp->run:235]	rotation: 
+[0.999558687210083, 0.01856228709220886, 0.02319777011871338;
+ -0.01800629496574402, 0.9995509386062622, -0.02395680546760559;
+ -0.02363190054893494, 0.02352850139141083, 0.9994438290596008]
+2020/03/08 15:34:25 814335	INFO [input.cpp->run:256]	frame times (ms): 14.34
+2020/03/08 15:34:25 814347	INFO [input.cpp->run:257]	FPS: 69.735
+2020/03/08 15:34:25 961485	INFO [input.cpp->run:173]	
+frame_id 54
+2020/03/08 15:34:25 964865	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999884  0.00127617   0.0151663    0.496453
+-0.00115412    0.999967 -0.00804582    0.341753
+ -0.0151761  0.00802734    0.999853   -0.622353
+          0           0           0           1
+2020/03/08 15:34:25 965069	INFO [input.cpp->run:235]	rotation: 
+[0.9998842477798462, 0.001276165246963501, 0.01516628265380859;
+ -0.001154124736785889, 0.9999669790267944, -0.008045822381973267;
+ -0.01517608761787415, 0.008027344942092896, 0.9998526573181152]
+2020/03/08 15:34:25 965117	INFO [input.cpp->run:256]	frame times (ms): 11.058
+2020/03/08 15:34:25 965126	INFO [input.cpp->run:257]	FPS: 90.4323
+2020/03/08 15:34:26 111920	INFO [input.cpp->run:173]	
+frame_id 55
+2020/03/08 15:34:26 115218	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999807  0.00746125   0.0181726    0.417803
+-0.00720793    0.999876  -0.0139706    0.300963
+ -0.0182745   0.0138369    0.999737   -0.530485
+          0           0           0           1
+2020/03/08 15:34:26 115421	INFO [input.cpp->run:235]	rotation: 
+[0.9998067617416382, 0.007461249828338623, 0.01817256212234497;
+ -0.007207930088043213, 0.9998762011528015, -0.01397056877613068;
+ -0.01827451586723328, 0.01383690536022186, 0.9997371435165405]
+2020/03/08 15:34:26 115461	INFO [input.cpp->run:256]	frame times (ms): 11.213
+2020/03/08 15:34:26 115471	INFO [input.cpp->run:257]	FPS: 89.1822
+2020/03/08 15:34:26 267324	INFO [input.cpp->run:173]	
+frame_id 56
+2020/03/08 15:34:26 270493	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999919  -0.0112766  0.00596803    0.795193
+  0.0112496    0.999926  0.00457257    0.468031
+-0.00601926 -0.00450508    0.999972    -0.90238
+          0           0           0           1
+2020/03/08 15:34:26 270697	INFO [input.cpp->run:235]	rotation: 
+[0.9999185800552368, -0.01127664744853973, 0.005968034267425537;
+ 0.01124955713748932, 0.9999262690544128, 0.004572570323944092;
+ -0.006019264459609985, -0.004505082964897156, 0.9999717473983765]
+2020/03/08 15:34:26 270738	INFO [input.cpp->run:256]	frame times (ms): 10.786
+2020/03/08 15:34:26 270744	INFO [input.cpp->run:257]	FPS: 92.7128
+2020/03/08 15:34:26 422929	INFO [input.cpp->run:173]	
+frame_id 57
+2020/03/08 15:34:26 425845	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:26 587317	INFO [input.cpp->run:173]	
+frame_id 58
+2020/03/08 15:34:26 589381	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999909 -0.00154047   0.0134007     3.66232
+ 0.00162944    0.999977 -0.00662723     2.48227
+ -0.0133905  0.00664839    0.999888    -4.62881
+          0           0           0           1
+2020/03/08 15:34:26 589484	INFO [input.cpp->run:235]	rotation: 
+[0.9999092817306519, -0.001540467143058777, 0.01340067386627197;
+ 0.001629441976547241, 0.9999768733978271, -0.00662723183631897;
+ -0.01339045166969299, 0.006648391485214233, 0.9998882412910461]
+2020/03/08 15:34:26 589514	INFO [input.cpp->run:256]	frame times (ms): 6.084
+2020/03/08 15:34:26 589516	INFO [input.cpp->run:257]	FPS: 164.366
+2020/03/08 15:34:26 731944	INFO [input.cpp->run:173]	
+frame_id 59
+2020/03/08 15:34:26 734611	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999927  -0.0120457  0.00103286    0.354793
+  0.0120385    0.999905  0.00667575    0.201815
+-0.00111353 -0.00666314    0.999977   -0.371042
+          0           0           0           1
+2020/03/08 15:34:26 734741	INFO [input.cpp->run:235]	rotation: 
+[0.9999268054962158, -0.01204574108123779, 0.001032859086990356;
+ 0.01203854382038116, 0.9999052286148071, 0.006675750017166138;
+ -0.001113533973693848, -0.006663143634796143, 0.999977171421051]
+2020/03/08 15:34:26 734760	INFO [input.cpp->run:256]	frame times (ms): 7.009
+2020/03/08 15:34:26 734764	INFO [input.cpp->run:257]	FPS: 142.674
+2020/03/08 15:34:26 884815	INFO [input.cpp->run:173]	
+frame_id 60
+2020/03/08 15:34:26 888445	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999963 -0.00560936  0.00644773    0.194127
+  0.0055989    0.999983  0.00166801    0.142178
+-0.00645709 -0.00163189    0.999978   -0.297429
+          0           0           0           1
+2020/03/08 15:34:26 888647	INFO [input.cpp->run:235]	rotation: 
+[0.9999634623527527, -0.005609363317489624, 0.006447732448577881;
+ 0.005598902702331543, 0.9999828338623047, 0.001668006181716919;
+ -0.006457090377807617, -0.001631885766983032, 0.9999780058860779]
+2020/03/08 15:34:26 888697	INFO [input.cpp->run:256]	frame times (ms): 11.474
+2020/03/08 15:34:26 888705	INFO [input.cpp->run:257]	FPS: 87.1536
+2020/03/08 15:34:27 037938	INFO [input.cpp->run:173]	
+frame_id 61
+2020/03/08 15:34:27 040978	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999976 -0.00635232  0.00269878    0.143656
+ 0.00634153    0.999972  0.00394031    0.073894
+-0.00272375 -0.00392303    0.999989   -0.157693
+          0           0           0           1
+2020/03/08 15:34:27 041194	INFO [input.cpp->run:235]	rotation: 
+[0.9999762773513794, -0.006352320313453674, 0.002698779106140137;
+ 0.006341531872749329, 0.9999721646308899, 0.003940314054489136;
+ -0.002723753452301025, -0.003923028707504272, 0.9999885559082031]
+2020/03/08 15:34:27 041234	INFO [input.cpp->run:256]	frame times (ms): 9.811
+2020/03/08 15:34:27 041258	INFO [input.cpp->run:257]	FPS: 101.926
+2020/03/08 15:34:27 195087	INFO [input.cpp->run:173]	
+frame_id 62
+2020/03/08 15:34:27 198382	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:27 342856	INFO [input.cpp->run:173]	
+frame_id 63
+2020/03/08 15:34:27 345442	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.999997  0.000284567    0.0024482     0.184704
+-0.000283331            1 -0.000595123     0.100627
+  -0.0024482  0.000594407     0.999997    -0.195507
+           0            0            0            1
+2020/03/08 15:34:27 345596	INFO [input.cpp->run:235]	rotation: 
+[0.9999969005584717, 0.0002845674753189087, 0.002448201179504395;
+ -0.0002833306789398193, 0.9999999403953552, -0.0005951225757598877;
+ -0.002448201179504395, 0.000594407320022583, 0.9999967813491821]
+2020/03/08 15:34:27 345630	INFO [input.cpp->run:256]	frame times (ms): 8.524
+2020/03/08 15:34:27 345632	INFO [input.cpp->run:257]	FPS: 117.316
+2020/03/08 15:34:27 497177	INFO [input.cpp->run:173]	
+frame_id 64
+2020/03/08 15:34:27 499650	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999986  0.00350769  0.00395715   0.0379486
+-0.00349528    0.999989 -0.00310427  0.00584316
+-0.00396788  0.00309044    0.999987  -0.0269661
+          0           0           0           1
+2020/03/08 15:34:27 499758	INFO [input.cpp->run:235]	rotation: 
+[0.9999861717224121, 0.003507688641548157, 0.003957152366638184;
+ -0.003495275974273682, 0.9999891519546509, -0.003104269504547119;
+ -0.003967881202697754, 0.003090441226959229, 0.9999874234199524]
+2020/03/08 15:34:27 499779	INFO [input.cpp->run:256]	frame times (ms): 6.969
+2020/03/08 15:34:27 499782	INFO [input.cpp->run:257]	FPS: 143.493
+2020/03/08 15:34:27 679823	INFO [input.cpp->run:173]	
+frame_id 65
+2020/03/08 15:34:27 686806	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:27 803756	INFO [input.cpp->run:173]	
+frame_id 66
+2020/03/08 15:34:27 805141	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:27 957457	INFO [input.cpp->run:173]	
+frame_id 67
+2020/03/08 15:34:27 960298	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:28 101392	INFO [input.cpp->run:173]	
+frame_id 68
+2020/03/08 15:34:28 102694	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999979 -0.00558928 -0.00331947    0.809115
+ 0.00560221    0.999977  0.00388274    0.533019
+  0.0032979 -0.00390109    0.999987     -0.9703
+          0           0           0           1
+2020/03/08 15:34:28 102780	INFO [input.cpp->run:235]	rotation: 
+[0.9999786615371704, -0.005589276552200317, -0.003319472074508667;
+ 0.005602210760116577, 0.9999765753746033, 0.003882735967636108;
+ 0.003297895193099976, -0.003901094198226929, 0.999987006187439]
+2020/03/08 15:34:28 102807	INFO [input.cpp->run:256]	frame times (ms): 4.433
+2020/03/08 15:34:28 102810	INFO [input.cpp->run:257]	FPS: 225.581
+2020/03/08 15:34:28 239798	INFO [input.cpp->run:173]	
+frame_id 69
+2020/03/08 15:34:28 241091	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:28 391113	INFO [input.cpp->run:173]	
+frame_id 70
+2020/03/08 15:34:28 394366	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999998 -0.00016275 -0.00199765  -0.0107632
+0.000166386    0.999998  0.00185236  -0.0335526
+ 0.00199723 -0.00185275    0.999996   0.0551376
+          0           0           0           1
+2020/03/08 15:34:28 394573	INFO [input.cpp->run:235]	rotation: 
+[0.9999980926513672, -0.0001627504825592041, -0.001997649669647217;
+ 0.0001663863658905029, 0.9999983310699463, 0.001852363348007202;
+ 0.001997232437133789, -0.001852750778198242, 0.9999963045120239]
+2020/03/08 15:34:28 394611	INFO [input.cpp->run:256]	frame times (ms): 10.828
+2020/03/08 15:34:28 394616	INFO [input.cpp->run:257]	FPS: 92.3532
+2020/03/08 15:34:28 547576	INFO [input.cpp->run:173]	
+frame_id 71
+2020/03/08 15:34:28 550735	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.999776 -0.0121671 -0.0173357   0.310875
+ 0.0124124   0.999823  0.0141219  0.0204873
+ 0.0171608 -0.0143339    0.99975 -0.0214071
+         0          0          0          1
+2020/03/08 15:34:28 550939	INFO [input.cpp->run:235]	rotation: 
+[0.999775767326355, -0.01216709613800049, -0.01733565330505371;
+ 0.01241235435009003, 0.9998233318328857, 0.01412186026573181;
+ 0.0171608030796051, -0.01433393359184265, 0.9997498989105225]
+2020/03/08 15:34:28 550978	INFO [input.cpp->run:256]	frame times (ms): 11.19
+2020/03/08 15:34:28 550982	INFO [input.cpp->run:257]	FPS: 89.3655
+2020/03/08 15:34:28 696350	INFO [input.cpp->run:173]	
+frame_id 72
+2020/03/08 15:34:28 699628	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999997 -0.00120801 -0.00233999    0.315536
+ 0.00121352    0.999997  0.00237867    0.195845
+ 0.00233698 -0.00238153    0.999994   -0.366142
+          0           0           0           1
+2020/03/08 15:34:28 699833	INFO [input.cpp->run:235]	rotation: 
+[0.9999967813491821, -0.001208007335662842, -0.002339988946914673;
+ 0.001213520765304565, 0.999996542930603, 0.002378672361373901;
+ 0.002336978912353516, -0.00238153338432312, 0.9999944567680359]
+2020/03/08 15:34:28 699873	INFO [input.cpp->run:256]	frame times (ms): 11.326
+2020/03/08 15:34:28 699878	INFO [input.cpp->run:257]	FPS: 88.2924
+2020/03/08 15:34:28 855726	INFO [input.cpp->run:173]	
+frame_id 73
+2020/03/08 15:34:28 859648	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999991 -0.00216995 -0.00368753    -1.36814
+  0.0021805    0.999994  0.00286871   -0.926228
+  0.0036813 -0.00287664    0.999989     1.77848
+          0           0           0           1
+2020/03/08 15:34:28 859854	INFO [input.cpp->run:235]	rotation: 
+[0.9999908208847046, -0.002169951796531677, -0.003687530755996704;
+ 0.002180501818656921, 0.9999935030937195, 0.002868711948394775;
+ 0.003681302070617676, -0.002876639366149902, 0.9999890923500061]
+2020/03/08 15:34:28 859896	INFO [input.cpp->run:256]	frame times (ms): 12.344
+2020/03/08 15:34:28 859904	INFO [input.cpp->run:257]	FPS: 81.011
+2020/03/08 15:34:29 015019	INFO [input.cpp->run:173]	
+frame_id 74
+2020/03/08 15:34:29 019197	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+           1  0.000202075  0.000261873   -0.0632524
+-0.000201643     0.999999  -0.00111863  0.000780106
+-0.000262141   0.00111851            1    0.0190868
+           0            0            0            1
+2020/03/08 15:34:29 019467	INFO [input.cpp->run:235]	rotation: 
+[1.00000011920929, 0.0002020746469497681, 0.0002618730068206787;
+ -0.0002016425132751465, 0.9999994039535522, -0.001118630170822144;
+ -0.000262141227722168, 0.001118510961532593, 0.9999995231628418]
+2020/03/08 15:34:29 019520	INFO [input.cpp->run:256]	frame times (ms): 13.891
+2020/03/08 15:34:29 019526	INFO [input.cpp->run:257]	FPS: 71.9891
+2020/03/08 15:34:29 166501	INFO [input.cpp->run:173]	
+frame_id 75
+2020/03/08 15:34:29 169465	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999976  0.00604144  0.00340831   -0.543556
+-0.00602263    0.999967 -0.00547928   -0.334665
+-0.00344145  0.00545862    0.999979    0.632978
+          0           0           0           1
+2020/03/08 15:34:29 169550	INFO [input.cpp->run:235]	rotation: 
+[0.9999759793281555, 0.006041437387466431, 0.003408312797546387;
+ -0.006022632122039795, 0.9999667406082153, -0.005479276180267334;
+ -0.003441452980041504, 0.005458623170852661, 0.9999792575836182]
+2020/03/08 15:34:29 169586	INFO [input.cpp->run:256]	frame times (ms): 9.356
+2020/03/08 15:34:29 169590	INFO [input.cpp->run:257]	FPS: 106.883
+2020/03/08 15:34:29 309935	INFO [input.cpp->run:173]	
+frame_id 76
+2020/03/08 15:34:29 312799	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.99997  0.00504349     0.00586     1.22196
+-0.00500806    0.999969 -0.00603154    0.910607
+-0.00589034  0.00600213    0.999965    -1.74551
+          0           0           0           1
+2020/03/08 15:34:29 312963	INFO [input.cpp->run:235]	rotation: 
+[0.9999701976776123, 0.005043491721153259, 0.005860000848770142;
+ -0.00500805675983429, 0.9999693036079407, -0.006031543016433716;
+ -0.005890339612960815, 0.006002128124237061, 0.9999646544456482]
+2020/03/08 15:34:29 312995	INFO [input.cpp->run:256]	frame times (ms): 9.584
+2020/03/08 15:34:29 313013	INFO [input.cpp->run:257]	FPS: 104.341
+2020/03/08 15:34:29 458278	INFO [input.cpp->run:173]	
+frame_id 77
+2020/03/08 15:34:29 461003	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:29 618053	INFO [input.cpp->run:173]	
+frame_id 78
+2020/03/08 15:34:29 621938	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999997  0.00232878 0.000124097    0.751783
+ -0.0023285    0.999996 -0.00166076    0.483359
+-0.00012812  0.00166041    0.999999   -0.927649
+          0           0           0           1
+2020/03/08 15:34:29 622195	INFO [input.cpp->run:235]	rotation: 
+[0.9999973773956299, 0.002328783273696899, 0.0001240968704223633;
+ -0.002328500151634216, 0.9999959468841553, -0.001660764217376709;
+ -0.0001281201839447021, 0.001660406589508057, 0.9999985694885254]
+2020/03/08 15:34:29 622235	INFO [input.cpp->run:256]	frame times (ms): 13.495
+2020/03/08 15:34:29 622239	INFO [input.cpp->run:257]	FPS: 74.1015
+2020/03/08 15:34:29 773780	INFO [input.cpp->run:173]	
+frame_id 79
+2020/03/08 15:34:29 777417	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:29 921708	INFO [input.cpp->run:173]	
+frame_id 80
+2020/03/08 15:34:29 924539	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:30 080130	INFO [input.cpp->run:173]	
+frame_id 81
+2020/03/08 15:34:30 083997	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:30 218201	INFO [input.cpp->run:173]	
+frame_id 82
+2020/03/08 15:34:30 221034	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:30 364879	INFO [input.cpp->run:173]	
+frame_id 83
+2020/03/08 15:34:30 368567	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.99997 -0.00604819  -0.0048939    0.548781
+ 0.00607072    0.999971  0.00461146     0.29073
+ 0.00486574 -0.00464106    0.999978   -0.563443
+          0           0           0           1
+2020/03/08 15:34:30 368732	INFO [input.cpp->run:235]	rotation: 
+[0.9999699592590332, -0.006048187613487244, -0.004893898963928223;
+ 0.006070718169212341, 0.9999711513519287, 0.004611462354660034;
+ 0.004865735769271851, -0.004641056060791016, 0.9999775290489197]
+2020/03/08 15:34:30 368765	INFO [input.cpp->run:256]	frame times (ms): 5.055
+2020/03/08 15:34:30 368770	INFO [input.cpp->run:257]	FPS: 197.824
+2020/03/08 15:34:30 522060	INFO [input.cpp->run:173]	
+frame_id 84
+2020/03/08 15:34:30 527267	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999942  0.00699179    0.008223     1.45468
+-0.00691338    0.999931 -0.00954434     1.10485
+-0.00828913  0.00948694    0.999921    -2.04355
+          0           0           0           1
+2020/03/08 15:34:30 527470	INFO [input.cpp->run:235]	rotation: 
+[0.999941885471344, 0.006991788744926453, 0.008222997188568115;
+ -0.006913378834724426, 0.9999308586120605, -0.009544342756271362;
+ -0.008289128541946411, 0.009486943483352661, 0.9999205470085144]
+2020/03/08 15:34:30 527512	INFO [input.cpp->run:256]	frame times (ms): 15.396
+2020/03/08 15:34:30 527534	INFO [input.cpp->run:257]	FPS: 64.9519
+2020/03/08 15:34:30 682968	INFO [input.cpp->run:173]	
+frame_id 85
+2020/03/08 15:34:30 686030	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999996  0.00115453  0.00261909    0.192022
+  -0.001147    0.999995 -0.00288424    0.173175
+-0.00262275  0.00288105    0.999993    -0.31946
+          0           0           0           1
+2020/03/08 15:34:30 686235	INFO [input.cpp->run:235]	rotation: 
+[0.9999961853027344, 0.001154527068138123, 0.002619087696075439;
+ -0.001147001981735229, 0.9999954700469971, -0.002884238958358765;
+ -0.002622753381729126, 0.002881050109863281, 0.9999926090240479]
+2020/03/08 15:34:30 686278	INFO [input.cpp->run:256]	frame times (ms): 10.723
+2020/03/08 15:34:30 686286	INFO [input.cpp->run:257]	FPS: 93.2575
+2020/03/08 15:34:30 829473	INFO [input.cpp->run:173]	
+frame_id 86
+2020/03/08 15:34:30 832706	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:30 971944	INFO [input.cpp->run:173]	
+frame_id 87
+2020/03/08 15:34:30 973576	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999907  -0.0108253 -0.00828072    0.504165
+  0.0109162     0.99988   0.0110049    0.270597
+ 0.00816047  -0.0110943    0.999905    -0.54334
+          0           0           0           1
+2020/03/08 15:34:30 973685	INFO [input.cpp->run:235]	rotation: 
+[0.9999071955680847, -0.01082529127597809, -0.008280724287033081;
+ 0.01091621816158295, 0.9998800158500671, 0.01100486516952515;
+ 0.00816047191619873, -0.01109433174133301, 0.9999052286148071]
+2020/03/08 15:34:30 973707	INFO [input.cpp->run:256]	frame times (ms): 4.87
+2020/03/08 15:34:30 973712	INFO [input.cpp->run:257]	FPS: 205.339
+2020/03/08 15:34:31 112627	INFO [input.cpp->run:173]	
+frame_id 88
+2020/03/08 15:34:31 116528	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:31 342124	INFO [input.cpp->run:173]	
+frame_id 89
+2020/03/08 15:34:31 347494	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999967  0.00672507  0.00460705    0.228873
+-0.00670058    0.999964 -0.00529805    0.175843
+ -0.0046427  0.00526685    0.999976   -0.306814
+          0           0           0           1
+2020/03/08 15:34:31 347763	INFO [input.cpp->run:235]	rotation: 
+[0.9999668002128601, 0.006725072860717773, 0.004607051610946655;
+ -0.006700575351715088, 0.9999635219573975, -0.005298048257827759;
+ -0.004642695188522339, 0.005266845226287842, 0.9999755024909973]
+2020/03/08 15:34:31 347817	INFO [input.cpp->run:256]	frame times (ms): 17.355
+2020/03/08 15:34:31 347823	INFO [input.cpp->run:257]	FPS: 57.6203
+2020/03/08 15:34:31 494838	INFO [input.cpp->run:173]	
+frame_id 90
+2020/03/08 15:34:31 497553	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:31 656458	INFO [input.cpp->run:173]	
+frame_id 91
+2020/03/08 15:34:31 662145	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:31 812452	INFO [input.cpp->run:173]	
+frame_id 92
+2020/03/08 15:34:31 815439	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:31 973642	INFO [input.cpp->run:173]	
+frame_id 93
+2020/03/08 15:34:31 976384	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:32 127448	INFO [input.cpp->run:173]	
+frame_id 94
+2020/03/08 15:34:32 130399	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+  0.999482  0.0276791  0.0163807   0.901767
+-0.0273018   0.999366  -0.022834   0.624083
+-0.0170023   0.022375   0.999605   -1.23719
+         0          0          0          1
+2020/03/08 15:34:32 130602	INFO [input.cpp->run:235]	rotation: 
+[0.9994823932647705, 0.02767907083034515, 0.01638069748878479;
+ -0.02730181813240051, 0.999366283416748, -0.02283400297164917;
+ -0.01700234413146973, 0.0223749577999115, 0.9996048212051392]
+2020/03/08 15:34:32 130644	INFO [input.cpp->run:256]	frame times (ms): 10.15
+2020/03/08 15:34:32 130652	INFO [input.cpp->run:257]	FPS: 98.5222
+2020/03/08 15:34:32 267468	INFO [input.cpp->run:173]	
+frame_id 95
+2020/03/08 15:34:32 270319	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+    0.99988  -0.0143766 -0.00577924    0.747589
+  0.0144275    0.999857  0.00887719    0.562574
+ 0.00565064 -0.00895953    0.999944   -0.979625
+          0           0           0           1
+2020/03/08 15:34:32 270522	INFO [input.cpp->run:235]	rotation: 
+[0.9998800158500671, -0.01437664031982422, -0.005779236555099487;
+ 0.01442745327949524, 0.9998565912246704, 0.008877187967300415;
+ 0.005650639533996582, -0.008959531784057617, 0.9999439716339111]
+2020/03/08 15:34:32 270563	INFO [input.cpp->run:256]	frame times (ms): 9.069
+2020/03/08 15:34:32 270568	INFO [input.cpp->run:257]	FPS: 110.266
+2020/03/08 15:34:32 425396	INFO [input.cpp->run:173]	
+frame_id 96
+2020/03/08 15:34:32 430858	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:34:32 589352	INFO [input.cpp->run:173]	
+frame_id 97
+2020/03/08 15:34:32 592967	WARNING [visualOdometry.cpp->trackingFrame2Frame:179]	The Estimated Rotation and translation matrices(using getTransformation function) are : 
+   0.999615  0.00667852   0.0269473   -0.853676
+-0.00639676    0.999924  -0.0105284   -0.023778
+ -0.0270158   0.0103518    0.999581 -0.00690842
+          0           0           0           1
+2020/03/08 15:34:32 593180	INFO [input.cpp->run:235]	rotation: 
+[0.9996146559715271, 0.006678521633148193, 0.02694728970527649;
+ -0.006396755576133728, 0.9999241828918457, -0.01052835583686829;
+ -0.0270158052444458, 0.01035177707672119, 0.9995814561843872]
+2020/03/08 15:34:32 593219	INFO [input.cpp->run:256]	frame times (ms): 12.747
+2020/03/08 15:34:32 593227	INFO [input.cpp->run:257]	FPS: 78.4498
+g3log g3FileSink shutdown at: 15:34:32 744511

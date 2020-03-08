@@ -1,0 +1,47 @@
+		g3log created log at: Sun Mar 08 15:54:40 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] message		(uuu*: microseconds fractions of the seconds value)
+
+2020/03/08 15:54:40 481088	INFO [g3logger.h->logBanner:29]	Starting log.
+2020/03/08 15:54:40 485505	DEBUG [main.cpp->main:49]	Filepath: /home/mitchell/KITTI/data_odometry_gray/dataset/sequences/00/
+2020/03/08 15:54:40 485510	DEBUG [main.cpp->main:53]	Calibration Filepath: /home/mitchell/visual_odom_ws/src/visual_odom/calibration/old/zed.yaml
+2020/03/08 15:54:40 485587	INFO [main.cpp->main:67]	P_left: 
+[718.85602, 0, 607.19281, 0;
+ 0, 718.85602, 185.2157, 0;
+ 0, 0, 1, 0]
+2020/03/08 15:54:40 485594	INFO [main.cpp->main:68]	P_right: 
+[718.85602, 0, 607.19281, -386.14481;
+ 0, 718.85602, 185.2157, 0;
+ 0, 0, 1, 0]
+2020/03/08 15:54:40 556942	INFO [input.cpp->Input:22]	frame_pose [1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0;
+ 0, 0, 0, 1]
+2020/03/08 15:54:40 866622	INFO [input.cpp->run:173]	
+frame_id 1
+2020/03/08 15:54:47 810667	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:54:47 812565	INFO [input.cpp->run:173]	
+frame_id 2
+2020/03/08 15:54:49 919341	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:54:49 921610	INFO [input.cpp->run:173]	
+frame_id 3
+2020/03/08 15:54:50 950482	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:54:50 952462	INFO [input.cpp->run:173]	
+frame_id 4
+2020/03/08 15:54:51 886320	INFO [input.cpp->run:196]	Not enough points
+2020/03/08 15:54:51 888920	INFO [input.cpp->run:173]	
+frame_id 5
+2020/03/08 15:54:52 586878	INFO [input.cpp->run:235]	rotation: 
+[0.9999545539585245, 0.007142384596246866, 0.006314773146165321;
+ -0.007200951365639946, 0.9999308165377535, 0.009300991214448577;
+ -0.006247905011915863, -0.009346040895526668, 0.9999368056045048]
+2020/03/08 15:54:52 586923	INFO [input.cpp->run:256]	frame times (ms): 157.789
+2020/03/08 15:54:52 586926	INFO [input.cpp->run:257]	FPS: 6.33758
+2020/03/08 15:54:52 590944	INFO [input.cpp->run:173]	
+frame_id 6
+2020/03/08 15:55:07 907521	INFO [input.cpp->run:235]	rotation: 
+[0.9999178673082636, 0.01060504220059279, -0.00719664627568322;
+ -0.01057807865153431, 0.9999369268584106, 0.00377446115352848;
+ 0.007236220680411373, -0.003698024456542638, 0.9999669803175418]
+2020/03/08 15:55:07 907551	INFO [input.cpp->run:256]	frame times (ms): 1146.37
+2020/03/08 15:55:07 907553	INFO [input.cpp->run:257]	FPS: 0.872318
+g3log g3FileSink shutdown at: 15:55:07 911382

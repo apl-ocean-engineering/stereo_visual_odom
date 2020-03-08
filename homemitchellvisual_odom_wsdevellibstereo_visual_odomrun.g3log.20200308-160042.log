@@ -1,0 +1,22 @@
+		g3log created log at: Sun Mar 08 16:00:42 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] message		(uuu*: microseconds fractions of the seconds value)
+
+2020/03/08 16:00:42 609456	INFO [g3logger.h->logBanner:29]	Starting log.
+2020/03/08 16:00:42 613358	DEBUG [main.cpp->main:49]	Filepath: /home/mitchell/KITTI/data_odometry_gray/dataset/sequences/00/
+2020/03/08 16:00:42 613362	DEBUG [main.cpp->main:53]	Calibration Filepath: /home/mitchell/visual_odom_ws/src/visual_odom/calibration/old/zed.yaml
+2020/03/08 16:00:42 613434	INFO [main.cpp->main:67]	P_left: 
+[718.85602, 0, 607.19281, 0;
+ 0, 718.85602, 185.2157, 0;
+ 0, 0, 1, 0]
+2020/03/08 16:00:42 613441	INFO [main.cpp->main:68]	P_right: 
+[718.85602, 0, 607.19281, -386.14481;
+ 0, 718.85602, 185.2157, 0;
+ 0, 0, 1, 0]
+2020/03/08 16:00:42 663169	INFO [input.cpp->Input:22]	frame_pose [1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0;
+ 0, 0, 0, 1]
+2020/03/08 16:00:42 950376	INFO [input.cpp->run:173]	
+frame_id 1
+2020/03/08 16:00:45 949559	INFO [input.cpp->run:196]	Not enough points
+g3log g3FileSink shutdown at: 16:00:45 952271
