@@ -37,16 +37,6 @@ void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f> &points,
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
-void featureDetectionORB(cv::Mat image,
-                         std::vector<cv::KeyPoint> &keypoints,
-                         cv::Mat &descriptors) {
-  // uses FAST as for feature dection, modify parameters as necessary
-  // cv::ORB orb = cv::ORB::create();
-  cv::Ptr<cv::FeatureDetector> orb = cv::ORB::create();
-
-  orb->detectAndCompute(image, cv::noArray(), keypoints, descriptors);
-}
-
 void featureDetectionFast(cv::Mat image, std::vector<cv::Point2f> &points) {
   // uses FAST as for feature dection, modify parameters as necessary
 
