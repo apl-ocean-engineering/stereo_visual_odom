@@ -176,17 +176,20 @@ void Input::run() {
 
   std::vector<cv::Point2f> pointsLeft_t0, pointsRight_t0, pointsLeft_t1,
       pointsRight_t1;
-
   matchingFeatures(imageLeft_t0, imageRight_t0, imageLeft_t1, imageRight_t1,
-                   currentVOFeatures, pointsLeft_t0, pointsRight_t0,
+                   pointsLeft_t0, pointsRight_t0,
                    pointsLeft_t1, pointsRight_t1);
-
-  std::vector<cv::Point2f> &currentPointsLeft_t0 = pointsLeft_t0;
-  std::vector<cv::Point2f> &currentPointsLeft_t1 = pointsLeft_t1;
   //
-  std::vector<cv::Point2f> newPoints;
-  std::vector<bool> valid; // valid new points are ture
-
+  // matchingFeatures(imageLeft_t0, imageRight_t0, imageLeft_t1, imageRight_t1,
+  //                  currentVOFeatures, pointsLeft_t0, pointsRight_t0,
+  //                  pointsLeft_t1, pointsRight_t1);
+  //
+  // std::vector<cv::Point2f> &currentPointsLeft_t0 = pointsLeft_t0;
+  // std::vector<cv::Point2f> &currentPointsLeft_t1 = pointsLeft_t1;
+  // //
+  // std::vector<cv::Point2f> newPoints;
+  // std::vector<bool> valid; // valid new points are ture
+  //
   // ---------------------
   // Triangulate 3D Points
   // ---------------------
@@ -211,72 +214,74 @@ void Input::run() {
 
   cv::convertPointsFromHomogeneous(points4D_t1.t(), points3D_t1);
 
-  // // NEW FORMAT
-  // std::vector<cv::Point3f> points3D_t0V, points3D_t1V;
-  // cv::Mat points4D_t0V, points4D_t1V;
+  
   //
-  // cv::triangulatePoints(projMatrl, projMatrr, points3D_t0V, points3D_t1V,
-  //                       points4D_t0V);
+  // // // NEW FORMAT
+  // // std::vector<cv::Point3f> points3D_t0V, points3D_t1V;
+  // // cv::Mat points4D_t0V, points4D_t1V;
+  // //
+  // // cv::triangulatePoints(projMatrl, projMatrr, points3D_t0V, points3D_t1V,
+  // //                       points4D_t0V);
+  // //
+  // // cv::convertPointsFromHomogeneous(points4D_t0V.t(), points3D_t0V);
+  // //
+  // // LOG(INFO) << points3D_t0V;
+  // //
+  // // // ---------------------
+  // // // Tracking transfomation
+  // // // ---------------------
+  // // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
   //
-  // cv::convertPointsFromHomogeneous(points4D_t0V.t(), points3D_t0V);
+  // trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
+  //                     points3D_t0, rotation, translation, false);
+  // displayTracking(imageLeft_t1, pointsLeft_t0, pointsLeft_t1);
+  // frame_pose.convertTo(frame_pose32, CV_32F);
+  // //
+  // LOG(INFO) << "rotation: " << std::endl << rotation;
   //
-  // LOG(INFO) << points3D_t0V;
+  // // ------------------------------------------------
+  // // Intergrating and display
+  // // ------------------------------------------------
   //
-  // // ---------------------
-  // // Tracking transfomation
-  // // ---------------------
-  // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
-
-  trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
-                      points3D_t0, rotation, translation, false);
-  displayTracking(imageLeft_t1, pointsLeft_t0, pointsLeft_t1);
-  frame_pose.convertTo(frame_pose32, CV_32F);
+  // // cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
   //
-  LOG(INFO) << "rotation: " << std::endl << rotation;
-
-  // ------------------------------------------------
-  // Intergrating and display
-  // ------------------------------------------------
-
-  // cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
-
-  cv::Mat rigid_body_transformation;
-
-  // if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
-  //     abs(rotation_euler[2]) < 0.1) {
-  integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
-                          rotation, translation);
+  // cv::Mat rigid_body_transformation;
   //
-  // // } else {
-  // //   std::cout << "Too large rotation" << std::endl;
-  // // }
-  t_b = clock();
-  float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
-  float fps = 1000 / frame_time;
-  LOG(INFO) << "frame times (ms): " << frame_time;
-  LOG(INFO) << "FPS: " << fps;
-
-  Eigen::Matrix4f eigen_fp;
-
-  cv2eigen(frame_pose, eigen_fp);
-
-  Eigen::Matrix3f R = eigen_fp.block<3, 3>(0, 0);
-  Eigen::Quaternionf q(R);
+  // // if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
+  // //     abs(rotation_euler[2]) < 0.1) {
+  // integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
+  //                         rotation, translation);
+  // //
+  // // // } else {
+  // // //   std::cout << "Too large rotation" << std::endl;
+  // // // }
+  // t_b = clock();
+  // float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
+  // float fps = 1000 / frame_time;
+  // LOG(INFO) << "frame times (ms): " << frame_time;
+  // LOG(INFO) << "FPS: " << fps;
   //
-  cv::Mat xyz = frame_pose.col(3).clone();
-  geometry_msgs::PoseStamped poseStamped;
-  poseStamped.header.frame_id = "map";
-  poseStamped.pose.position.x = xyz.at<double>(2);
-  poseStamped.pose.position.y = xyz.at<double>(0);
-  poseStamped.pose.position.z = xyz.at<double>(1);
-
-  poseStamped.pose.orientation.x = q.z();
-  poseStamped.pose.orientation.y = q.x();
-  poseStamped.pose.orientation.z = q.y();
-  poseStamped.pose.orientation.w = q.w();
-  pose_publisher.publish(poseStamped);
-  display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);
-  new_image = false;
+  // Eigen::Matrix4f eigen_fp;
+  //
+  // cv2eigen(frame_pose, eigen_fp);
+  //
+  // Eigen::Matrix3f R = eigen_fp.block<3, 3>(0, 0);
+  // Eigen::Quaternionf q(R);
+  // //
+  // cv::Mat xyz = frame_pose.col(3).clone();
+  // geometry_msgs::PoseStamped poseStamped;
+  // poseStamped.header.frame_id = "map";
+  // poseStamped.pose.position.x = xyz.at<double>(2);
+  // poseStamped.pose.position.y = xyz.at<double>(0);
+  // poseStamped.pose.position.z = xyz.at<double>(1);
+  //
+  // poseStamped.pose.orientation.x = q.z();
+  // poseStamped.pose.orientation.y = q.x();
+  // poseStamped.pose.orientation.z = q.y();
+  // poseStamped.pose.orientation.w = q.w();
+  // pose_publisher.publish(poseStamped);
+  // display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);
+  // new_image = false;
 }
 // }
 //}

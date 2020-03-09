@@ -30,6 +30,14 @@ void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
                       std::vector<cv::Point2f> &pointsLeft_t1,
                       std::vector<cv::Point2f> &pointsRight_t1);
 
+void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
+                      cv::Mat &imageLeft_t1, cv::Mat &imageRight_t1,
+                      std::vector<cv::Point2f> &pointsLeft_t0,
+                      std::vector<cv::Point2f> &pointsRight_t0,
+                      std::vector<cv::Point2f> &pointsLeft_t1,
+                      std::vector<cv::Point2f> &pointsRight_t1);
+
+
 void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
                          cv::Mat &rotation, cv::Mat &translation);
 
