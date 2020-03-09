@@ -1,5 +1,6 @@
 #include "feature.h"
 #include "bucket.h"
+#include "utils.h"
 
 void deleteUnmatchFeatures(std::vector<cv::Point2f> &points0,
                            std::vector<cv::Point2f> &points1,
@@ -28,6 +29,11 @@ void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f> &points,
   cv::Ptr<cv::FeatureDetector> orb = cv::ORB::create();
 
   orb->detectAndCompute(image, cv::noArray(), keypoints, descriptors);
+
+  cv::Mat outImg;
+  cv::drawKeypoints(image, keypoints, outImg);
+  cv::imshow("outImg", outImg);
+  cv::waitKey(1);
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
@@ -39,7 +45,10 @@ void featureDetectionFast(cv::Mat image, std::vector<cv::Point2f> &points) {
   bool nonmaxSuppression = true;
   cv::FAST(image, keypoints, fast_threshold, nonmaxSuppression);
 
-
+  cv::Mat outImg;
+  cv::drawKeypoints(image, keypoints, outImg);
+  cv::imshow("outImg", outImg);
+  cv::waitKey(1);
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
@@ -50,7 +59,7 @@ void featureDetectionGoodFeaturesToTrack(cv::Mat image,
   int maxCorners = 5000;
   double qualityLevel = 0.0001;
   double minDistance = 5.;
-  int blockSize = 15;
+  int blockSize = 5;
   bool useHarrisDetector = true;
   double k = 0.04;
   cv::Mat mask;
@@ -146,6 +155,8 @@ void circularMatching(cv::Mat img_l_0, cv::Mat img_r_0, cv::Mat img_l_1,
   calcOpticalFlowPyrLK(img_l_1, img_l_0, points_l_1, points_l_0_return, status3,
                        err, winSize, 3, termcrit, 0, 0.001);
 
+  drawPoints(img_l_0, points_l_0, 0);
+  cv::waitKey(1);
   clock_t toc = clock();
   std::cerr << "calcOpticalFlowPyrLK time: "
             << float(toc - tic) / CLOCKS_PER_SEC * 1000 << "ms" << std::endl;
@@ -211,12 +222,12 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
                        FeatureSet &current_features) {
   cv::Mat descriptorsL, descriptorsR;
   std::vector<cv::Point2f> points_new;
-  //featureDetectionFast(imageL, points_new);
+  featureDetectionFast(imageL, points_new);
   std::vector<cv::KeyPoint> keypointsL, keypointsR;
 
   cv::Mat outImgL, outImgR;
-  featureDetectionORB(imageL, points_new, keypointsL, descriptorsL);
-  featureDetectionORB(imageR, points_new, keypointsR, descriptorsR);
+  // featureDetectionORB(imageL, points_new, keypointsL, descriptorsL);
+  // featureDetectionORB(imageR, points_new, keypointsR, descriptorsR);
   // cv::drawKeypoints(imageL, keypointsL, outImgL);
   // cv::drawKeypoints(imageR, keypointsR, outImgR);
 
@@ -252,11 +263,13 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
 }
 
 void appendNewFeatures(cv::Mat &image, FeatureSet &current_features) {
-  std::vector<cv::Point2f>  points_new;
+  std::vector<cv::Point2f> points_new;
   featureDetectionFast(image, points_new);
-  current_features.left_points.insert(current_features.left_points.end(), points_new.begin(), points_new.end());
-  std::vector<int>  ages_new(points_new.size(), 0);
-  current_features.ages.insert(current_features.ages.end(), ages_new.begin(), ages_new.end());
+  current_features.left_points.insert(current_features.left_points.end(),
+                                      points_new.begin(), points_new.end());
+  std::vector<int> ages_new(points_new.size(), 0);
+  current_features.ages.insert(current_features.ages.end(), ages_new.begin(),
+                               ages_new.end());
 }
 
 void appendNewFeatures(std::vector<cv::Point2f> points_new,

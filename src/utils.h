@@ -39,6 +39,8 @@ bool isRotationMatrix(cv::Mat &R);
 
 cv::Vec3f rotationMatrixToEulerAngles(cv::Mat &R);
 
+void drawPoints(cv::Mat img, std::vector<cv::Point2f> points, int i);
+
 // --------------------------------
 // I/O
 // --------------------------------

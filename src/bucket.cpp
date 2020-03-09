@@ -7,7 +7,7 @@ int Bucket::size() { return features.left_points.size(); }
 
 void Bucket::add_feature(cv::Point2f point, int age) {
   // won't add feature with age > 10;
-  int age_threshold = 10;
+  int age_threshold = 5;
   if (age < age_threshold) {
     // insert any feature before bucket is full
     if (size() < max_size) {

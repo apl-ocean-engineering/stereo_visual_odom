@@ -52,6 +52,15 @@ void display(int frame_id, cv::Mat &trajectory, cv::Mat &pose,
 // Transformation
 // --------------------------------
 
+void drawPoints(cv::Mat img, std::vector<cv::Point2f> points, int idx) {
+  for (int i = 0; i < points.size(); i++) {
+    cv::Point2f p = points.at(i);
+    cv::Point2i pi(int(p.x), int(p.y));
+    cv::circle(img, pi, 2, cv::Scalar(255, 255, 255));
+  }
+  cv::imshow("features" + std::to_string(idx), img);
+}
+
 void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
                              cv::Mat &frame_pose, const cv::Mat &rotation,
                              const cv::Mat &translation_stereo) {

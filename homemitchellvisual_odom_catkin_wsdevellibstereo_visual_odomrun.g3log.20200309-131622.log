@@ -1,0 +1,20 @@
+		g3log created log at: Mon Mar 09 13:16:22 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] message		(uuu*: microseconds fractions of the seconds value)
+
+2020/03/09 13:16:22 828113	INFO [g3logger.h->logBanner:29]	Starting log.
+2020/03/09 13:16:22 832010	DEBUG [main.cpp->main:48]	Filepath: /home/mitchell/KITTI/data_odometry_gray/dataset/sequences/00/
+2020/03/09 13:16:22 832019	DEBUG [main.cpp->main:52]	Calibration Filepath: /home/mitchell/visual_odom_catkin_ws/tank_downsized.yaml
+2020/03/09 13:16:22 832151	INFO [main.cpp->main:66]	P_left: 
+[409.41, 0, 251.22, 0;
+ 0, 408.72, 191.78999, 0;
+ 0, 0, 1, 0]
+2020/03/09 13:16:22 832162	INFO [main.cpp->main:67]	P_right: 
+[409.41, 0, 251.22, -73.940002;
+ 0, 408.72, 191.78999, 0;
+ 0, 0, 1, 0]
+2020/03/09 13:16:22 968208	INFO [input.cpp->Input:22]	frame_pose [1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0;
+ 0, 0, 0, 1]
+2020/03/09 13:16:23 391094	INFO [input.cpp->run:173]	
+frame_id 1

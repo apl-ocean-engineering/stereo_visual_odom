@@ -106,8 +106,8 @@ void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
   // --------------------------------------------------------
   // Feature tracking using KLT tracker, bucketing and circular matching
   // --------------------------------------------------------
-  int bucket_size = 50;
-  int features_per_bucket = 1;
+  int bucket_size = 25;
+  int features_per_bucket = 2;
   bucketingFeatures(imageLeft_t0, currentVOFeatures, bucket_size,
                     features_per_bucket);
 
@@ -162,13 +162,21 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
 
-    cloud_in->points[i].x = point0.x;
-    cloud_in->points[i].y = point0.y;
-    cloud_in->points[i].z = point0.z;
+    Eigen::Vector3d v0(point0.x, point0.y, point0.z);
+    Eigen::Vector3d v1(point1.x, point1.y, point1.z);
 
-    cloud_out->points[i].x = point1.x;
-    cloud_out->points[i].y = point1.y;
-    cloud_out->points[i].z = point1.z;
+    if ((v0 - v1).norm() < 0.1) {
+
+      cloud_in->points[i].x = point0.x;
+      cloud_in->points[i].y = point0.y;
+      cloud_in->points[i].z = point0.z;
+
+      cloud_out->points[i].x = point1.x;
+      cloud_out->points[i].y = point1.y;
+      cloud_out->points[i].z = point1.z;
+    } else {
+      std::cout << (v0 - v1).norm() << std::endl;
+    }
   }
   // LOG(WARNING) << p0 << std::endl << std::endl << p1;
   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>

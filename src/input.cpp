@@ -31,10 +31,10 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
   imageLeft_t1 = rosImage2CvMat(imgL);
   imageRight_t1 = rosImage2CvMat(imgR);
 
-  // cv::resize(imageLeft_t1, imageLeft_t1,
-  //            cv::Size(imageLeft_t1.cols / 4, imageLeft_t1.rows / 4));
-  // cv::resize(imageRight_t1, imageRight_t1,
-  //            cv::Size(imageRight_t1.cols / 4, imageRight_t1.rows / 4));
+  cv::resize(imageLeft_t1, imageLeft_t1,
+             cv::Size(imageLeft_t1.cols / 2, imageLeft_t1.rows / 2));
+  cv::resize(imageRight_t1, imageRight_t1,
+             cv::Size(imageRight_t1.cols / 2, imageRight_t1.rows / 2));
 
   if (frame_id > 0) {
     run();
@@ -225,10 +225,10 @@ void Input::run() {
   // // ---------------------
   // // Tracking transfomation
   // // ---------------------
-  // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
+  trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
 
-  trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
-                      points3D_t0, rotation, translation, false);
+  // trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
+  //                     points3D_t0, rotation, translation, false);
   displayTracking(imageLeft_t1, pointsLeft_t0, pointsLeft_t1);
   frame_pose.convertTo(frame_pose32, CV_32F);
   //
@@ -238,18 +238,20 @@ void Input::run() {
   // Intergrating and display
   // ------------------------------------------------
 
-  // cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
+  cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
 
   cv::Mat rigid_body_transformation;
 
-  // if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
-  //     abs(rotation_euler[2]) < 0.1) {
-  integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
-                          rotation, translation);
-  //
-  // // } else {
-  // //   std::cout << "Too large rotation" << std::endl;
-  // // }
+  if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
+      abs(rotation_euler[2]) < 0.1 && abs(translation.at<uchar>(0, 0) < 0.1) &&
+      abs(translation.at<uchar>(0, 1) < 0.1) &&
+      abs(translation.at<uchar>(0, 2) < 0.1)) {
+    integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
+                            rotation, translation);
+    //
+  } else {
+    std::cout << "Too large rotation" << std::endl;
+  }
   t_b = clock();
   float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
   float fps = 1000 / frame_time;
@@ -266,12 +268,12 @@ void Input::run() {
   cv::Mat xyz = frame_pose.col(3).clone();
   geometry_msgs::PoseStamped poseStamped;
   poseStamped.header.frame_id = "map";
-  poseStamped.pose.position.x = xyz.at<double>(2);
-  poseStamped.pose.position.y = xyz.at<double>(0);
-  poseStamped.pose.position.z = xyz.at<double>(1);
+  poseStamped.pose.position.x = xyz.at<double>(0) / 1;
+  poseStamped.pose.position.y = xyz.at<double>(2) / 1;
+  poseStamped.pose.position.z = xyz.at<double>(1) / 1;
 
-  poseStamped.pose.orientation.x = q.z();
-  poseStamped.pose.orientation.y = q.x();
+  poseStamped.pose.orientation.x = q.x();
+  poseStamped.pose.orientation.y = q.z();
   poseStamped.pose.orientation.z = q.y();
   poseStamped.pose.orientation.w = q.w();
   pose_publisher.publish(poseStamped);
