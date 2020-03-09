@@ -14,6 +14,8 @@
 #include <pcl/point_types.h>
 #include <pcl/registration/transformation_estimation_svd.h>
 
+#include <algorithm>
+
 cv::Mat euler2rot(cv::Mat &rotationMatrix, const cv::Mat &euler) {
 
   double x = euler.at<double>(0);
@@ -84,55 +86,212 @@ void removeInvalidPoints(std::vector<cv::Point2f> &points,
 
 void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
                       cv::Mat &imageLeft_t1, cv::Mat &imageRight_t1,
-                      std::vector<cv::Point2f> &pointsLeft_t0,
-                      std::vector<cv::Point2f> &pointsRight_t0,
-                      std::vector<cv::Point2f> &pointsLeft_t1,
-                      std::vector<cv::Point2f> &pointsRight_t1){
+                      std::vector<cv::KeyPoint> &keypointsL_t0,
+                      std::vector<cv::KeyPoint> &keypointsL_t1,
+                      std::vector<cv::KeyPoint> &keypointsR_t0,
+                      std::vector<cv::KeyPoint> &keypointsR_t1,
+                      cv::Mat &descriptorsL_t0, cv::Mat &descriptorsL_t1,
+                      cv::Mat &descriptorsR_t0, cv::Mat &descriptorsR_t1) {
 
-    cv::Mat descriptorsL_t0, descriptorsL_t1, descriptorsR_t0, descriptorsR_t1;
+  // cv::Mat descriptorsL_t0, descriptorsL_t1, descriptorsR_t0, descriptorsR_t1;
+  //
+  // std::vector<cv::KeyPoint> keypointsL_t0, keypointsL_t1,
+  //   keypointsR_t0, keypointsR_t1;
+  featureDetectionORB(imageLeft_t0, keypointsL_t0, descriptorsL_t0);
+  featureDetectionORB(imageLeft_t1, keypointsL_t1, descriptorsL_t1);
+  featureDetectionORB(imageRight_t0, keypointsR_t0, descriptorsR_t0);
+  featureDetectionORB(imageRight_t1, keypointsR_t1, descriptorsR_t1);
 
-    std::vector<cv::KeyPoint> keypointsL_t0, keypointsL_t1,
-      keypointsR_t0, keypointsR_t1;
-    featureDetectionORB(imageLeft_t0, pointsLeft_t0,
-      keypointsL_t0, descriptorsL_t0);
-    featureDetectionORB(imageLeft_t1, pointsLeft_t1,
-      keypointsL_t1, descriptorsL_t1);
-    featureDetectionORB(imageRight_t0, pointsRight_t0,
-      keypointsR_t0, descriptorsR_t0);
-    featureDetectionORB(imageRight_t1, pointsRight_t1,
-      keypointsR_t1, descriptorsR_t1);
+  std::vector<cv::DMatch> matchesL_R_t0, matchesL_R_t1, matchesL_t0_t1,
+      matchesR_t0_t1;
+  // std::vector<int> keep_L_t0, keep_R_t0, keep_L_t1, keep_R_t1, keep_L_t0t1,
+  //     keep_L_t1t0, keep_R_t0t1, keep_R_t1t0;
 
-
-  std::vector<cv::DMatch> matchesL_R_t0, matchesL_R_t1, matchesL_t0_t1, matchesR_t0_t1;
-
+  std::vector<int> keepL_t0, keepR_t0, keepL_t1, keepR_t1, keepL_t0t1,
+      keepL_t1t0, keepTemporal, keepTotal;
 
   match(imageLeft_t0, imageRight_t0, keypointsL_t0, keypointsR_t0,
-    descriptorsL_t0, descriptorsR_t0, matchesL_R_t0);
+        descriptorsL_t0, descriptorsR_t0, matchesL_R_t0, keepL_t0, keepR_t0);
 
   // match(imageLeft_t0, imageLeft_t1, keypointsL_t0, keypointsL_t1,
-  //   descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1);
+  //       descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1, keepL, keepR);
 
   match(imageLeft_t1, imageRight_t1, keypointsL_t1, keypointsR_t1,
-    descriptorsL_t1, descriptorsR_t1, matchesL_R_t1);
+        descriptorsL_t1, descriptorsR_t1, matchesL_R_t1, keepL_t1, keepR_t1);
+
+  match(imageLeft_t0, imageLeft_t1, keypointsL_t0, keypointsL_t1,
+        descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1, keepL_t0t1,
+        keepL_t1t0);
+
+  // temporalMatch(imageLeft_t0, imageLeft_t1, keypointsL_t0, keypointsL_t1,
+  //               descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1, keepTotal);
+
+  //
+  // match(imageRight_t0, imageRight_t1, keypointsR_t0, keypointsR_t1,
+  //       descriptorsR_t0, descriptorsR_t1, matchesR_t0_t1, keepL, keepR);
+  // std::cout << keepL_t0t1.size() << std::endl;
+
+  std::vector<cv::KeyPoint> returnL_t0, returnL_t1, returnR_t0, returnR_t1;
+  //
+  // // std::cout << keepL_t0t1.size() << " " << keepL_t0.size() << std::endl;
+  for (int i = 0; i < keepL_t0t1.size(); i++) {
+    // Find index in t0 that was corresponded in t1
+    // for (int j = 0; j < std::min(keepL_t0.size(), keepL_t1.size()); j++) {
+    //   if (keepL_t0t1.at(i) == keepL_t0.at(j) {
+    //     std::cout << 1 << " " << keepL_t0t1.at(i) << " " << keepL_t0.at(j)
+    //               << std::endl;
+    //   }
+    //   if (keepL_t1t0.at(i) == keepL_t1.at(j)) {
+    //     // std::cout << 2 << " " << keepL_t1t0.at(i) << " " <<
+    // keepL_t1.at(j)
+    //     //           << std::endl;
+    //   }
+    // }
+    std::vector<int>::iterator t0_it =
+        std::find(keepL_t0.begin(), keepL_t0.end(), keepL_t0t1.at(i));
+    std::vector<int>::iterator t1_it =
+        std::find(keepL_t1.begin(), keepL_t1.end(), keepL_t1t0.at(i));
+    if (t0_it != keepL_t0.end() && t1_it != keepL_t1.end()) {
+      int t0_index = std::distance(keepL_t0.begin(),
+                                   t0_it); // t0_it - keepL_t0.begin();
+      int t1_index = t1_it - keepL_t1.begin();
+      // std::cout << 1 << " " << keepL_t0t1.at(i) << " " << t0_index <<
+      // std::endl;
+      if (t0_index < keepL_t0.size() && t0_index < keepR_t0.size() &&
+          t1_index < keepL_t1.size() && t1_index << keepR_t1.size()) {
+        if (keepL_t0.at(t0_index) < keypointsL_t0.size() &&
+            keepR_t0.at(t0_index) < keypointsR_t0.size() &&
+            keepL_t1.at(t1_index) < keypointsL_t1.size() &&
+            keepR_t1.at(t1_index) < keypointsR_t1.size()) {
+
+          returnL_t0.push_back(keypointsL_t0.at(keepL_t0.at(t0_index)));
+          returnR_t0.push_back(keypointsR_t0.at(keepR_t0.at(t0_index)));
+          returnL_t1.push_back(keypointsL_t1.at(keepL_t1.at(t1_index)));
+          returnR_t1.push_back(keypointsR_t1.at(keepR_t1.at(t1_index)));
+        }
+      }
+    }
+
+    // if (t1_it != keepL_t1.end()) {
+    //   int t1_index = std::distance(keepL_t1.begin(),
+    //                                t1_it); // t0_it - keepL_t0.begin();
+    //   std::cout << 2 << " " << keepL_t1t0.at(i) << " " << t1_index <<
+    //   std::endl;
+  }
+  // int t1_index = t1_it - keepL_t1.begin();
+  // std::cout << t1_index << " " << t0_index << std::endl;
+  // if (t0_it != keepL_t0.end() && t1_it != keepL_t1.end()) {
+  //   std::cout << t0_index << " " << t1_index << std::endl;
+  //   // std::cout << t0_index << " " << keepL_t0.size() << std::endl;
+  //   // std::cout << t0_index << " " << keepR_t0.size() << std::endl;
+  //   returnL_t0.push_back(keypointsL_t0.at(keepL_t0.at(t0_index)));
+  //   returnR_t0.push_back(keypointsR_t0.at(keepR_t0.at(t0_index)));
+  //   returnL_t1.push_back(keypointsL_t1.at(keepL_t1.at(t1_index)));
+  //   returnR_t1.push_back(keypointsR_t1.at(keepR_t1.at(t1_index)));
+  // }
+  // if (t1_it != keepL_t1.end()) {
+  // int t1_index = t1_it - keepL_t1.begin();
+  // returnL_t1.push_back(keypointsL_t1.at(keepL_t1.at(t1_index)));
+  // returnR_t1.push_back(keypointsR_t1.at(keepR_t1.at(t1_index)));
+  // }
+  // }
+  keypointsL_t0 = returnL_t0;
+  keypointsL_t1 = returnL_t1;
+  keypointsR_t0 = returnR_t0;
+  keypointsR_t1 = returnR_t1;
+  //
+  cv::Mat outImg1, outImg2;
+  drawKeypoints(imageLeft_t0, returnL_t0, outImg1);
+  drawKeypoints(imageRight_t0, returnR_t0, outImg2);
+
+  cv::imshow("outImg1", outImg1);
+  cv::imshow("outImg2", outImg2);
+
+  cv::waitKey(1);
+  // std::cout << returnR_t1.size() << std::endl;
+  // std::cout << returnL_t0.size() << std::endl;
+
+  // std::cout << keepL.size() << " " << keepR.size() << std::endl;
+  // match(imageLeft_t0, imageRight_t0, keypointsL_t0, keypointsR_t0,
+  //       descriptorsL_t0, descriptorsR_t0, matchesL_R_t0, keep_L_t0,
+  //       keep_R_t0);
+  // // std::cout << keep_L_t0.size() << " " << keep_R_t0.size() << std::endl;
+  //
+  // match(imageLeft_t1, imageRight_t1, keypointsL_t1, keypointsR_t1,
+  //       descriptorsL_t1, descriptorsR_t1, matchesL_R_t1, keep_L_t1,
+  //       keep_R_t1);
+  //
+  // match(imageLeft_t0, imageLeft_t1, keypointsL_t0, keypointsL_t1,
+  //       descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1, keep_L_t0t1,
+  //       keep_L_t1t0);
+  //
+  // match(imageRight_t0, imageRight_t1, keypointsR_t0, keypointsR_t1,
+  //       descriptorsR_t0, descriptorsR_t1, matchesR_t0_t1, keep_R_t0t1,
+  //       keep_R_t1t0);
+  //
+  // std::vector<int> keepL, keepR;
+  // std::vector<cv::KeyPoint> returnKpL_t0, returnKpL_t1, returnKpR_t0,
+  //     returnKpR_t1;
+  // removeInvalidPoints(keep_L_t0, keep_L_t0t1, keepL);
+  // removeInvalidPoints(keep_R_t0, keep_R_t0t1, keepR);
+  // std::cout << "sizes: " << std::endl;
+  // std::cout << keypointsL_t0.size() << " " << keypointsR_t0.size() <<
+  // std::endl; std::cout << keypointsL_t0.size() << " " <<
+  // keypointsL_t1.size()
+  // << std::endl;
+  //
+  // int Lmin = std::min(keep_L_t0.size(), keep_L_t0t1.size());
+  // for (int i = 0; i < Lmin; i++) {
+  //   if (std::find(keep_L_t0t1.begin(), keep_L_t0t1.end(), keep_L_t0.at(i))
+  //   !=
+  //       keep_L_t0t1.end()) {
+  //     keepL.push_back(keep_L_t0.at(i));
+  //   }
+  // }
+  // std::vector<int>::iterator it;
+  // for (int i = 0; i < keepL.size(); i++) {
+  //   // int keep_num = keepL.at(i);
+  //   // std::cout << keep_num << std::endl;
+  //   it = std::find(keep_L_t0.begin(), keep_L_t0.end(), keepL.at(i));
+  //   if (it != keypointsL_t0.end())
+  //     returnKpL_t0.push_back(keypointsL_t0.at(it - vec.begin()));
+  //   // if (std::find(keypointsR_t0.begin(), keypointsR_t0.end(),
+  //   keepL.at(i))
+  //   !=
+  //   //     keypointsR_t0.end())
+  //   //   returnKpR_t0.push_back(keypointsR_t0.at(keep_num));
+  //   // if (std::find(keypointsL_t1.begin(), keypointsL_t1.end(),
+  //   keepL.at(i))
+  //   !=
+  //   //     keypointsL_t1.end())
+  //   //   returnKpL_t1.push_back(keypointsL_t1.at(keep_num));
+  //   // if (std::find(keypointsR_t1.begin(), keypointsR_t1.end(),
+  //   keepL.at(i))
+  //   !=
+  //   //     keypointsR_t1.end())
+  //   //   returnKpR_t1.push_back(keypointsR_t1.at(keep_num));
+  // }
+  // keypointsL_t0 = returnKpL_t0;
+  // keypointsR_t0 = returnKpR_t0;
+  // keypointsL_t1 = returnKpL_t1;
+  // keypointsR_t1 = returnKpR_t1;
+  // std::cout << "Final keep" << keepL.size() << " " << keepR.size() <<
+  // std::endl;match()
 
   // match(imageRight_t0, imageRight_t1, keypointsR_t0, keypointsR_t1,
   //   descriptorsR_t0, descriptorsR_t1, matchesR_t0_t1);
 
-
-
-  cv::KeyPoint::convert(keypointsL_t0, pointsLeft_t0, std::vector<int>());
-  cv::KeyPoint::convert(keypointsR_t0, pointsRight_t0, std::vector<int>());
-  cv::KeyPoint::convert(keypointsL_t1, pointsLeft_t1, std::vector<int>());
-  cv::KeyPoint::convert(keypointsR_t1, pointsRight_t1, std::vector<int>());
+  // cv::KeyPoint::convert(keypointsL_t0, pointsLeft_t0, std::vector<int>());
+  // cv::KeyPoint::convert(keypointsR_t0, pointsRight_t0, std::vector<int>());
+  // cv::KeyPoint::convert(keypointsL_t1, pointsLeft_t1, std::vector<int>());
+  // cv::KeyPoint::convert(keypointsR_t1, pointsRight_t1, std::vector<int>());
 }
-void match(cv::Mat img1, cv::Mat img2, std::vector<cv::KeyPoint> &kpoints1,
-          std::vector<cv::KeyPoint> &kpoints2, cv::Mat descriptors1,
-          cv::Mat descriptors2, std::vector<cv::DMatch> &matches){
 
-  featureDetectionORB(img1, kpoints1, descriptors1);
-  featureDetectionORB(img2, kpoints2, descriptors2);
-
-
+void temporalMatch(cv::Mat img1, cv::Mat img2,
+                   std::vector<cv::KeyPoint> &kpoints1,
+                   std::vector<cv::KeyPoint> &kpoints2, cv::Mat descriptors1,
+                   cv::Mat descriptors2, std::vector<cv::DMatch> &matches,
+                   std::vector<int> &points_keep) {
   cv::Ptr<cv::DescriptorMatcher> matcher =
       cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
   std::vector<std::vector<cv::DMatch>> knn_matches;
@@ -143,37 +302,80 @@ void match(cv::Mat img1, cv::Mat img2, std::vector<cv::KeyPoint> &kpoints1,
   for (size_t i = 0; i < knn_matches.size(); i++) {
     if (knn_matches[i][0].distance <
         ratio_thresh * knn_matches[i][1].distance) {
+      points_keep.push_back(i);
+    }
+  }
+}
+
+void removeInvalidPoints(std::vector<int> K1, std::vector<int> K2,
+                         std::vector<int> &keep) {
+  std::vector<int> maxK, minK;
+  if (K1.size() < K2.size()) {
+    maxK = K2;
+    minK = K1;
+  } else {
+    maxK = K1;
+    minK = K2;
+  }
+  for (int i = 0; i < maxK.size(); i++) {
+    if (std::find(minK.begin(), minK.end(), maxK.at(i)) != minK.end()) {
+      keep.push_back(maxK.at(i));
+    }
+  }
+}
+
+void match(cv::Mat img1, cv::Mat img2, std::vector<cv::KeyPoint> &kpoints1,
+           std::vector<cv::KeyPoint> &kpoints2, cv::Mat descriptors1,
+           cv::Mat descriptors2, std::vector<cv::DMatch> &matches,
+           std::vector<int> &kp1_keep, std::vector<int> &kp2_keep) {
+
+  featureDetectionORB(img1, kpoints1, descriptors1);
+  featureDetectionORB(img2, kpoints2, descriptors2);
+
+  cv::Ptr<cv::DescriptorMatcher> matcher =
+      cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
+  std::vector<std::vector<cv::DMatch>> knn_matches;
+  matcher->knnMatch(descriptors1, descriptors2, knn_matches, 2);
+
+  const float ratio_thresh = 0.9f;
+  std::vector<cv::KeyPoint> returnKp1, returnKp2;
+  for (size_t i = 0; i < knn_matches.size(); i++) {
+    if (knn_matches[i][0].distance <
+        ratio_thresh * knn_matches[i][1].distance) {
       matches.push_back(knn_matches[i][0]);
     }
   }
 
-  for (int i=0; i<matches.size(); i++){
-    // std::cout << matches.at(i).trainIdx << " " << matches.at(i).queryIdx << std::endl;
-    returnKp1.push_back(kpoints1.at(matches.at(i).queryIdx));
-    returnKp2.push_back(kpoints2.at(matches.at(i).trainIdx));
+  for (int i = 0; i < matches.size(); i++) {
+    // std::cout << matches.at(i).trainIdx << " " << matches.at(i).queryIdx <<
+    // std::endl;
+    kp1_keep.push_back(matches.at(i).trainIdx);
+    kp2_keep.push_back(matches.at(i).queryIdx);
+    // returnKp1.push_back(kpoints1.at(matches.at(i).queryIdx));
+    // returnKp2.push_back(kpoints2.at(matches.at(i).trainIdx));
   }
+  // std::cout << "here " << kp1_keep.size() << std::endl;
   //-- Draw matches
-  cv::Mat img_matches, outImg1, outImg2;
-  // cv::drawMatches(img1, returnKp1, img2, returnKp2, matches,
-  //                 img_matches, cv::Scalar::all(-1), cv::Scalar::all(-1),
-  //                 std::vector<char>(),
-  //                 cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-  //
-  kpoints1 = returnKp1;
-  kpoints2 = returnKp2;
-
-  std::cout << kpoints1.size() << " " <<  kpoints2.size() << std::endl;
-  // std::cout << keypointsR_t0.size() << " " <<  keypointsR_t1.size() << std::endl;
-
-  cv::drawKeypoints(img1, returnKp1, outImg1);
-  cv::drawKeypoints(img2, returnKp2, outImg2);
+  // cv::Mat img_matches, outImg1, outImg2;
+  // // cv::drawMatches(img1, returnKp1, img2, returnKp2, matches,
+  // //                 img_matches, cv::Scalar::all(-1), cv::Scalar::all(-1),
+  // //                 std::vector<char>(),
+  // //                 cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
   // //
-  // // //-- Show detected matches
-  // cv::imshow("Good img1", outImg1);
-  // cv::imshow("Good img2", outImg2);
-  // cv::waitKey(1);
-
-  }
+  // kpoints1 = returnKp1;
+  //  kpoints2 = returnKp2;
+  //
+  // // std::cout << keypointsR_t0.size() << " " <<  keypointsR_t1.size() <<
+  // // std::endl;
+  //
+  // cv::drawKeypoints(img1, returnKp1, outImg1);
+  // cv::drawKeypoints(img2, returnKp2, outImg2);
+  // // //
+  // // // //-- Show detected matches
+  // // cv::imshow("Good img1", outImg1);
+  // // cv::imshow("Good img2", outImg2);
+  // // cv::waitKey(1);
+}
 
 void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
                       cv::Mat &imageLeft_t1, cv::Mat &imageRight_t1,

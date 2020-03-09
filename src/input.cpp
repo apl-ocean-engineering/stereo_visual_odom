@@ -31,10 +31,10 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
   imageLeft_t1 = rosImage2CvMat(imgL);
   imageRight_t1 = rosImage2CvMat(imgR);
 
-  // cv::resize(imageLeft_t1, imageLeft_t1,
-  //            cv::Size(imageLeft_t1.cols / 4, imageLeft_t1.rows / 4));
-  // cv::resize(imageRight_t1, imageRight_t1,
-  //            cv::Size(imageRight_t1.cols / 4, imageRight_t1.rows / 4));
+  cv::resize(imageLeft_t1, imageLeft_t1,
+             cv::Size(imageLeft_t1.cols / 4, imageLeft_t1.rows / 4));
+  cv::resize(imageRight_t1, imageRight_t1,
+             cv::Size(imageRight_t1.cols / 4, imageRight_t1.rows / 4));
 
   if (frame_id > 0) {
     run();
@@ -176,9 +176,31 @@ void Input::run() {
 
   std::vector<cv::Point2f> pointsLeft_t0, pointsRight_t0, pointsLeft_t1,
       pointsRight_t1;
+
+  cv::Mat descriptorsL_t0, descriptorsL_t1, descriptorsR_t0, descriptorsR_t1;
+
+  std::vector<cv::KeyPoint> keypointsL_t0, keypointsL_t1, keypointsR_t0,
+      keypointsR_t1;
   matchingFeatures(imageLeft_t0, imageRight_t0, imageLeft_t1, imageRight_t1,
-                   pointsLeft_t0, pointsRight_t0,
-                   pointsLeft_t1, pointsRight_t1);
+                   keypointsL_t0, keypointsL_t1, keypointsR_t0, keypointsR_t1,
+                   descriptorsL_t0, descriptorsL_t1, descriptorsR_t0,
+                   descriptorsR_t1);
+
+  cv::KeyPoint::convert(keypointsL_t0, pointsLeft_t0, std::vector<int>());
+  cv::KeyPoint::convert(keypointsL_t1, pointsLeft_t1, std::vector<int>());
+  cv::KeyPoint::convert(keypointsR_t0, pointsRight_t0, std::vector<int>());
+  cv::KeyPoint::convert(keypointsR_t1, pointsRight_t1, std::vector<int>());
+
+  // std::cout << keypointsL_t0.size() << " " << keypointsR_t0.size() <<
+  // std::endl; std::cout << keypointsL_t1.size() << " " << keypointsR_t1.size()
+  // << std::endl;
+  // std::vector<cv::DMatch> matchesL_R_t0, matchesL_R_t1,
+  // matchesL_t0_t1,
+  //     matchesR_t0_t1;
+  // match(imageLeft_t0, imageLeft_t1, keypointsL_t0, keypointsL_t1,
+  //       descriptorsL_t0, descriptorsL_t1, matchesL_t0_t1);
+  // std::cout << keypointsL_t1.size() << " " << keypointsR_t1.size() <<
+  // std::endl;
   //
   // matchingFeatures(imageLeft_t0, imageRight_t0, imageLeft_t1, imageRight_t1,
   //                  currentVOFeatures, pointsLeft_t0, pointsRight_t0,
@@ -213,24 +235,24 @@ void Input::run() {
                         points4D_t1);
 
   cv::convertPointsFromHomogeneous(points4D_t1.t(), points3D_t1);
-
-  
   //
-  // // // NEW FORMAT
-  // // std::vector<cv::Point3f> points3D_t0V, points3D_t1V;
-  // // cv::Mat points4D_t0V, points4D_t1V;
   // //
-  // // cv::triangulatePoints(projMatrl, projMatrr, points3D_t0V, points3D_t1V,
-  // //                       points4D_t0V);
-  // //
-  // // cv::convertPointsFromHomogeneous(points4D_t0V.t(), points3D_t0V);
-  // //
-  // // LOG(INFO) << points3D_t0V;
-  // //
-  // // // ---------------------
-  // // // Tracking transfomation
-  // // // ---------------------
-  // // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
+  // // // // NEW FORMAT
+  // // // std::vector<cv::Point3f> points3D_t0V, points3D_t1V;
+  // // // cv::Mat points4D_t0V, points4D_t1V;
+  // // //
+  // // // cv::triangulatePoints(projMatrl, projMatrr, points3D_t0V,
+  // points3D_t1V,
+  // // //                       points4D_t0V);
+  // // //
+  // // // cv::convertPointsFromHomogeneous(points4D_t0V.t(), points3D_t0V);
+  // // //
+  // // // LOG(INFO) << points3D_t0V;
+  // // //
+  // // // // ---------------------
+  // // // // Tracking transfomation
+  // // // // ---------------------
+  trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
   //
   // trackingFrame2Frame(projMatrl, projMatrr, pointsLeft_t0, pointsLeft_t1,
   //                     points3D_t0, rotation, translation, false);
@@ -280,8 +302,8 @@ void Input::run() {
   // poseStamped.pose.orientation.z = q.y();
   // poseStamped.pose.orientation.w = q.w();
   // pose_publisher.publish(poseStamped);
-  // display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);
-  // new_image = false;
+  // display(frame_id, trajectory, xyz, pose_matrix_gt, fps,
+  // display_ground_truth); new_image = false;
 }
 // }
 //}

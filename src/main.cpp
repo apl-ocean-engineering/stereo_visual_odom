@@ -21,7 +21,6 @@ int main(int argc, char **argv) {
   logWorker.logBanner();
   logWorker.verbose(2);
 
-
   ros::init(argc, argv, "stereo_odom");
   ros::NodeHandle nh_("stereo_odom");
 
@@ -75,10 +74,10 @@ int main(int argc, char **argv) {
 
   // input.readImages(filepath);
   // //
-  // std::string left_topic = "/camera/left/image_raw";
-  // std::string right_topic = "/camera/right/image_raw";
-  std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
-  std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
+  std::string left_topic = "/camera/left/image_raw";
+  std::string right_topic = "/camera/right/image_raw";
+  // std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
+  // std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
 
   message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
                                                                  left_topic, 1);
