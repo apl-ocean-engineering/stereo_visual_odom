@@ -139,7 +139,7 @@ void Input::run() {
   cv::convertPointsFromHomogeneous(points4D_t1.t(), points3D_t1V);
 
   cv::Mat temp1, temp2;
-  int thresh = 0.25;
+  int thresh = 0.1;
   for (int i = 0; i < pointsLeft_t0.size(); i++) {
     cv::Point2f p0 = pointsLeft_t0.at(i);
     cv::Point2f p1 = pointsRight_t0.at(i);
@@ -152,14 +152,14 @@ void Input::run() {
       points3D_t1V.erase(points3D_t1V.begin() + i);
       pointsLeft_t1.erase(pointsLeft_t1.begin() + i);
       pointsRight_t1.erase(pointsRight_t1.begin() + i);
-      std::cout << "point" << std::endl;
-      std::cout << "(" << p0.x << "," << p0.y << ")" << std::endl;
-      std::cout << "(" << p1.x << "," << p1.y << ")" << std::endl;
-      std::cout << "(" << p_3.x << "," << p_3.y << "," << p_3.z << ")"
-                << std::endl;
-      std::cout << "(" << p_31.x << "," << p_31.y << "," << p_31.z << ")"
-                << std::endl;
-      std::cout << cv::norm(p_31 - p_3) << std::endl;
+      // std::cout << "point" << std::endl;
+      // std::cout << "(" << p0.x << "," << p0.y << ")" << std::endl;
+      // std::cout << "(" << p1.x << "," << p1.y << ")" << std::endl;
+      // std::cout << "(" << p_3.x << "," << p_3.y << "," << p_3.z << ")"
+      //           << std::endl;
+      // std::cout << "(" << p_31.x << "," << p_31.y << "," << p_31.z << ")"
+      //           << std::endl;
+      // std::cout << cv::norm(p_31 - p_3) << std::endl;
     }
   }
 
@@ -180,11 +180,12 @@ void Input::run() {
   // // ---------------------
   // // Tracking transfomation
   // // ---------------------
-  // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
+  trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
 
   //
-  trackingFrame2Frame(projMatrl, projMatrr, Kl, dl, pointsLeft_t0,
-                      pointsLeft_t1, points3D_t0, rotation, translation, false);
+  // trackingFrame2Frame(projMatrl, projMatrr, Kl, dl, pointsLeft_t0,
+  //                     pointsLeft_t1, points3D_t0, rotation, translation,
+  //                     false);
 
   LOG(WARNING) << "translation norm: "
                << pow(pow(translation.at<double>(0, 0), 2) +
@@ -207,17 +208,17 @@ void Input::run() {
 
   // std::cout << rotation_euler << std::endl;
 
-  // if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
-  //     abs(rotation_euler[2]) < 0.1 && abs(translation.at<double>(0, 0) < 0.1)
-  //     && abs(translation.at<double>(0, 1) < 0.1) &&
-  //     abs(translation.at<double>(0, 2) < 0.1)) {
-  // integrateOdometryStereo(frame_pose, rotation, translation);
-  integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
-                          rotation, translation);
-  //
-  // } else {
-  //   std::cout << "Too large rotation" << std::endl;
-  // }
+  if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
+      abs(rotation_euler[2]) < 0.1 && abs(translation.at<double>(0, 0)) < 0.1 &&
+      abs(translation.at<double>(0, 1)) < 0.1 &&
+      abs(translation.at<double>(0, 2)) < 0.1) {
+    // integrateOdometryStereo(frame_pose, rotation, translation);
+    integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
+                            rotation, translation);
+    //
+  } else {
+    std::cout << "Too large rotation" << std::endl;
+  }
   t_b = clock();
   float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
   float fps = 1000 / frame_time;
@@ -234,9 +235,9 @@ void Input::run() {
   cv::Mat xyz = frame_pose.col(3).clone();
   geometry_msgs::PoseStamped poseStamped;
   poseStamped.header.frame_id = "map";
-  poseStamped.pose.position.x = xyz.at<double>(2) / 100;
-  poseStamped.pose.position.y = xyz.at<double>(0) / 100;
-  poseStamped.pose.position.z = xyz.at<double>(1) / 100;
+  poseStamped.pose.position.x = xyz.at<double>(2) / 1;
+  poseStamped.pose.position.y = xyz.at<double>(0) / 1;
+  poseStamped.pose.position.z = xyz.at<double>(1) / 1;
   //
   poseStamped.pose.orientation.x = q.z();
   poseStamped.pose.orientation.y = q.x();
