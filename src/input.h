@@ -34,39 +34,40 @@
 
 class Input {
 public:
-  Input(cv::Mat left, cv::Mat right, std::vector<Matrix> gt, bool display_gt);
-  void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
-                         const sensor_msgs::ImageConstPtr &imgR);
-  void readImages(std::string filepath);
-  cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
-  void run();
+Input(cv::Mat left, cv::Mat right, std::vector<Matrix> gt, bool display_gt, int _downsample);
+void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
+                       const sensor_msgs::ImageConstPtr &imgR);
+void readImages(std::string filepath);
+cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
+void run();
 
 private:
-  clock_t t_a, t_b;
-  cv::Mat imageLeft_t0, imageLeft_t1, imageRight_t0, imageRight_t1;
-  bool initalized;
-  FeatureSet currentVOFeatures;
-  cv::Mat projMatrl, projMatrr;
-  cv::Mat points4D, points3D;
-  int init_frame_id = 0;
-  cv::Mat trajectory;
-  std::vector<Matrix> pose_matrix_gt;
+clock_t t_a, t_b;
+cv::Mat imageLeft_t0, imageLeft_t1, imageRight_t0, imageRight_t1;
+bool initalized;
+FeatureSet currentVOFeatures;
+cv::Mat projMatrl, projMatrr;
+cv::Mat points4D, points3D;
+int init_frame_id = 0;
+cv::Mat trajectory;
+std::vector<Matrix> pose_matrix_gt;
 
-  bool display_ground_truth;
-  cv::Mat rotation;
-  cv::Mat translation;
+bool display_ground_truth;
+cv::Mat rotation;
+cv::Mat translation;
 
-  cv::Mat pose;
-  cv::Mat Rpose;
+cv::Mat pose;
+cv::Mat Rpose;
 
-  cv::Mat frame_pose;
-  cv::Mat frame_pose32;
+cv::Mat frame_pose;
+cv::Mat frame_pose32;
 
-  ros::NodeHandle nh_;
-  std::string pose_channel;
-  ros::Publisher pose_publisher;
+ros::NodeHandle nh_;
+std::string pose_channel;
+ros::Publisher pose_publisher;
 
-  bool new_image = false;
+bool new_image = false;
 
-  int frame_id;
+int frame_id;
+int downsample;
 };

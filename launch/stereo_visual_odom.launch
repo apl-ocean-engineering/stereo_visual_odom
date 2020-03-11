@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<launch>
+
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_left.yaml" ns="stereo_odom/left"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_right.yaml" ns="stereo_odom/right"/>
+
+<node name="stereo_odom" pkg="stereo_visual_odom" type="run" output="screen" />
+
+
+
+</launch>

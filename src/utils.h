@@ -28,6 +28,9 @@ void drawFeaturePoints(cv::Mat image, std::vector<cv::Point2f> &points);
 void display(int frame_id, cv::Mat &trajectory, cv::Mat &pose,
              std::vector<Matrix> &pose_matrix_gt, float fps, bool showgt);
 
+void integrateOdometryStereo(cv::Mat &frame_pose, const cv::Mat rotation,
+                             const cv::Mat translation);
+
 // --------------------------------
 // Transformation
 // --------------------------------
@@ -53,6 +56,11 @@ void loadImageRight(cv::Mat &image_color, cv::Mat &image_gary, int frame_id,
 
 void loadGyro(std::string filename,
               std::vector<std::vector<double>> &time_gyros);
+
+void displayMatches(cv::Mat img1, cv::Mat img2,
+                    std::vector<cv::Point2f> points1,
+                    std::vector<cv::Point2f> points2);
+
 // read time gyro txt file with format of timestamp, gx, gy, gz
 
 #endif

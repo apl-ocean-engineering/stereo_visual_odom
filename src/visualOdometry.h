@@ -22,8 +22,8 @@
 #include "feature.h"
 #include "utils.h"
 
-void matchingFeatures(cv::Mat &imageLeft_t0, cv::Mat &imageRight_t0,
-                      cv::Mat &imageLeft_t1, cv::Mat &imageRight_t1,
+void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
+                      cv::Mat imageLeft_t1, cv::Mat imageRight_t1,
                       FeatureSet &currentVOFeatures,
                       std::vector<cv::Point2f> &pointsLeft_t0,
                       std::vector<cv::Point2f> &pointsRight_t0,
