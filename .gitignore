@@ -1,2 +1,4 @@
 build/
 .DS_Store
+calibration/left.yaml
+calibration/right.yaml

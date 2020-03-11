@@ -1,12 +1,10 @@
 global_frame: "map"
 
-image_downsample: 1
-optical_flow_win_size: 55
+image_downsample: 4
+optical_flow_win_size: 31
 
-ORB:
-  edge_threshold: 62
-  patch_size: 62
+edge_threshold: 62
+patch_size: 62
 
-bucket:
-  bucket_size: 15
-  features_per_bucket: 10
+bucket_size: 25
+features_per_bucket: 1

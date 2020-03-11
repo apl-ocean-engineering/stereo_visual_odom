@@ -4,10 +4,19 @@
 
 <rosparam command="load" file="$(find stereo_visual_odom)/launch/config/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
 
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_left.yaml" ns="stereo_odom/left"/>
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_right.yaml" ns="stereo_odom/right"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/left.yaml" ns="stereo_odom/left"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/right.yaml" ns="stereo_odom/right"/>
 
-<node name="stereo_odom" pkg="stereo_visual_odom" type="run" output="screen" />
+<node name="stereo_odom" pkg="stereo_visual_odom" type="run" output="screen" >
+  <remap from="/left/image" to="/camera/left/image_rect" />
+  <remap from="/right/image" to="/camera/right/image_rect" />
+</node>
+
+<group ns="camera">
+  <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
+    <param name="approximate_sync" value="true" />
+  </node>
+</group>
 
 
 
