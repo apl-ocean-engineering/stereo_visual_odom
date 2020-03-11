@@ -9,6 +9,8 @@
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
 
+#include "configuration.h"
+
 using namespace std;
 using namespace message_filters;
 
@@ -17,7 +19,36 @@ typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image,
         ImageSyncPolicy;
 
 
-void loadCalibration(cv::Mat &K, cv::Mat &P, std::string name, ros::NodeHandle nh_, int downsample=1){
+void loadConfig(ros::NodeHandle nh_){
+
+        int downsample, optical_flow_win_size, ORB_edge_threshold,
+            ORB_patch_size, bucket_size, features_per_bucket;
+
+        ros::param::param<int>(nh_.resolveName("image_downsample"), downsample,
+                               1);
+        ros::param::param<int>(nh_.resolveName("optical_flow_win_size"), optical_flow_win_size,
+                               55);
+        ros::param::param<int>(nh_.resolveName("ORB_edge_threshold"), ORB_edge_threshold,
+                               62);
+        ros::param::param<int>(nh_.resolveName("ORB_patch_size"), ORB_patch_size,
+                               62);
+        ros::param::param<int>(nh_.resolveName("bucket_size"), ORB_patch_size,
+                               15);
+        ros::param::param<int>(nh_.resolveName("features_per_bucket"), features_per_bucket,
+                               10);
+
+
+        Conf().downsample = downsample;
+        Conf().optical_flow_win_size = optical_flow_win_size;
+        Conf().ORB_edge_threshold = ORB_edge_threshold;
+        Conf().ORB_patch_size = ORB_patch_size;
+        Conf().bucket_size = ORB_patch_size;
+        Conf().features_per_bucket = features_per_bucket;
+
+}
+
+
+void loadCalibration(cv::Mat &K, cv::Mat &P, std::string name, ros::NodeHandle nh_){
         std::vector<float> _K;
         std::vector<float> _P;
 
@@ -30,7 +61,7 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, std::string name, ros::NodeHandle n
         if (nh_.getParam(name + "/camera_matrix/data", _K)) {
                 for (int i = 0; i < 3; i++) {
                         for (int j = 0; j < 3; j++) {
-                                camera_matrix(i, j) = _K.at(idx)/downsample;
+                                camera_matrix(i, j) = _K.at(idx)/Conf().downsample;
                                 idx++;
                         }
                 }
@@ -46,7 +77,7 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, std::string name, ros::NodeHandle n
                 for (int i = 0; i < 3; i++) {
                         for (int j = 0; j < 4; j++) {
                                 //std::cout << _P.at(idx) <<std::endl;
-                                projection_matrix(i, j) = _P.at(idx)/downsample;
+                                projection_matrix(i, j) = _P.at(idx)/Conf().downsample;
                                 idx++;
                         }
                 }
@@ -71,53 +102,13 @@ int main(int argc, char **argv) {
         ros::init(argc, argv, name);
         ros::NodeHandle nh_(name);
 
-        int downsample = 1;
+        loadConfig(nh_);
 
         // -----------------------------------------
         // Load images and calibration parameters
         // -----------------------------------------
         bool display_ground_truth = false;
         std::vector<Matrix> pose_matrix_gt;
-        // if (argc == 4) {
-        //   display_ground_truth = true;
-        //   cerr << "Display ground truth trajectory" << endl;
-        //   // load ground truth pose
-        //   string filename_pose = string(argv[3]);
-        //   pose_matrix_gt = loadPoses(filename_pose);
-        // }
-        // if (argc < 3) {
-        //   cerr << "Usage: ./run path_to_sequence path_to_calibration "
-        //           "[optional]path_to_ground_truth_pose"
-        //        << endl;
-        //   return 1;
-        // }
-
-        // Sequence
-        // string filepath = string(argv[1]);
-        // LOG(DEBUG) << "Filepath: " << filepath;
-        //
-        // // Camera calibration
-        // string strSettingPath = string(argv[2]);
-        // LOG(DEBUG) << "Calibration Filepath: " << strSettingPath;
-
-        // cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
-        //
-        // float fx = fSettings["Camera.fx"];
-        // float fy = fSettings["Camera.fy"];
-        // float cx = fSettings["Camera.cx"];
-        // float cy = fSettings["Camera.cy"];
-        // float bf = fSettings["Camera.bf"];
-
-
-
-        //cv::Mat projMatrl;
-        // =
-        //     (cv::Mat_<float>(3, 4) << fx/downsample, 0.,
-        //      cx/downsample, 0., 0., fy/downsample, cy/downsample, 0., 0, 0., 1., 0.);
-        //cv::Mat projMatrr;
-        // =
-        //    (cv::Mat_<float>(3, 4) << fx/downsample, 0., cx/downsample, bf/downsample,
-        //    0., fy/downsample, cy/downsample, 0., 0, 0., 1., 0.);
 
 
         cv::Mat Kl, Kr;
@@ -125,8 +116,8 @@ int main(int argc, char **argv) {
         cv::Mat_<float> projMatrr(3, 4); //(3, 4, CV_32F);
         //cv::Mat_<float>(3, 4) projMatrl, projMatrr;
 
-        loadCalibration(Kl, projMatrl, "/" + name + "/left", nh_, downsample);
-        loadCalibration(Kr, projMatrr, "/" + name + "/right", nh_, downsample);
+        loadCalibration(Kl, projMatrl, "/" + name + "/left", nh_);
+        loadCalibration(Kr, projMatrr, "/" + name + "/right", nh_);
 
         //std::cout << projMatrl << std::endl;
 
@@ -137,7 +128,7 @@ int main(int argc, char **argv) {
         // Initialize variables
         // -----------------------------------------
 
-        Input input(projMatrl, projMatrr, pose_matrix_gt, display_ground_truth, downsample);
+        Input input(projMatrl, projMatrr, pose_matrix_gt, display_ground_truth);
 
         // input.readImages(filepath);
         // //
@@ -155,6 +146,17 @@ int main(int argc, char **argv) {
         //
         imageSync.registerCallback(
                 boost::bind(&Input::imageSyncCallback, &input, _1, _2));
+
+        dynamic_reconfigure::Server<
+            stereo_visual_odom::StereoVisualOdomConfig>
+            reconfigure_callback(nh_);
+        dynamic_reconfigure::Server<
+            stereo_visual_odom::StereoVisualOdomConfig>::CallbackType f;
+
+        f = boost::bind(&Input::reconfigureCallback,
+                        &input, _1, _2);
+        reconfigure_callback.setCallback(f);
+
 
         ros::spin();
 

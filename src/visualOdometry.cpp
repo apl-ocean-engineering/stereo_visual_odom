@@ -1,4 +1,5 @@
 #include "visualOdometry.h"
+#include "configuration.h"
 
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
@@ -114,13 +115,13 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
         // --------------------------------------------------------
         // Feature tracking using KLT tracker, bucketing and circular matching
         // --------------------------------------------------------
-        int bucket_size = 15;
-        int features_per_bucket = 10;
+        int bucket_size = Conf().features_per_bucket;
+        int features_per_bucket = Conf().features_per_bucket;
         bucketingFeatures(imageLeft_t0, currentVOFeatures, bucket_size,
                           features_per_bucket);
 
         pointsLeft_t0 = currentVOFeatures.left_points;
-        if (pointsLeft_t0.size() < 5){
+        if (pointsLeft_t0.size() < 6){
           return;
         }
 

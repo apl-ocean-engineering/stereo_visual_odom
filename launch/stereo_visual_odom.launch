@@ -2,6 +2,8 @@
 
 <launch>
 
+<rosparam command="load" file="$(find stereo_visual_odom)/launch/config/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
+
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_left.yaml" ns="stereo_odom/left"/>
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/zed_right.yaml" ns="stereo_odom/right"/>
 

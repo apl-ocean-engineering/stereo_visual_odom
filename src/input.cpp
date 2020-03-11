@@ -4,13 +4,14 @@
 #include "g3_to_ros_logger/g3logger.h"
 
 #include <math.h>
+#include "configuration.h"
 
 using namespace std;
 
 Input::Input(cv::Mat leftK, cv::Mat rightK, std::vector<Matrix> gt,
-             bool display_gt, int _downsample)
+             bool display_gt)
         : projMatrl(leftK), projMatrr(rightK), pose_matrix_gt(gt), frame_id(0),
-        initalized(false), display_ground_truth(display_gt), downsample(_downsample) {
+        initalized(false), display_ground_truth(display_gt) {
         trajectory = cv::Mat::zeros(600, 1200, CV_8UC3);
         rotation = cv::Mat::eye(3, 3, CV_64F);
         translation = cv::Mat::zeros(3, 1, CV_64F);
@@ -33,11 +34,11 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
         imageLeft_t1 = rosImage2CvMat(imgL);
         imageRight_t1 = rosImage2CvMat(imgR);
 
-        if (downsample != 1) {
+        if (Conf().downsample != 1) {
                 cv::resize(imageLeft_t1, imageLeft_t1,
-                           cv::Size(imageLeft_t1.cols / downsample, imageLeft_t1.rows / downsample));
+                           cv::Size(imageLeft_t1.cols / Conf().downsample, imageLeft_t1.rows / Conf().downsample));
                 cv::resize(imageRight_t1, imageRight_t1,
-                           cv::Size(imageRight_t1.cols / downsample, imageRight_t1.rows / downsample));
+                           cv::Size(imageRight_t1.cols / Conf().downsample, imageRight_t1.rows / Conf().downsample));
         }
         if (frame_id > 0 ) { //&& frame_id % 4 == 0
                 run();
@@ -86,7 +87,7 @@ void Input::run() {
 
 
 
-        if (pointsLeft_t0.size() < 5){
+        if (pointsLeft_t0.size() < 6){
           return;
         }
 
@@ -220,5 +221,26 @@ void Input::run() {
         display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);
         new_image = false;
 }
+void Input::reconfigureCallback(
+        const stereo_visual_odom::StereoVisualOdomConfig &config,
+        uint32_t level){
+          Conf().downsample = config.image_downsample;
+
+          if (config.optical_flow_win_size % 2 != 0){
+            Conf().optical_flow_win_size = config.optical_flow_win_size;
+          }
+          else{
+              Conf().optical_flow_win_size = config.optical_flow_win_size - 1;
+          }
+
+          Conf().ORB_edge_threshold = config.edge_threshold;
+          Conf().ORB_patch_size = config.patch_size;
+          Conf().bucket_size = config.bucket_size;
+          Conf().features_per_bucket = config.features_per_bucket;
+
+
+
+        }
+
 // }
 //}

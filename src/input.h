@@ -31,15 +31,21 @@
 #include "sensor_msgs/Image.h"
 
 #include <ros/ros.h>
+#include "stereo_visual_odom/StereoVisualOdomConfig.h"
+#include <dynamic_reconfigure/server.h>
 
 class Input {
 public:
-Input(cv::Mat left, cv::Mat right, std::vector<Matrix> gt, bool display_gt, int _downsample);
+Input(cv::Mat left, cv::Mat right, std::vector<Matrix> gt, bool display_gt);
 void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                        const sensor_msgs::ImageConstPtr &imgR);
 void readImages(std::string filepath);
 cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
 void run();
+void reconfigureCallback(
+        const stereo_visual_odom::StereoVisualOdomConfig &config,
+        uint32_t level);
+
 
 private:
 clock_t t_a, t_b;
@@ -69,5 +75,5 @@ ros::Publisher pose_publisher;
 bool new_image = false;
 
 int frame_id;
-int downsample;
+
 };

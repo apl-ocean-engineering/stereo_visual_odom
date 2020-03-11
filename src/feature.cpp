@@ -1,6 +1,7 @@
 #include "feature.h"
 #include "bucket.h"
 #include "utils.h"
+#include "configuration.h"
 
 void deleteUnmatchFeatures(std::vector<cv::Point2f> &points0,
                            std::vector<cv::Point2f> &points1,
@@ -46,8 +47,8 @@ void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f> &points,
 
         orb->detectAndCompute(image, cv::noArray(), keypoints, descriptors);
 
-        orb->setEdgeThreshold(62);
-        orb->setPatchSize(62);
+        orb->setEdgeThreshold(Conf().ORB_edge_threshold);
+        orb->setPatchSize(Conf().ORB_patch_size);
 
         cv::Mat outImg;
         cv::drawKeypoints(image, keypoints, outImg);
@@ -156,7 +157,7 @@ void circularMatching(cv::Mat img_l_0, cv::Mat img_r_0, cv::Mat img_l_1,
 
         std::vector<float> err1, err2, err3, err4;
         // cv::Size winSize = cv::Size(21, 21);
-       cv::Size winSize = cv::Size(55, 55);
+       cv::Size winSize = cv::Size(Conf().optical_flow_win_size, Conf().optical_flow_win_size);
         cv::TermCriteria termcrit = cv::TermCriteria(
                 cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 0.01);
 

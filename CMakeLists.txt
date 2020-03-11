@@ -21,6 +21,11 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_filters
   g3log_catkin
+  dynamic_reconfigure
+)
+
+generate_dynamic_reconfigure_options(
+  cfg/StereoVisualOdom.cfg
 )
 
 
@@ -52,6 +57,7 @@ add_library(bucket SHARED "src/bucket.cpp")
 add_library(utils SHARED "src/utils.cpp")
 add_library(visualOdometry SHARED "src/visualOdometry.cpp")
 add_library(input SHARED "src/input.cpp")
+add_library(config SHARED "src/configuration.cpp")
 
 #
 #
@@ -70,4 +76,7 @@ target_link_libraries( visualOdometry utils bucket feature ${OpenCV_LIBS})
 #
 #
 target_link_libraries( Frame ${catkin_LIBRARIES} ${OpenCV_LIBS} )
-target_link_libraries( run ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  )
+target_link_libraries( run ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  config)
+
+
+add_dependencies(run ${PROJECT_NAME}_gencfg)
