@@ -61,7 +61,7 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
   frame_id++;
 }
 
-void maskCallback(const sensor_msgs::ImageConstPtr &mask_msg) {
+void Input::maskCallback(const sensor_msgs::ImageConstPtr &mask_msg) {
   mask = rosImage2CvMat(mask_msg);
 }
 //

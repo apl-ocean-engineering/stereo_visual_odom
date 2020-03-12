@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_filters
   g3log_catkin
   dynamic_reconfigure
+  image_detection_msgs
 )
 
 generate_dynamic_reconfigure_options(
@@ -26,8 +27,8 @@ generate_dynamic_reconfigure_options(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES stereo_visual_odom
-CATKIN_DEPENDS g3log_catkin
-#pcl_ros pcl
+CATKIN_DEPENDS g3log_catkin image_detection_msgs
+#pcl_ros pcl 
 #  DEPENDS system_lib
 )
 
