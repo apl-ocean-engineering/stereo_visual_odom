@@ -1,10 +1,10 @@
 global_frame: "map"
 
 image_downsample: 4
-optical_flow_win_size: 11
+optical_flow_win_size: 21
 
 edge_threshold: 31
 patch_size: 31
 
 bucket_size: 25
-features_per_bucket: 2
+features_per_bucket: 1

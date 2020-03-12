@@ -7,7 +7,6 @@
 #include <eigen3/Eigen/Geometry>
 #include <opencv2/core/eigen.hpp>
 
-
 #include <math.h>
 
 cv::Mat euler2rot(cv::Mat &rotationMatrix, const cv::Mat &euler) {
@@ -238,7 +237,8 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
 //     }
 //   }
 //
-//   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>
+//   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ,
+//   pcl::PointXYZ>
 //       TESVD;
 //   pcl::registration::TransformationEstimationSVD<
 //       pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
@@ -258,7 +258,8 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat dl, std::vector<cv::Point2f> &pointsLeft_t0,
                          std::vector<cv::Point2f> &pointsLeft_t1,
                          cv::Mat &points3D_t0, cv::Mat &rotation,
-                         cv::Mat &translation, cv::Point3f &meanPoint, bool mono_rotation) {
+                         cv::Mat &translation, cv::Point3f &meanPoint,
+                         bool mono_rotation) {
 
   // Calculate frame to frame transformation
 
@@ -305,10 +306,9 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
   int flags = cv::SOLVEPNP_EPNP;
 
   cv::Mat translation_init = cv::Mat::zeros(3, 1, CV_64F);
-  translation_init.at<double>(0,0) = meanPoint.x;
-  translation_init.at<double>(1,0) = meanPoint.y;
-  translation_init.at<double>(2,0) = meanPoint.z;
-
+  translation_init.at<double>(0, 0) = meanPoint.x;
+  translation_init.at<double>(1, 0) = meanPoint.y;
+  translation_init.at<double>(2, 0) = meanPoint.z;
 
   cv::solvePnPRansac(points3D_t0, pointsLeft_t1, intrinsic_matrix, dl, rvec,
                      translation_init, useExtrinsicGuess, iterationsCount,

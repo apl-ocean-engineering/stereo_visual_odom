@@ -40,6 +40,7 @@ public:
         cv::Mat dleft, cv::Mat dright, std::vector<Matrix> gt, bool display_gt);
   void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                          const sensor_msgs::ImageConstPtr &imgR);
+  void maskCallback(const sensor_msgs::ImageConstPtr &mask);
   void readImages(std::string filepath);
   cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
   void run();
@@ -70,6 +71,7 @@ private:
 
   cv::Mat frame_pose;
   cv::Mat frame_pose32;
+  cv::Mat mask;
 
   ros::NodeHandle nh_;
   std::string pose_channel;
