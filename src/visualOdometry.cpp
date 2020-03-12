@@ -65,14 +65,10 @@ void checkValidMatch(std::vector<cv::Point2f> &points,
     if (criteria == 1) {
       offset = std::max(std::abs(points[i].x - points_return[i].x),
                         std::abs(points[i].y - points_return[i].y));
-      // std::cout << offset << std::endl;
     } else
       offset = std::abs(points[i].y - points_return[i].y);
-    // std::cout << points[i].y << " " << points_return[i].y << " " << offset <<
-    // std::endl;
 
     if (offset > threshold) {
-      // std::cout << criteria << " " << offset << std::endl;
       status.push_back(false);
     } else {
       status.push_back(true);
@@ -109,8 +105,6 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
 
     // append new features with old features
     appendNewFeatures(imageLeft_t0, imageRight_t0, currentVOFeatures);
-    // std::cout << "Current feature set size: " <<
-    // currentVOFeatures.points.size() << std::endl;
   }
 
   // --------------------------------------------------------
@@ -134,15 +128,12 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
   std::vector<bool> status1, status2, status3;
   checkValidMatch(pointsLeft_t0, pointsLeftReturn_t0, status1, 0);
 
-  // std::cout << pointsLeft_t0.size() << std::endl;
-
   int status1Before = pointsLeft_t0.size();
 
   removeInvalidPoints(pointsLeft_t0, status1);
   removeInvalidPoints(pointsLeft_t1, status1);
   removeInvalidPoints(pointsRight_t0, status1);
   removeInvalidPoints(pointsRight_t1, status1);
-  // LOG(WARNING) << status1Before << " " << pointsLeft_t0.size();
   LOG(WARNING) << "Points removed by status 1 removal: "
                << status1Before - pointsLeft_t0.size();
   //
@@ -173,8 +164,6 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
   //
   // LOG(WARNING) << "Points removed by status 3 removal: " << status3Before -
   // pointsLeft_t0.size();
-
-  // std::cout << "after points: " << pointsLeft_t0.size() << std::endl;
 
   // cv::Mat imgL = imageLeft_t1;
   // cv::Mat imgR = imageLeft_t0;
@@ -221,8 +210,6 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
 
-    // Eigen::Vector3d v0(point0.x, point0.y, point0.z);
-    // Eigen::Vector3d v1(point1.x, point1.y, point1.z);
 
     mean_diff.x += (point0.x - point1.x);
     mean_diff.y += (point0.y - point1.y);
@@ -230,19 +217,6 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
 
     idx++;
 
-    // std::cout << (v0 - v1).norm() << std::endl;
-    // if ((v0 - v1).norm() < 1) {
-    //
-    //         cloud_in->points[i].x = point0.x;
-    //         cloud_in->points[i].y = point0.y;
-    //         cloud_in->points[i].z = point0.z;
-    //
-    //         cloud_out->points[i].x = point1.x;
-    //         cloud_out->points[i].y = point1.y;
-    //         cloud_out->points[i].z = point1.z;
-    // } else {
-    //
-    // }
   }
   mean_diff.x = mean_diff.x / idx;
   mean_diff.y = mean_diff.y / idx;
@@ -258,16 +232,9 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
                                     (point0.y - point1.y) / mean_diff.y +
                                     (point0.z - point1.z) / mean_diff.z,
                                 2);
-    // std::cout << SD << std::endl;
-    // Eigen::Vector3d v0(point0.x, point0.y, point0.z);
-    // Eigen::Vector3d v1(point1.x, point1.y, point1.z);
-    // std::cout << normalized_diff << std::endl;
     if (normalized_diff < 5) {
 
       count += 1;
-      // std::cout << "points0" << std::endl;
-      // std::cout << point0 << std::endl;
-      // std::cout << point1 << std::endl;
       cloud_in->points[i].x = point0.x;
       cloud_in->points[i].y = point0.y;
       cloud_in->points[i].z = point0.z;
@@ -278,17 +245,11 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
     }
   }
 
-  LOG(WARNING) << "total count: " << count;
-
-  // LOG(WARNING) << p0 << std::endl << std::endl << p1;
   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>
       TESVD;
   pcl::registration::TransformationEstimationSVD<
       pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
   TESVD.estimateRigidTransformation(*cloud_in, *cloud_out, transformation2);
-  std::cout << "The Estimated Rotation and translation matrices(using "
-               "getTransformation function) are : \n"
-            << transformation2 << std::endl;
 
   Eigen::Matrix3d R = transformation2.block<3, 3>(0, 0).cast<double>();
   Eigen::JacobiSVD<Eigen::MatrixXd> svd(R, Eigen::ComputeThinU |
@@ -296,7 +257,6 @@ void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
   R = svd.matrixU() * (svd.matrixV().transpose()); // Final rotation
 
   Eigen::Vector3d t = transformation2.block<3, 1>(0, 3).cast<double>();
-  // std::cout << "t: " << std::endl << t << std::endl;
   eigen2cv(R, rotation);
   eigen2cv(t, translation);
 }
@@ -327,10 +287,8 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
     LOG(INFO) << pointsLeft_t0;
     return;
   }
-  // std::cout << E << std::endl;
   cv::recoverPose(E, pointsLeft_t0, pointsLeft_t1, rotation, translation_mono,
                   focal, principle_point, mask);
-  // std::cout << "recoverPose rotation: " << rotation << std::endl;
 
   // ------------------------------------------------
   // Translation (t) estimation by use solvePnPRansac
@@ -345,14 +303,6 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
        projMatrl.at<float>(1, 2), projMatrl.at<float>(1, 1),
        projMatrl.at<float>(1, 2), projMatrl.at<float>(1, 3));
 
-  // cv::Mat intrinsic_matrix =
-  //     (cv::Mat_<float>(3, 3) << Kl.at<float>(0, 0), projMatrl.at<float>(0,
-  //     1),
-  //      Kl.at<float>(0, 2), projMatrl.at<float>(1, 0), Kl.at<float>(1, 1),
-  //      projMatrl.at<float>(1, 2), Kl.at<float>(1, 1), projMatrl.at<float>(1,
-  //      2), Kl.at<float>(1, 3));
-
-  //
   int iterationsCount = 500;        // number of Ransac iterations.
   float reprojectionError = 0.0001; // maximum allowed distance to
   // consider it an inlier.
@@ -361,18 +311,12 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
   bool useExtrinsicGuess = true;
   int flags = cv::SOLVEPNP_EPNP;
 
-  std::cout << "projMatrl" << std::endl;
-  // std::cout << Kl << std::endl;
-  std::cout << projMatrl << std::endl;
-
   cv::Mat translation_init = cv::Mat::zeros(3, 1, CV_64F);
   translation_init.at<double>(0,0) = meanPoint.x;
   translation_init.at<double>(1,0) = meanPoint.y;
   translation_init.at<double>(2,0) = meanPoint.z;
 
-  std::cout << "translation_init" << std::endl;
-  std::cout << translation_init << std::endl;
-  // //
+
   cv::solvePnPRansac(points3D_t0, pointsLeft_t1, intrinsic_matrix, dl, rvec,
                      translation_init, useExtrinsicGuess, iterationsCount,
                      reprojectionError, confidence, inliers, flags);
@@ -380,9 +324,6 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
   if (!mono_rotation) {
     cv::Rodrigues(rvec, rotation);
   }
-  //
-  // std::cout << "[trackingFrame2Frame] inliers size: " << inliers.size()
-  // << std::endl;
 }
 
 void displayTracking(cv::Mat &imageLeft_t1,

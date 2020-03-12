@@ -19,6 +19,7 @@ public:
   int ORB_patch_size;
   int bucket_size;
   int features_per_bucket;
+  int motion_threshold;
 
 
 

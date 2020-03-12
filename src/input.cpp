@@ -32,7 +32,6 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
 
 void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                               const sensor_msgs::ImageConstPtr &imgR) {
-        // std::cout << "here" << std::endl;
         imageLeft_t1 = rosImage2CvMat(imgL);
         imageRight_t1 = rosImage2CvMat(imgR);
 
@@ -47,15 +46,6 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
 
         cv::Mat out1, out2;
 
-        // std::cout << "Kl" << std::endl;
-        // std::cout << Kl << std::endl;
-
-        // cv::undistort(imageLeft_t1, out1, Kl, dl);
-        // cv::undistort(imageRight_t1, out2, Kr, dr);
-        // imageLeft_t1 = out1;
-        // imageRight_t1 = out2;
-        // cv::flip(imageLeft_t1, imageLeft_t1, -1);
-        // cv::flip(imageRight_t1, imageRight_t1, -1);
         if (frame_id > 0) { //&& frame_id % 4 == 0
                 run();
         }
@@ -109,7 +99,6 @@ void Input::run() {
         std::vector<cv::Point2f> newPoints;
         std::vector<bool> valid; // valid new points are ture
 
-        // std::cout << "display points: " << pointsLeft_t0.size() << std::endl;
         displayMatches(imL0_unEdited, imR0_unEdited, pointsLeft_t0, pointsRight_t0);
 
         // ---------------------
@@ -117,15 +106,11 @@ void Input::run() {
         // ---------------------
         cv::Mat points4D_t0;
         std::vector<cv::Point3f> points3D_t0V;
-        // if (pointsLeft_t0.size() > 5) {
         if (pointsLeft_t0.size() < 6) {
                 LOG(INFO) << "Not enough points";
                 return;
         }
 
-        // OLD FORMAT
-
-        //std::cout << projMatrl << " " << projMatrr << std::endl;
         cv::triangulatePoints(projMatrl, projMatrr, pointsLeft_t0, pointsRight_t0,
                               points4D_t0);
 
@@ -141,127 +126,59 @@ void Input::run() {
 
         cv::Mat temp1, temp2;
         cv::Point3f mean_t0, mean_t1;
-        int thresh = 0.1;
-        int idx =0;
         for (int i = 0; i < pointsLeft_t0.size(); i++) {
                 cv::Point2f p0 = pointsLeft_t0.at(i);
                 cv::Point2f p1 = pointsRight_t0.at(i);
                 cv::Point3f p_3 = points3D_t0V.at(i);
                 cv::Point3f p_31 = points3D_t1V.at(i);
-                if (cv::norm(p_31 - p_3) > thresh) {
+                if (cv::norm(p_31 - p_3) > Conf().motion_threshold) {
                         pointsLeft_t0.erase(pointsLeft_t0.begin() + i);
                         pointsRight_t0.erase(pointsRight_t0.begin() + i);
                         points3D_t0V.erase(points3D_t0V.begin() + i);
                         points3D_t1V.erase(points3D_t1V.begin() + i);
                         pointsLeft_t1.erase(pointsLeft_t1.begin() + i);
                         pointsRight_t1.erase(pointsRight_t1.begin() + i);
-                        // std::cout << "point" << std::endl;
-                        // std::cout << "(" << p0.x << "," << p0.y << ")" << std::endl;
-                        // std::cout << "(" << p1.x << "," << p1.y << ")" << std::endl;
-                        // std::cout << "(" << p_3.x << "," << p_3.y << "," << p_3.z << ")"
-                        //           << std::endl;
-                        // std::cout << "(" << p_31.x << "," << p_31.y << "," << p_31.z << ")"
-                        //           << std::endl;
-                        // std::cout << cv::norm(p_31 - p_3) << std::endl;
                 }
-                idx++;
-                mean_t0.x +=p_3.x;
-                mean_t0.y +=p_3.y;
-                mean_t0.z +=p_3.z;
-                mean_t1.x +=p_31.x;
-                mean_t1.y +=p_31.y;
-                mean_t1.z +=p_31.z;
         }
-        mean_t0.x/idx;
-        mean_t0.y/idx;
-        mean_t0.z/idx;
-        mean_t1.x/idx;
-        mean_t1.y/idx;
-        mean_t1.z/idx;
-        cv::Point3f mean_diff = mean_t0 - mean_t1;
-        std::cout << "Mean diff" << std::endl;
-        std::cout << mean_t0 - mean_t1 << std::endl;
+
 
 
 
         cv::Mat points3D_t1 = cv::Mat(points3D_t1V);
         cv::Mat points3D_t0 = cv::Mat(points3D_t0V);
 
-        // // NEW FORMAT
-        // std::vector<cv::Point3f> points3D_t0V, points3D_t1V;
-        // cv::Mat points4D_t0V, points4D_t1V;
-        //
-        // cv::triangulatePoints(projMatrl, projMatrr, points3D_t0V, points3D_t1V,
-        //                       points4D_t0V);
-        //
-        // cv::convertPointsFromHomogeneous(points4D_t0V.t(), points3D_t0V);
-        //
-        // LOG(INFO) << points3D_t0V;
-        //
-        // // ---------------------
-        // // Tracking transfomation
-        // // ---------------------
-        // trackingFrame2Frame(points3D_t0, points3D_t1, rotation, translation);
-
-        //
 
         cv::Mat_<double> RBT = FindRigidTransform(points3D_t1, points3D_t0);
-        // std::cout << "RBT" << std::endl;
-        // std::cout << RBT << std::endl;
 
         rotation = RBT(cv::Range(0,3),cv::Range(0,3));
         LOG(WARNING) << "rot" << rotation;
         translation.at<double>(0,0) = RBT.at<double>(0,3);
         translation.at<double>(1,0) = RBT.at<double>(1,3);
         translation.at<double>(2,0) = RBT.at<double>(2,3);
-        //
-        // trackingFrame2Frame(projMatrl, projMatrr, Kl, dl, pointsLeft_t0,
-        //                     pointsLeft_t1, points3D_t0, rotation, translation, mean_diff,
-        //                     false);
 
         LOG(WARNING) << "translation norm: "
                      << pow(pow(translation.at<double>(0, 0), 2) +
                pow(translation.at<double>(0, 1), 2) +
                pow(translation.at<double>(0, 2), 2),
                1.0 / 2.0);
-        // LOG(INFO) << "translation: " << std::endl << translation;
-        // LOG(INFO) << "rotation: " << std::endl << rotation;
+
         displayTracking(imageLeft_t1, pointsLeft_t0, pointsLeft_t1);
         frame_pose.convertTo(frame_pose32, CV_32F);
-        //
-
         // ------------------------------------------------
         // Intergrating and display
         // ------------------------------------------------
-
         cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
 
         cv::Mat rigid_body_transformation;
-
-        // cv::Mat out_mat, inliners;
-        // cv::estimateAffine3D(points3D_t0, points3D_t1, out_mat, inliners);
-        // LOG(INFO) << "outMat: " <<out_mat;
-
-
-
-        // std::cout << rotation_euler << std::endl;
-        std::cout << "frame_pose" << std::endl;
-        std::cout << frame_pose << std::endl;
-        std::cout << rotation << std::endl;
-        std::cout << translation << std::endl;
 
         if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
             abs(rotation_euler[2]) < 0.1 && abs(translation.at<double>(0, 0)) < 0.1 &&
             abs(translation.at<double>(0, 1)) < 0.1 &&
             abs(translation.at<double>(0, 2)) < 0.1) {
-                // integrateOdometryStereo(frame_pose, rotation, translation);
-
                 integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
                                         rotation, translation);
-                std::cout << frame_pose << std::endl;
-                //
         } else {
-                std::cout << "Too large rotation" << std::endl;
+                LOG(WARNING) << "Translation too large" << std::endl;
         }
         t_b = clock();
         float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
@@ -279,22 +196,15 @@ void Input::run() {
         cv::Mat xyz = frame_pose.col(3).clone();
         geometry_msgs::PoseStamped poseStamped;
         poseStamped.header.frame_id = "map";
-        poseStamped.pose.position.x = xyz.at<double>(2) / 1;
-        poseStamped.pose.position.y = xyz.at<double>(0) / 1;
-        poseStamped.pose.position.z = xyz.at<double>(1) / 1;
+        poseStamped.pose.position.x = xyz.at<double>(2);
+        poseStamped.pose.position.y = xyz.at<double>(0);
+        poseStamped.pose.position.z = xyz.at<double>(1);
         //
         poseStamped.pose.orientation.x = q.z();
         poseStamped.pose.orientation.y = q.x();
         poseStamped.pose.orientation.z = q.y();
         poseStamped.pose.orientation.w = q.w();
-        // poseStamped.pose.position.x = mean_diff.z;
-        // poseStamped.pose.position.y = mean_diff.x;
-        // poseStamped.pose.position.z = mean_diff.y;
-        // //
-        // poseStamped.pose.orientation.x = 0;
-        // poseStamped.pose.orientation.y = 0;
-        // poseStamped.pose.orientation.z = 0;
-        // poseStamped.pose.orientation.w = 1;
+
         pose_publisher.publish(poseStamped);
         display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);
         new_image = false;

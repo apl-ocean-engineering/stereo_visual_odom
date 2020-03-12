@@ -23,9 +23,8 @@ void display(int frame_id, cv::Mat &trajectory, cv::Mat &pose,
         int y = int(pose.at<double>(2)) + 100;
 
         circle(trajectory, cv::Point(x, y), 1, CV_RGB(255, 0, 0), 2);
-        //
         if (show_gt) {
-                // draw ground truth trajectory
+
                 cv::Mat pose_gt = cv::Mat::zeros(1, 3, CV_64F);
 
                 pose_gt.at<double>(0) = pose_matrix_gt[frame_id].val[0][3];
@@ -35,14 +34,6 @@ void display(int frame_id, cv::Mat &trajectory, cv::Mat &pose,
                 y = int(pose_gt.at<double>(2)) + 100;
                 circle(trajectory, cv::Point(x, y), 1, CV_RGB(255, 255, 0), 2);
         }
-        // // print info
-        //
-        // // rectangle( traj, Point(10, 30), Point(550, 50), CV_RGB(0,0,0),
-        // CV_FILLED);
-        // // sprintf(text, "FPS: %02f", fps);
-        // // putText(traj, text, textOrg, fontFace, fontScale, Scalar::all(255),
-        // // thickness, 8);
-        //
         cv::imshow("Trajectory", trajectory);
         //
         cv::waitKey(1);
@@ -58,14 +49,12 @@ void displayMatches(cv::Mat img1, cv::Mat img2,
         cv::Mat dst;
 
         cv::hconcat(img1, img2, dst);
-        //std::cout << dst.channels() << std::endl;
         cv::cvtColor(dst, dst, CV_GRAY2BGR);
         cv::RNG rng(12345);
         for (int i=0; i < points1.size(); i++) {
                 cv::Scalar color = cv::Scalar(
                         rng.uniform(0,255), rng.uniform(0, 255),
                         rng.uniform(0, 255));
-                //std::cout << points1.at(i).y << " " << points2.at(i).y << " " << i << std::endl;
                 cv::Point2i p1 = cv::Point2i(int(points1.at(i).x),
                                              int(points1.at(i).y));
                 cv::Point2i p2 = cv::Point2i(int(img1.cols +  points2.at(i).x),
@@ -92,19 +81,10 @@ void drawPoints(cv::Mat img, std::vector<cv::Point2f> points, int idx) {
 
 void integrateOdometryStereo(cv::Mat &frame_pose, const cv::Mat rotation,
                              const cv::Mat translation){
-        //std::cout << "fp: " << std::endl <<  frame_pose << std::endl;
         cv::Mat addup = (cv::Mat_<double>(1, 4) << 0, 0, 0, 1);
         cv::Mat G;
         cv::hconcat(rotation, translation, G);
         cv::vconcat(G, addup, G);
-
-        // std::cout << "frame_pose" << std::endl;
-        // std::cout << frame_pose << std::endl;
-        // std::cout << G << std::endl;
-        // frame_pose = G*frame_pose;
-        // std::cout << frame_pose << std::endl;
-
-        //frame_pose = eigen(rotation)*frame_pose + translation;
 }
 
 cv::Vec3d
@@ -170,10 +150,6 @@ FindRigidTransform(const cv::Mat_<cv::Vec3d> &points1, const cv::Mat_<cv::Vec3d>
 
         cv::Mat trans = -R*cv::Mat(t2) + t1;
 
-        // std::cout << "trans: " << std::endl;
-        // std::cout << trans << std::endl;
-        // std::cout << result.rowRange(0,3) << std::endl;
-
         return result.rowRange(0, 3);
 }
 
@@ -183,39 +159,25 @@ void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
                              cv::Mat &frame_pose, const cv::Mat &rotation,
                              const cv::Mat &translation_stereo) {
 
-        // std::cout << "rotation" << rotation << std::endl;
-        // std::cout << "translation_stereo" << translation_stereo << std::endl;
-
         cv::Mat addup = (cv::Mat_<double>(1, 4) << 0, 0, 0, 1);
 
         cv::hconcat(rotation, translation_stereo, rigid_body_transformation);
-        // LOG(WARNING) << rigid_body_transformation.type() << std::endl <<
-        // addup.type();
+
         cv::vconcat(rigid_body_transformation, addup, rigid_body_transformation);
 
-        // std::cout << "rigid_body_transformation" << rigid_body_transformation <<
-        // std::endl;
 
         double scale = sqrt(
                 (translation_stereo.at<double>(0)) * (translation_stereo.at<double>(0)) +
                 (translation_stereo.at<double>(1)) * (translation_stereo.at<double>(1)) +
                 (translation_stereo.at<double>(2)) * (translation_stereo.at<double>(2)));
 
-        // frame_pose = frame_pose * rigid_body_transformation;
-        // std::cout << "scale: " << scale << std::endl;
 
         rigid_body_transformation = rigid_body_transformation.inv();
-        // if ((scale>0.1)&&(translation_stereo.at<double>(2) >
-        // translation_stereo.at<double>(0)) && (translation_stereo.at<double>(2) >
-        // translation_stereo.at<double>(1)))
         if (scale < 10) {
-                // std::cout << "Rpose" << Rpose << std::endl;
-
                 frame_pose = frame_pose * rigid_body_transformation;
 
         } else {
-                std::cout << "[WARNING] scale below 0.1, or incorrect translation"
-                          << std::endl;
+                LOG(WARNING)<< "scale below 0.1, or incorrect translation";
         }
 }
 
@@ -224,7 +186,6 @@ bool isRotationMatrix(cv::Mat &R) {
         transpose(R, Rt);
         cv::Mat shouldBeIdentity = Rt * R;
         cv::Mat I = cv::Mat::eye(3, 3, shouldBeIdentity.type());
-        //std::cout << shouldBeIdentity << std::endl;
         return norm(I, shouldBeIdentity) < 1e-6;
 }
 
