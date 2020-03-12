@@ -67,11 +67,11 @@ void displayMatches(cv::Mat img1, cv::Mat img2,
                         rng.uniform(0, 255));
                 //std::cout << points1.at(i).y << " " << points2.at(i).y << " " << i << std::endl;
                 cv::Point2i p1 = cv::Point2i(int(points1.at(i).x),
-                                  int(points1.at(i).y));
+                                             int(points1.at(i).y));
                 cv::Point2i p2 = cv::Point2i(int(img1.cols +  points2.at(i).x),
-                                  int(points2.at(i).y));
+                                             int(points2.at(i).y));
 
-                cv::circle(dst, p1, 5 ,color);
+                cv::circle(dst, p1, 5,color);
                 cv::circle(dst, p2, 5, color);
                 cv::line(dst, p1, p2, color);
         }
@@ -92,20 +92,86 @@ void drawPoints(cv::Mat img, std::vector<cv::Point2f> points, int idx) {
 
 void integrateOdometryStereo(cv::Mat &frame_pose, const cv::Mat rotation,
                              const cv::Mat translation){
-          std::cout << "fp: " << std::endl <<  frame_pose << std::endl;
-          cv::Mat addup = (cv::Mat_<double>(1, 4) << 0, 0, 0, 1);
-          cv::Mat G;
-          cv::hconcat(rotation, translation, G);
-          cv::vconcat(G, addup, G);
+        //std::cout << "fp: " << std::endl <<  frame_pose << std::endl;
+        cv::Mat addup = (cv::Mat_<double>(1, 4) << 0, 0, 0, 1);
+        cv::Mat G;
+        cv::hconcat(rotation, translation, G);
+        cv::vconcat(G, addup, G);
 
-          std::cout << "frame_pose" << std::endl;
-          std::cout << frame_pose << std::endl;
-          std::cout << G << std::endl;
-          frame_pose = G*frame_pose;
-          std::cout << frame_pose << std::endl;
+        // std::cout << "frame_pose" << std::endl;
+        // std::cout << frame_pose << std::endl;
+        // std::cout << G << std::endl;
+        // frame_pose = G*frame_pose;
+        // std::cout << frame_pose << std::endl;
 
-          //frame_pose = eigen(rotation)*frame_pose + translation;
-          }
+        //frame_pose = eigen(rotation)*frame_pose + translation;
+}
+
+cv::Vec3d
+CalculateMean(const cv::Mat_<cv::Vec3d> &points)
+{
+        cv::Mat_<cv::Vec3d> result;
+        cv::reduce(points, result, 0, CV_REDUCE_AVG);
+        return result(0, 0);
+}
+
+cv::Mat_<double>
+FindRigidTransform(const cv::Mat_<cv::Vec3d> &points1, const cv::Mat_<cv::Vec3d> points2)
+{
+        //taken from here:https://stackoverflow.com/questions/21206870/opencv-rigid-transformation-between-two-3d-point-clouds
+        /* Calculate centroids. */
+        cv::Vec3d t1 = -CalculateMean(points1);
+        cv::Vec3d t2 = -CalculateMean(points2);
+
+        cv::Mat_<double> T1 = cv::Mat_<double>::eye(4, 4);
+        T1(0, 3) = t1[0];
+        T1(1, 3) = t1[1];
+        T1(2, 3) = t1[2];
+
+        cv::Mat_<double> T2 = cv::Mat_<double>::eye(4, 4);
+        T2(0, 3) = -t2[0];
+        T2(1, 3) = -t2[1];
+        T2(2, 3) = -t2[2];
+
+        /* Calculate covariance matrix for input points. Also calculate RMS deviation from centroid
+         * which is used for scale calculation.
+         */
+        cv::Mat_<double> C(3, 3, 0.0);
+        double p1Rms = 0, p2Rms = 0;
+        for (int ptIdx = 0; ptIdx < points1.rows; ptIdx++) {
+                cv::Vec3d p1 = points1(ptIdx, 0) + t1;
+                cv::Vec3d p2 = points2(ptIdx, 0) + t2;
+                p1Rms += p1.dot(p1);
+                p2Rms += p2.dot(p2);
+                for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                                C(i, j) += p2[i] * p1[j];
+                        }
+                }
+        }
+
+        cv::Mat_<double> u, s, vh;
+        cv::SVD::compute(C, s, u, vh);
+
+        cv::Mat_<double> R = u * vh;
+
+        if (cv::determinant(R) < 0) {
+                R -= u.col(2) * (vh.row(2) * 2.0);
+        }
+
+        // double scale = sqrt(p2Rms / p1Rms);
+        // R *= scale;
+
+        cv::Mat_<double> M = cv::Mat_<double>::eye(4, 4);
+        R.copyTo(M.colRange(0, 3).rowRange(0, 3));
+
+        cv::Mat_<double> result = T2 * M * T1;
+        result /= result(3, 3);
+
+        return result.rowRange(0, 3);
+}
+
+
 
 void integrateOdometryStereo(int frame_i, cv::Mat &rigid_body_transformation,
                              cv::Mat &frame_pose, const cv::Mat &rotation,

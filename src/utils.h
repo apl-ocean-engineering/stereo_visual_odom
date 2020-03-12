@@ -44,6 +44,12 @@ cv::Vec3f rotationMatrixToEulerAngles(cv::Mat &R);
 
 void drawPoints(cv::Mat img, std::vector<cv::Point2f> points, int i);
 
+cv::Vec3d
+CalculateMean(const cv::Mat_<cv::Vec3d> &points);
+
+cv::Mat_<double>
+FindRigidTransform(const cv::Mat_<cv::Vec3d> &points1, const cv::Mat_<cv::Vec3d> points2);
+
 // --------------------------------
 // I/O
 // --------------------------------

@@ -165,10 +165,10 @@ int main(int argc, char **argv) {
 
   // input.readImages(filepath);
   // //
-  std::string left_topic = "/left/image";
-  std::string right_topic = "/right/image";
-  // std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
-  // std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
+  // std::string left_topic = "/left/image";
+  // std::string right_topic = "/right/image";
+  std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
+  std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
 
   message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
                                                                  left_topic, 1);

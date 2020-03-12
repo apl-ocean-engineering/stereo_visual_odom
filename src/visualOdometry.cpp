@@ -305,7 +305,7 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat dl, std::vector<cv::Point2f> &pointsLeft_t0,
                          std::vector<cv::Point2f> &pointsLeft_t1,
                          cv::Mat &points3D_t0, cv::Mat &rotation,
-                         cv::Mat &translation, bool mono_rotation) {
+                         cv::Mat &translation, cv::Point3f &meanPoint, bool mono_rotation) {
 
   // Calculate frame to frame transformation
 
@@ -364,9 +364,17 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
   std::cout << "projMatrl" << std::endl;
   // std::cout << Kl << std::endl;
   std::cout << projMatrl << std::endl;
+
+  cv::Mat translation_init = cv::Mat::zeros(3, 1, CV_64F);
+  translation_init.at<double>(0,0) = meanPoint.x;
+  translation_init.at<double>(1,0) = meanPoint.y;
+  translation_init.at<double>(2,0) = meanPoint.z;
+
+  std::cout << "translation_init" << std::endl;
+  std::cout << translation_init << std::endl;
   // //
   cv::solvePnPRansac(points3D_t0, pointsLeft_t1, intrinsic_matrix, dl, rvec,
-                     translation, useExtrinsicGuess, iterationsCount,
+                     translation_init, useExtrinsicGuess, iterationsCount,
                      reprojectionError, confidence, inliers, flags);
 
   if (!mono_rotation) {
