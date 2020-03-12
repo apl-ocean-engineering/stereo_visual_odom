@@ -61,9 +61,39 @@ void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
   frame_id++;
 }
 
-void Input::maskCallback(const sensor_msgs::ImageConstPtr &mask_msg) {
-  mask = rosImage2CvMat(mask_msg);
+void Input::detectionBoxesCallback(
+    const image_detection_msgs::DetectionBoxesListConstPtr &leftBoxes,
+    const image_detection_msgs::DetectionBoxesListConstPtr &rightBoxes) {
+  int left_detection_count = leftBoxes->detection_nums;
+  int right_detection_count = rightBoxes->detection_nums;
+
+  for (int i = 0; i < std::min(left_detection_count, right_detection_count);
+       i++) {
+    image_detection_msgs::DetectionBox left_box =
+        leftBoxes->detection_messages.at(i);
+    if (Conf().ignore_detections) {
+      construct_mask(left_box);
+    }
+    image_detection_msgs::DetectionBox right_box =
+        rightBoxes->detection_messages.at(i);
+    if (Conf().detect_object_pose) {
+      detection_object_pose(left_box, right_box);
+    }
+  }
 }
+
+void Input::construct_mask(image_detection_msgs::DetectionBox box) {
+  for (int y = box.lower_y; y < box.upper_y; y++) {
+    for (int x = box.lower_x; x < box.upper_x; x++) {
+      mask.at<unsigned char>(y, x) = 0;
+    }
+  }
+}
+
+void Input::detection_object_pose(
+    image_detection_msgs::DetectionBox left_box,
+    image_detection_msgs::DetectionBox right_box) {}
+
 //
 void Input::readImages(std::string filepath) {}
 //
@@ -144,14 +174,6 @@ void Input::run() {
     bool valid = bool(mask.at<unsigned char>(int(p0.x), int(p1.y)));
 
     if (cv::norm(p_31 - p_3) > Conf().motion_threshold || !valid) {
-      // std::cout << pointsLeft_t0.size() << std::endl;
-      // pointsLeft_t0.erase(pointsLeft_t0.begin() + 0);
-      // std::cout << pointsLeft_t0.size() << std::endl;
-      // pointsRight_t0.erase(pointsRight_t0.begin() + idx);
-      // points3D_t0V.erase(points3D_t0V.begin() + idx);
-      // points3D_t1V.erase(points3D_t1V.begin() + idx);
-      // pointsLeft_t1.erase(pointsLeft_t1.begin() + idx);
-      // pointsRight_t1.erase(pointsRight_t1.begin() + idx);
     } else {
       TpointsLeft_t0.push_back(pointsLeft_t0.at(i));
       TpointsRight_t0.push_back(pointsRight_t0.at(i));

@@ -34,19 +34,31 @@
 #include <dynamic_reconfigure/server.h>
 #include <ros/ros.h>
 
+#include "image_detection_msgs/DetectionBox.h"
+#include "image_detection_msgs/DetectionBoxesList.h"
+#include "image_detection_msgs/DetectionMetaData.h"
+#include "image_detection_msgs/SemanticDetectionMat.h"
+
 class Input {
 public:
   Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
         cv::Mat dleft, cv::Mat dright, std::vector<Matrix> gt, bool display_gt);
   void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                          const sensor_msgs::ImageConstPtr &imgR);
-  void maskCallback(const sensor_msgs::ImageConstPtr &mask);
+  void detectionBoxesCallback(
+      const image_detection_msgs::DetectionBoxesListConstPtr &leftBoxes,
+      const image_detection_msgs::DetectionBoxesListConstPtr &rightBoxes);
+
   void readImages(std::string filepath);
   cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
   void run();
   void
   reconfigureCallback(const stereo_visual_odom::StereoVisualOdomConfig &config,
                       uint32_t level);
+
+  void construct_mask(image_detection_msgs::DetectionBox box);
+  void detection_object_pose(image_detection_msgs::DetectionBox left_box,
+                             image_detection_msgs::DetectionBox right_box);
 
 private:
   clock_t t_a, t_b;
