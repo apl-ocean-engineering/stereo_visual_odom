@@ -168,6 +168,12 @@ FindRigidTransform(const cv::Mat_<cv::Vec3d> &points1, const cv::Mat_<cv::Vec3d>
         cv::Mat_<double> result = T2 * M * T1;
         result /= result(3, 3);
 
+        cv::Mat trans = -R*cv::Mat(t2) + t1;
+
+        // std::cout << "trans: " << std::endl;
+        // std::cout << trans << std::endl;
+        // std::cout << result.rowRange(0,3) << std::endl;
+
         return result.rowRange(0, 3);
 }
 
