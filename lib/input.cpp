@@ -1,9 +1,9 @@
-#include "input.h"
+#include "stereo_visual_odom/input.h"
 
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
 
-#include "configuration.h"
+#include "stereo_visual_odom/configuration.h"
 #include <math.h>
 
 using namespace std;

@@ -1,4 +1,4 @@
-#include "Frame.h"
+#include "stereo_visual_odom/Frame.h"
 
 Frame::Frame()
 {}
@@ -26,5 +26,3 @@ void Frame::triangulateFeaturePoints(cv::Mat& points4D)
 {
     cv::triangulatePoints( m_projMatL,  m_projMatR,  m_pointsFeatureLeft,  m_pointsFeatureRight,  points4D);
 }
-
-

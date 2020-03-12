@@ -16,10 +16,10 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 libviso2; if not, write to the Free Software Foundation, Inc., 51 Franklin
-Street, Fifth Floor, Boston, MA 02110-1301, USA 
+Street, Fifth Floor, Boston, MA 02110-1301, USA
 */
 
-#include "matrix.h"
+#include "evaluate/matrix.h"
 #include <math.h>
 
 #define SWAP(a,b) {temp=a;a=b;b=temp;}
@@ -284,7 +284,7 @@ Matrix Matrix::operator* (const FLOAT &s) {
 Matrix Matrix::operator/ (const Matrix &M) {
   const Matrix &A = *this;
   const Matrix &B = M;
-  
+
   if (A.m==B.m && A.n==B.n) {
     Matrix C(A.m,A.n);
     for (int32_t i=0; i<A.m; i++)
@@ -292,7 +292,7 @@ Matrix Matrix::operator/ (const Matrix &M) {
         if (B.val[i][j]!=0)
           C.val[i][j] = A.val[i][j]/B.val[i][j];
     return C;
-    
+
   } else if (A.m==B.m && B.n==1) {
     Matrix C(A.m,A.n);
     for (int32_t i=0; i<A.m; i++)
@@ -300,7 +300,7 @@ Matrix Matrix::operator/ (const Matrix &M) {
         if (B.val[i][0]!=0)
           C.val[i][j] = A.val[i][j]/B.val[i][0];
     return C;
-    
+
   } else if (A.n==B.n && B.m==1) {
     Matrix C(A.m,A.n);
     for (int32_t i=0; i<A.m; i++)
@@ -308,12 +308,12 @@ Matrix Matrix::operator/ (const Matrix &M) {
         if (B.val[0][j]!=0)
           C.val[i][j] = A.val[i][j]/B.val[0][j];
     return C;
-    
+
   } else {
     cerr << "ERROR: Trying to divide matrices of size (" << A.m << "x" << A.n <<
         ") and (" << B.m << "x" << B.n << ")" << endl;
     exit(0);
-  } 
+  }
 }
 
 Matrix Matrix::operator/ (const FLOAT &s) {
@@ -395,12 +395,12 @@ bool Matrix::inv () {
 }
 
 FLOAT Matrix::det () {
-  
+
   if (m != n) {
     cerr << "ERROR: Trying to compute determinant of a matrix of size (" << m << "x" << n << ")" << endl;
     exit(0);
   }
-    
+
   Matrix A(*this);
   int32_t *idx = (int32_t*)malloc(m*sizeof(int32_t));
   FLOAT d;
@@ -411,34 +411,34 @@ FLOAT Matrix::det () {
 }
 
 bool Matrix::solve (const Matrix &M, FLOAT eps) {
-  
+
   // substitutes
   const Matrix &A = M;
   Matrix &B       = *this;
-  
+
   if (A.m != A.n || A.m != B.m || A.m<1 || B.n<1) {
     cerr << "ERROR: Trying to eliminate matrices of size (" << A.m << "x" << A.n <<
             ") and (" << B.m << "x" << B.n << ")" << endl;
     exit(0);
   }
-  
+
   // index vectors for bookkeeping on the pivoting
   int32_t* indxc = new int32_t[m];
   int32_t* indxr = new int32_t[m];
   int32_t* ipiv  = new int32_t[m];
-  
+
   // loop variables
   int32_t i, icol, irow, j, k, l, ll;
   FLOAT big, dum, pivinv, temp;
-  
+
   // initialize pivots to zero
   for (j=0;j<m;j++) ipiv[j]=0;
-  
+
   // main loop over the columns to be reduced
   for (i=0;i<m;i++) {
-    
+
     big=0.0;
-    
+
     // search for a pivot element
     for (j=0;j<m;j++)
       if (ipiv[j]!=1)
@@ -450,17 +450,17 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
       icol=k;
             }
     ++(ipiv[icol]);
-    
+
     // We now have the pivot element, so we interchange rows, if needed, to put the pivot
     // element on the diagonal. The columns are not physically interchanged, only relabeled.
     if (irow != icol) {
       for (l=0;l<m;l++) SWAP(A.val[irow][l], A.val[icol][l])
       for (l=0;l<n;l++) SWAP(B.val[irow][l], B.val[icol][l])
     }
-    
+
     indxr[i]=irow; // We are now ready to divide the pivot row by the
     indxc[i]=icol; // pivot element, located at irow and icol.
-    
+
     // check for singularity
     if (fabs(A.val[icol][icol]) < eps) {
       delete[] indxc;
@@ -468,12 +468,12 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
       delete[] ipiv;
       return false;
     }
-    
+
     pivinv=1.0/A.val[icol][icol];
     A.val[icol][icol]=1.0;
     for (l=0;l<m;l++) A.val[icol][l] *= pivinv;
     for (l=0;l<n;l++) B.val[icol][l] *= pivinv;
-    
+
     // Next, we reduce the rows except for the pivot one
     for (ll=0;ll<m;ll++)
       if (ll!=icol) {
@@ -483,7 +483,7 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
       for (l=0;l<n;l++) B.val[ll][l] -= B.val[icol][l]*dum;
       }
   }
-  
+
   // This is the end of the main loop over columns of the reduction. It only remains to unscramble
   // the solution in view of the column interchanges. We do this by interchanging pairs of
   // columns in the reverse order that the permutation was built up.
@@ -492,7 +492,7 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
       for (k=0;k<m;k++)
         SWAP(A.val[k][indxr[l]], A.val[k][indxc[l]])
   }
-  
+
   // success
   delete[] indxc;
   delete[] indxr;
@@ -508,12 +508,12 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
 // or invert a matrix.
 
 bool Matrix::lu(int32_t *idx, FLOAT &d, FLOAT eps) {
-  
+
   if (m != n) {
     cerr << "ERROR: Trying to LU decompose a matrix of size (" << m << "x" << n << ")" << endl;
     exit(0);
   }
-  
+
   int32_t i,imax,j,k;
   FLOAT   big,dum,sum,temp;
   FLOAT* vv = (FLOAT*)malloc(n*sizeof(FLOAT)); // vv stores the implicit scaling of each row.
@@ -563,7 +563,7 @@ bool Matrix::lu(int32_t *idx, FLOAT &d, FLOAT eps) {
         val[i][j] *= dum;
     }
   } // Go back for the next column in the reduction.
-  
+
   // success
   free(vv);
   return true;
@@ -751,7 +751,7 @@ void Matrix::svd(Matrix &U2,Matrix &W,Matrix &V) {
       w[k] = x;
     }
   }
-  
+
   // sort singular values and corresponding columns of u and v
   // by decreasing magnitude. Also, signs of corresponding columns are
   // flipped so as to maximize the number of positive elements.
@@ -791,7 +791,7 @@ void Matrix::svd(Matrix &U2,Matrix &W,Matrix &V) {
 
   // create vector and copy singular values
   W = Matrix(min(m,n),1,w);
-  
+
   // extract mxm submatrix U
   U2.setMat(U.getMat(0,0,m-1,min(m-1,n-1)),0,0);
 
@@ -847,4 +847,3 @@ FLOAT Matrix::pythag(FLOAT a,FLOAT b) {
   else
     return (absb == 0.0 ? 0.0 : absb*sqrt(1.0+SQR(absa/absb)));
 }
-

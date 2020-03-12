@@ -1,4 +1,4 @@
-#include "configuration.h"
+#include "stereo_visual_odom/configuration.h"
 
 Configuration &Conf() {
         static Configuration TheInstance;

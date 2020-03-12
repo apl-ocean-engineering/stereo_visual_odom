@@ -1,5 +1,5 @@
-#include "visualOdometry.h"
-#include "configuration.h"
+#include "stereo_visual_odom/visualOdometry.h"
+#include "stereo_visual_odom/configuration.h"
 
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
@@ -7,13 +7,6 @@
 #include <eigen3/Eigen/Geometry>
 #include <opencv2/core/eigen.hpp>
 
-#include <pcl/common/angles.h>
-#include <pcl/common/common.h>
-#include <pcl/common/transforms.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <pcl/registration/transformation_estimation_svd.h>
 
 #include <math.h>
 
@@ -181,85 +174,85 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
 
   currentVOFeatures.left_points = pointsLeft_t1;
 }
-
-void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
-                         cv::Mat &rotation, cv::Mat &translation) {
-
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in(
-      new pcl::PointCloud<pcl::PointXYZ>());
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out(
-      new pcl::PointCloud<pcl::PointXYZ>());
-  cloud_in->width = points3D_t0.rows;
-  cloud_in->height = 1;
-  cloud_in->is_dense = false;
-  cloud_in->resize(cloud_in->width * cloud_in->height);
-
-  cloud_out->width = points3D_t0.rows;
-  cloud_out->height = 1;
-  cloud_out->is_dense = false;
-  cloud_out->resize(cloud_out->width * cloud_out->height);
-
-  cv::Point3f mean_diff;
-  mean_diff.x = 0;
-  mean_diff.y = 0;
-  mean_diff.z = 0;
-
-  int idx = 0;
-
-  for (int i = 0; i < points3D_t0.rows; i++) {
-    cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
-    cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
-
-
-    mean_diff.x += (point0.x - point1.x);
-    mean_diff.y += (point0.y - point1.y);
-    mean_diff.z += (point0.z - point1.z);
-
-    idx++;
-
-  }
-  mean_diff.x = mean_diff.x / idx;
-  mean_diff.y = mean_diff.y / idx;
-  mean_diff.z = mean_diff.z / idx;
-
-  int count = 0;
-
-  for (int i = 0; i < points3D_t0.rows; i++) {
-    cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
-    cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
-
-    float normalized_diff = pow((point0.x - point1.x) / mean_diff.x +
-                                    (point0.y - point1.y) / mean_diff.y +
-                                    (point0.z - point1.z) / mean_diff.z,
-                                2);
-    if (normalized_diff < 5) {
-
-      count += 1;
-      cloud_in->points[i].x = point0.x;
-      cloud_in->points[i].y = point0.y;
-      cloud_in->points[i].z = point0.z;
-
-      cloud_out->points[i].x = point1.x;
-      cloud_out->points[i].y = point1.y;
-      cloud_out->points[i].z = point1.z;
-    }
-  }
-
-  pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>
-      TESVD;
-  pcl::registration::TransformationEstimationSVD<
-      pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
-  TESVD.estimateRigidTransformation(*cloud_in, *cloud_out, transformation2);
-
-  Eigen::Matrix3d R = transformation2.block<3, 3>(0, 0).cast<double>();
-  Eigen::JacobiSVD<Eigen::MatrixXd> svd(R, Eigen::ComputeThinU |
-                                               Eigen::ComputeThinV);
-  R = svd.matrixU() * (svd.matrixV().transpose()); // Final rotation
-
-  Eigen::Vector3d t = transformation2.block<3, 1>(0, 3).cast<double>();
-  eigen2cv(R, rotation);
-  eigen2cv(t, translation);
-}
+//
+// void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
+//                          cv::Mat &rotation, cv::Mat &translation) {
+//
+//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in(
+//       new pcl::PointCloud<pcl::PointXYZ>());
+//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out(
+//       new pcl::PointCloud<pcl::PointXYZ>());
+//   cloud_in->width = points3D_t0.rows;
+//   cloud_in->height = 1;
+//   cloud_in->is_dense = false;
+//   cloud_in->resize(cloud_in->width * cloud_in->height);
+//
+//   cloud_out->width = points3D_t0.rows;
+//   cloud_out->height = 1;
+//   cloud_out->is_dense = false;
+//   cloud_out->resize(cloud_out->width * cloud_out->height);
+//
+//   cv::Point3f mean_diff;
+//   mean_diff.x = 0;
+//   mean_diff.y = 0;
+//   mean_diff.z = 0;
+//
+//   int idx = 0;
+//
+//   for (int i = 0; i < points3D_t0.rows; i++) {
+//     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
+//     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
+//
+//
+//     mean_diff.x += (point0.x - point1.x);
+//     mean_diff.y += (point0.y - point1.y);
+//     mean_diff.z += (point0.z - point1.z);
+//
+//     idx++;
+//
+//   }
+//   mean_diff.x = mean_diff.x / idx;
+//   mean_diff.y = mean_diff.y / idx;
+//   mean_diff.z = mean_diff.z / idx;
+//
+//   int count = 0;
+//
+//   for (int i = 0; i < points3D_t0.rows; i++) {
+//     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
+//     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
+//
+//     float normalized_diff = pow((point0.x - point1.x) / mean_diff.x +
+//                                     (point0.y - point1.y) / mean_diff.y +
+//                                     (point0.z - point1.z) / mean_diff.z,
+//                                 2);
+//     if (normalized_diff < 5) {
+//
+//       count += 1;
+//       cloud_in->points[i].x = point0.x;
+//       cloud_in->points[i].y = point0.y;
+//       cloud_in->points[i].z = point0.z;
+//
+//       cloud_out->points[i].x = point1.x;
+//       cloud_out->points[i].y = point1.y;
+//       cloud_out->points[i].z = point1.z;
+//     }
+//   }
+//
+//   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ, pcl::PointXYZ>
+//       TESVD;
+//   pcl::registration::TransformationEstimationSVD<
+//       pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
+//   TESVD.estimateRigidTransformation(*cloud_in, *cloud_out, transformation2);
+//
+//   Eigen::Matrix3d R = transformation2.block<3, 3>(0, 0).cast<double>();
+//   Eigen::JacobiSVD<Eigen::MatrixXd> svd(R, Eigen::ComputeThinU |
+//                                                Eigen::ComputeThinV);
+//   R = svd.matrixU() * (svd.matrixV().transpose()); // Final rotation
+//
+//   Eigen::Vector3d t = transformation2.block<3, 1>(0, 3).cast<double>();
+//   eigen2cv(R, rotation);
+//   eigen2cv(t, translation);
+// }
 
 void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat dl, std::vector<cv::Point2f> &pointsLeft_t0,

@@ -1,5 +1,5 @@
 
-#include "bucket.h"
+#include "stereo_visual_odom/bucket.h"
 
 Bucket::Bucket(int size) { max_size = size; }
 

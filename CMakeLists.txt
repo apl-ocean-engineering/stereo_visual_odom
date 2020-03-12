@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(stereo_visual_odom)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package( OpenCV REQUIRED )
 find_package(Eigen3 REQUIRED)
 FIND_PACKAGE(PCL REQUIRED)
@@ -33,7 +27,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES stereo_visual_odom
 CATKIN_DEPENDS g3log_catkin
-pcl_ros pcl
+#pcl_ros pcl
 #  DEPENDS system_lib
 )
 
@@ -41,42 +35,32 @@ pcl_ros pcl
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
-  ${PCL_INCLUDE_DIRS}
+  # ${PCL_INCLUDE_DIRS}
 )
 
-add_subdirectory(src/evaluate)
-#
-include_directories(${OpenCV_INCLUDE_DIRS} )
-include_directories(evaluate)
-#
-#
-add_library(feature SHARED "src/feature.cpp")
-add_library(bucket SHARED "src/bucket.cpp")
-add_library(utils SHARED "src/utils.cpp")
-add_library(visualOdometry SHARED "src/visualOdometry.cpp")
-add_library(input SHARED "src/input.cpp")
-add_library(config SHARED "src/configuration.cpp")
+set( CMAKE_CXX_FLAGS " -pthread " )
 
-#
-#
-#
-add_library(Frame SHARED "src/Frame.cpp")
-#
-#
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+file(GLOB stereo_odom_libs_SRCS
+          lib/*.cpp)
+
+add_library(stereo_odom_libs ${stereo_odom_libs_SRCS})
+
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 message(${PROJECT_SOURCE_DIR})
-#
-add_executable( run src/main.cpp )
-target_link_libraries( bucket ${OpenCV_LIBS} )
-target_link_libraries( feature ${OpenCV_LIBS} bucket)
-target_link_libraries( utils evaluate_odometry feature ${OpenCV_LIBS} )
-target_link_libraries( visualOdometry utils bucket feature ${OpenCV_LIBS})
-#
-#
-target_link_libraries( Frame ${catkin_LIBRARIES} ${OpenCV_LIBS} )
-target_link_libraries( run ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBS} bucket input feature utils visualOdometry Frame  config)
 
 
-add_dependencies(run ${PROJECT_NAME}_gencfg)
+add_executable( stereo_odom src/stereo_odom.cpp )
+
+target_link_libraries( stereo_odom_libs ${OpenCV_LIBS})
+
+
+target_link_libraries( stereo_odom stereo_odom_libs ${catkin_LIBRARIES})
+
+
+add_dependencies(stereo_odom ${PROJECT_NAME}_gencfg)

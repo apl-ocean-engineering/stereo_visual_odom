@@ -45,8 +45,8 @@
   <exec_depend>dynamic_reconfigure</exec_depend>
 
   <depend>g3log_catkin</depend>
-  <depend>pcl_ros</depend>
-  <depend>pcl</depend>
+  <!--depend>pcl_ros</depend>
+  <depend>pcl</depend-->
 
 
   <!-- The export tag contains other, unspecified, tags -->

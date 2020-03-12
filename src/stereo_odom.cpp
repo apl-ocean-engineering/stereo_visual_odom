@@ -4,12 +4,12 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/time_synchronizer.h>
 
-#include "input.h"
+#include "stereo_visual_odom/input.h"
 
 #include "g3_to_ros_logger/ROSLogSink.h"
 #include "g3_to_ros_logger/g3logger.h"
 
-#include "configuration.h"
+#include "stereo_visual_odom/configuration.h"
 
 using namespace std;
 using namespace message_filters;
@@ -165,10 +165,10 @@ int main(int argc, char **argv) {
 
   // input.readImages(filepath);
   // //
-  // std::string left_topic = "/left/image";
-  // std::string right_topic = "/right/image";
-  std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
-  std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
+  std::string left_topic = "/left/image";
+  std::string right_topic = "/right/image";
+  // std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
+  // std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
 
   message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
                                                                  left_topic, 1);

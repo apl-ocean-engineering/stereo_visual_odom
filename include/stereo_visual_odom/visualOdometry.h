@@ -30,8 +30,8 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
                       std::vector<cv::Point2f> &pointsLeft_t1,
                       std::vector<cv::Point2f> &pointsRight_t1);
 
-void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
-                         cv::Mat &rotation, cv::Mat &translation);
+// void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
+//                          cv::Mat &rotation, cv::Mat &translation);
 
 void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat dl, std::vector<cv::Point2f> &pointsLeft_t0,

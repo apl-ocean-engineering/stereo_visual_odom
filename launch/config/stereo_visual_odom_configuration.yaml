@@ -1,6 +1,6 @@
 global_frame: "map"
 
-image_downsample: 2
+image_downsample: 4
 optical_flow_win_size: 11
 
 edge_threshold: 31

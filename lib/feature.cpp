@@ -1,7 +1,7 @@
-#include "feature.h"
-#include "bucket.h"
-#include "configuration.h"
-#include "utils.h"
+#include "stereo_visual_odom/feature.h"
+#include "stereo_visual_odom/bucket.h"
+#include "stereo_visual_odom/configuration.h"
+#include "stereo_visual_odom/utils.h"
 
 void deleteUnmatchFeatures(std::vector<cv::Point2f> &points0,
                            std::vector<cv::Point2f> &points1,
