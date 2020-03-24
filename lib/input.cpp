@@ -28,12 +28,17 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
 
   pose_channel = nh_.resolveName("stereo_odometry/pose");
   pose_publisher = nh_.advertise<geometry_msgs::PoseStamped>(pose_channel, 1);
+
+  twist_channel = nh_.resolveName("stereo_odometry/twist");
+  twist_publisher = nh_.advertise<geometry_msgs::TwistWithCovarianceStamped>(
+      twist_channel, 1);
 }
 
 void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                               const sensor_msgs::ImageConstPtr &imgR) {
-
+  LOG(INFO) << "imageLeft_t1 size 1: " << imgL->height << " " << imgL->width;
   imageLeft_t1 = rosImage2CvMat(imgL);
+  LOG(INFO) << "imageLeft_t1 size 2: " << imageLeft_t1.size();
   imageRight_t1 = rosImage2CvMat(imgR);
 
   if (!initalized) {
@@ -206,6 +211,13 @@ void Input::run() {
   translation.at<double>(0, 0) = -RBT.at<double>(0, 3);
   translation.at<double>(1, 0) = -RBT.at<double>(1, 3);
   translation.at<double>(2, 0) = -RBT.at<double>(2, 3);
+
+  Eigen::Matrix3f twist_R;
+  Eigen::Vector3f twist_t;
+
+  cv2eigen(rotation, twist_R);
+  cv2eigen(translation, twist_t);
+
   //
   // LOG(WARNING) << "translation norm: "
   //              << pow(pow(translation.at<double>(0, 0), 2) +
@@ -243,6 +255,7 @@ void Input::run() {
   //
   Eigen::Matrix3f R = eigen_fp.block<3, 3>(0, 0);
   Eigen::Quaternionf q(R);
+
   //
   cv::Mat xyz = frame_pose.col(3).clone();
   geometry_msgs::PoseStamped poseStamped;
@@ -255,6 +268,22 @@ void Input::run() {
   poseStamped.pose.orientation.y = q.y();
   poseStamped.pose.orientation.z = q.z();
   poseStamped.pose.orientation.w = q.w();
+
+  Eigen::Vector3f ea = twist_R.eulerAngles(2, 1, 0);
+
+  geometry_msgs::TwistWithCovarianceStamped twistStamped;
+  twistStamped.header.frame_id = "map";
+  twistStamped.header.stamp = ros::Time::now();
+
+  twistStamped.twist.twist.linear.x = twist_t(0);
+  twistStamped.twist.twist.linear.y = twist_t(1);
+  twistStamped.twist.twist.linear.z = twist_t(2);
+
+  twistStamped.twist.twist.angular.x = ea(2);
+  twistStamped.twist.twist.angular.y = ea(1);
+  twistStamped.twist.twist.angular.z = ea(0);
+
+  twist_publisher.publish(twistStamped);
 
   pose_publisher.publish(poseStamped);
   display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);

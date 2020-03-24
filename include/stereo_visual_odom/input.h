@@ -28,6 +28,7 @@
 #include <cv_bridge/cv_bridge.h>
 
 #include "geometry_msgs/PoseStamped.h"
+#include "geometry_msgs/TwistWithCovarianceStamped.h"
 #include "sensor_msgs/Image.h"
 
 #include "stereo_visual_odom/StereoVisualOdomConfig.h"
@@ -86,8 +87,12 @@ private:
   cv::Mat mask;
 
   ros::NodeHandle nh_;
+
   std::string pose_channel;
   ros::Publisher pose_publisher;
+
+  std::string twist_channel;
+  ros::Publisher twist_publisher;
 
   bool new_image = false;
 
