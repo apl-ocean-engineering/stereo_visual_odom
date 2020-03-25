@@ -3,6 +3,9 @@
 #include "stereo_visual_odom/configuration.h"
 #include "stereo_visual_odom/utils.h"
 
+#include "g3_to_ros_logger/ROSLogSink.h"
+#include "g3_to_ros_logger/g3logger.h"
+
 void deleteUnmatchFeatures(std::vector<cv::Point2f> &points0,
                            std::vector<cv::Point2f> &points1,
                            std::vector<uchar> &status) {
@@ -50,8 +53,10 @@ void featureDetectionORB(cv::Mat image, std::vector<cv::Point2f> &points,
 
   cv::Mat outImg;
   cv::drawKeypoints(image, keypoints, outImg);
-  cv::imshow("outImg", outImg);
-  cv::waitKey(1);
+  if (Conf().display_matched_features) {
+    cv::imshow("outImg", outImg);
+    cv::waitKey(1);
+  }
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
@@ -65,8 +70,6 @@ void featureDetectionFast(cv::Mat image, std::vector<cv::Point2f> &points) {
 
   cv::Mat outImg;
   cv::drawKeypoints(image, keypoints, outImg);
-  cv::imshow("outImg", outImg);
-  cv::waitKey(1);
   cv::KeyPoint::convert(keypoints, points, std::vector<int>());
 }
 
@@ -243,38 +246,10 @@ void appendNewFeatures(cv::Mat &imageL, cv::Mat &imageR,
                        FeatureSet &current_features) {
   cv::Mat descriptorsL, descriptorsR;
   std::vector<cv::Point2f> points_new;
-  // featureDetectionFast(imageL, points_new);
   std::vector<cv::KeyPoint> keypointsL, keypointsR;
 
   cv::Mat outImgL, outImgR;
   featureDetectionORB(imageL, points_new, keypointsL, descriptorsL);
-  // featureDetectionORB(imageR, points_new, keypointsR, descriptorsR);
-  // cv::drawKeypoints(imageL, keypointsL, outImgL);
-  // cv::drawKeypoints(imageR, keypointsR, outImgR);
-
-  //
-  // cv::Ptr<cv::DescriptorMatcher> matcher =
-  //     cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
-  // std::vector<std::vector<cv::DMatch>> knn_matches;
-  // matcher->knnMatch(descriptorsL, descriptorsR, knn_matches, 2);
-  //
-  // const float ratio_thresh = 0.9f;
-  // std::vector<cv::DMatch> good_matches;
-  // for (size_t i = 0; i < knn_matches.size(); i++) {
-  //   if (knn_matches[i][0].distance <
-  //       ratio_thresh * knn_matches[i][1].distance) {
-  //     good_matches.push_back(knn_matches[i][0]);
-  //   }
-  // }
-  // //-- Draw matches
-  // cv::Mat img_matches;
-  // cv::drawMatches(imageL, keypointsL, imageR, keypointsR, good_matches,
-  //                 img_matches, cv::Scalar::all(-1), cv::Scalar::all(-1),
-  //                 std::vector<char>(),
-  //                 cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-  // //-- Show detected matches
-  // cv::imshow("Good Matches", img_matches);
-  // cv::waitKey();
 
   current_features.left_points.insert(current_features.left_points.end(),
                                       points_new.begin(), points_new.end());

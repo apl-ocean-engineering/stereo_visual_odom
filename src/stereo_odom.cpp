@@ -23,6 +23,8 @@ void loadConfig(ros::NodeHandle nh_) {
   int downsample, optical_flow_win_size, ORB_edge_threshold, ORB_patch_size,
       bucket_size, features_per_bucket;
 
+  bool display_image, display_matched_features;
+
   ros::param::param<int>(nh_.resolveName("image_downsample"), downsample, 1);
   ros::param::param<int>(nh_.resolveName("optical_flow_win_size"),
                          optical_flow_win_size, 55);
@@ -32,6 +34,10 @@ void loadConfig(ros::NodeHandle nh_) {
   ros::param::param<int>(nh_.resolveName("bucket_size"), ORB_patch_size, 15);
   ros::param::param<int>(nh_.resolveName("features_per_bucket"),
                          features_per_bucket, 10);
+  ros::param::param<bool>(nh_.resolveName("display_image"), display_image,
+                          false);
+  ros::param::param<bool>(nh_.resolveName("display_matched_features"),
+                          display_matched_features, false);
 
   Conf().downsample = downsample;
   Conf().optical_flow_win_size = optical_flow_win_size;
@@ -39,6 +45,8 @@ void loadConfig(ros::NodeHandle nh_) {
   Conf().ORB_patch_size = ORB_patch_size;
   Conf().bucket_size = ORB_patch_size;
   Conf().features_per_bucket = features_per_bucket;
+  Conf().display_image = display_image;
+  Conf().display_matched_features = display_matched_features;
 }
 
 void loadCalibration(cv::Mat &K, cv::Mat &P, cv::Mat &d, std::string name,
@@ -53,7 +61,6 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, cv::Mat &d, std::string name,
 
   // Load rotation matrix
   int idx = 0;
-  // std::cout << nh_.getParam(name + "/camera_matrix/data", _K) << std::endl;
   if (nh_.getParam(name + "/camera_matrix/data", _K)) {
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
@@ -71,7 +78,6 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, cv::Mat &d, std::string name,
   if (nh_.getParam(name + "/projection_matrix/data", _P)) {
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 4; j++) {
-        // std::cout << _P.at(idx) <<std::endl;
         if (idx != 10)
           projection_matrix(i, j) = _P.at(idx) / Conf().downsample;
         else
@@ -85,7 +91,6 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, cv::Mat &d, std::string name,
   // Load translation vector
   if (nh_.getParam(name + "/distortion_coefficients/data", _d)) {
     for (int i = 0; i < 5; i++) {
-      // std::cout << _P.at(idx) <<std::endl;
       distorition_coeffs(i, 0) = _d.at(idx);
       idx++;
     }
@@ -93,33 +98,10 @@ void loadCalibration(cv::Mat &K, cv::Mat &P, cv::Mat &d, std::string name,
     ROS_FATAL("Failed to load projection_matrix.");
   }
 
-  // camera_matrix(3, 3) = 1;
-  // projection_matrix(3, 3) = 1;
   eigen2cv(camera_matrix, K);
   eigen2cv(projection_matrix, P);
-  // LOG(WARNING) << projection_matrix;
-  // LOG(WARNING) << P;
-  // eigen2cv failing here?
-  // P.at<double>(0, 0) = projection_matrix(0, 0);
-  // P.at<double>(0, 1) = projection_matrix(0, 1);
-  // P.at<double>(0, 2) = projection_matrix(0, 2);
-  // P.at<double>(0, 3) = projection_matrix(0, 3);
-  // P.at<double>(1, 0) = projection_matrix(1, 0);
-  // P.at<double>(1, 1) = projection_matrix(1, 1);
-  // P.at<double>(1, 2) = projection_matrix(1, 2);
-  // P.at<double>(1, 3) = projection_matrix(1, 3);
-  // P.at<double>(2, 0) = projection_matrix(2, 0);
-  // P.at<double>(2, 1) = projection_matrix(2, 1);
-  // P.at<double>(2, 2) = projection_matrix(2, 2);
-  // P.at<double>(2, 3) = projection_matrix(2, 3);
-  // LOG(WARNING) << projection_matrix;
-  // LOG(WARNING) << P;
 
   eigen2cv(distorition_coeffs, d);
-  // K.at<float>(3, 3) = 1;
-  // P.at<float>(3, 3) = 1;
-  // LOG(WARNING) << projection_matrix;
-  // LOG(WARNING) << P;
 }
 
 int main(int argc, char **argv) {
@@ -146,29 +128,15 @@ int main(int argc, char **argv) {
   cv::Mat_<float> dr(5, 1);
   cv::Mat_<float> projMatrl(3, 4);
   cv::Mat_<float> projMatrr(3, 4);
-  // cv::Mat_<float>(3, 4) projMatrl, projMatrr;
 
   loadCalibration(Kl, projMatrl, dl, "/" + name + "/left", nh_);
   loadCalibration(Kr, projMatrr, dr, "/" + name + "/right", nh_);
 
-  // std::cout << projMatrl << std::endl;
-
-  // LOG(INFO) << "P_left: " << endl << projMatrl;
-  // LOG(INFO) << "P_right: " << endl << projMatrr;
-
-  // -----------------------------------------
-  // Initialize variables
-  // -----------------------------------------
-
   Input input(projMatrl, projMatrr, Kl, Kr, dl, dr, pose_matrix_gt,
               display_ground_truth);
 
-  // input.readImages(filepath);
-  // //
   std::string left_topic = "/left/image";
   std::string right_topic = "/right/image";
-  // std::string left_topic = "/zed/zed_node/left_raw/image_raw_color";
-  // std::string right_topic = "/zed/zed_node/right_raw/image_raw_color";
 
   message_filters::Subscriber<sensor_msgs::Image> left_image_sub(nh_,
                                                                  left_topic, 1);

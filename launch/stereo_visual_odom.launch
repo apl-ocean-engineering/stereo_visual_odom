@@ -12,12 +12,12 @@
   <remap from="/right/image" to="/camera/right/image_rect" />
 </node>
 
-<group ns="camera">
+<!-- <group ns="camera">
   <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
     <param name="approximate_sync" value="true" />
     <param name="queue_size" value="20" />
   </node>
-</group>
+</group> -->
 
 
 

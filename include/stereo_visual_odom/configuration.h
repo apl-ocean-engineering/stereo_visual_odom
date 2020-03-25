@@ -19,6 +19,8 @@ public:
   int motion_threshold;
 
   bool ignore_detections;
+  bool display_image;
+  bool display_matched_features;
   bool detect_object_pose;
 
 private:

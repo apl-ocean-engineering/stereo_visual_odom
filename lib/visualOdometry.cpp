@@ -104,7 +104,6 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
   // --------------------------------------------------------
   int bucket_size = Conf().bucket_size;
   int features_per_bucket = Conf().features_per_bucket;
-  LOG(WARNING) << bucket_size << " " << features_per_bucket;
   bucketingFeatures(imageLeft_t0, currentVOFeatures, bucket_size,
                     features_per_bucket);
 
@@ -126,133 +125,9 @@ void matchingFeatures(cv::Mat imageLeft_t0, cv::Mat imageRight_t0,
   removeInvalidPoints(pointsLeft_t1, status1);
   removeInvalidPoints(pointsRight_t0, status1);
   removeInvalidPoints(pointsRight_t1, status1);
-  LOG(WARNING) << "Points removed by status 1 removal: "
-               << status1Before - pointsLeft_t0.size();
-  //
-  //
-  //
-  // checkValidMatch(pointsLeft_t0, pointsRight_t0, status2, 55, 2);
-  // // //
-  // int status2Before = pointsLeft_t0.size();
-  // // //
-  // // //
-  // removeInvalidPoints(pointsLeft_t0, status2);
-  // removeInvalidPoints(pointsLeft_t1, status2);
-  // removeInvalidPoints(pointsRight_t0, status2);
-  // removeInvalidPoints(pointsRight_t1, status2);
-  //
-  // LOG(WARNING) << "Points removed by status 2 removal: "
-  //              << status2Before - pointsLeft_t0.size();
-  // //
-  // checkValidMatch(pointsLeft_t0, pointsRight_t0, status3, 25);
-  // //
-  // int status3Before = pointsLeft_t0.size();
-  //
-  //
-  // removeInvalidPoints(pointsLeft_t0, status3);
-  // removeInvalidPoints(pointsLeft_t1, status3);
-  // removeInvalidPoints(pointsRight_t0, status3);
-  // removeInvalidPoints(pointsRight_t1, status3);
-  //
-  // LOG(WARNING) << "Points removed by status 3 removal: " << status3Before -
-  // pointsLeft_t0.size();
-
-  // cv::Mat imgL = imageLeft_t1;
-  // cv::Mat imgR = imageLeft_t0;
-  // for (int i = 0; i < pointsLeft_t0.size(); i++) {
-  //   cv::Point2f l0 = pointsLeft_t1.at(i);
-  //   cv::Point2f r0 = pointsLeft_t0.at(i);
-  //   cv::circle(imgL, cv::Point2i(int(l0.x), int(l0.y)), 10,
-  //              cv::Scalar(255, 255, 255));
-  //   cv::circle(imgR, cv::Point2i(int(r0.x), int(r0.y)), 10,
-  //              cv::Scalar(255, 255, 255));
-  //   cv::imshow("imgL", imgL);
-  //   cv::imshow("imgR", imgR);
-  //   cv::waitKey();
-  // }
 
   currentVOFeatures.left_points = pointsLeft_t1;
 }
-//
-// void trackingFrame2Frame(cv::Mat points3D_t0, cv::Mat points3D_t1,
-//                          cv::Mat &rotation, cv::Mat &translation) {
-//
-//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in(
-//       new pcl::PointCloud<pcl::PointXYZ>());
-//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_out(
-//       new pcl::PointCloud<pcl::PointXYZ>());
-//   cloud_in->width = points3D_t0.rows;
-//   cloud_in->height = 1;
-//   cloud_in->is_dense = false;
-//   cloud_in->resize(cloud_in->width * cloud_in->height);
-//
-//   cloud_out->width = points3D_t0.rows;
-//   cloud_out->height = 1;
-//   cloud_out->is_dense = false;
-//   cloud_out->resize(cloud_out->width * cloud_out->height);
-//
-//   cv::Point3f mean_diff;
-//   mean_diff.x = 0;
-//   mean_diff.y = 0;
-//   mean_diff.z = 0;
-//
-//   int idx = 0;
-//
-//   for (int i = 0; i < points3D_t0.rows; i++) {
-//     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
-//     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
-//
-//
-//     mean_diff.x += (point0.x - point1.x);
-//     mean_diff.y += (point0.y - point1.y);
-//     mean_diff.z += (point0.z - point1.z);
-//
-//     idx++;
-//
-//   }
-//   mean_diff.x = mean_diff.x / idx;
-//   mean_diff.y = mean_diff.y / idx;
-//   mean_diff.z = mean_diff.z / idx;
-//
-//   int count = 0;
-//
-//   for (int i = 0; i < points3D_t0.rows; i++) {
-//     cv::Point3f point0 = points3D_t0.at<cv::Vec3f>(i, 0);
-//     cv::Point3f point1 = points3D_t1.at<cv::Vec3f>(i, 0);
-//
-//     float normalized_diff = pow((point0.x - point1.x) / mean_diff.x +
-//                                     (point0.y - point1.y) / mean_diff.y +
-//                                     (point0.z - point1.z) / mean_diff.z,
-//                                 2);
-//     if (normalized_diff < 5) {
-//
-//       count += 1;
-//       cloud_in->points[i].x = point0.x;
-//       cloud_in->points[i].y = point0.y;
-//       cloud_in->points[i].z = point0.z;
-//
-//       cloud_out->points[i].x = point1.x;
-//       cloud_out->points[i].y = point1.y;
-//       cloud_out->points[i].z = point1.z;
-//     }
-//   }
-//
-//   pcl::registration::TransformationEstimationSVD<pcl::PointXYZ,
-//   pcl::PointXYZ>
-//       TESVD;
-//   pcl::registration::TransformationEstimationSVD<
-//       pcl::PointXYZ, pcl::PointXYZ>::Matrix4 transformation2;
-//   TESVD.estimateRigidTransformation(*cloud_in, *cloud_out, transformation2);
-//
-//   Eigen::Matrix3d R = transformation2.block<3, 3>(0, 0).cast<double>();
-//   Eigen::JacobiSVD<Eigen::MatrixXd> svd(R, Eigen::ComputeThinU |
-//                                                Eigen::ComputeThinV);
-//   R = svd.matrixU() * (svd.matrixV().transpose()); // Final rotation
-//
-//   Eigen::Vector3d t = transformation2.block<3, 1>(0, 3).cast<double>();
-//   eigen2cv(R, rotation);
-//   eigen2cv(t, translation);
-// }
 
 void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat dl, std::vector<cv::Point2f> &pointsLeft_t0,
@@ -260,9 +135,6 @@ void trackingFrame2Frame(cv::Mat &projMatrl, cv::Mat &projMatrr, cv::Mat Kl,
                          cv::Mat &points3D_t0, cv::Mat &rotation,
                          cv::Mat &translation, cv::Point3f &meanPoint,
                          bool mono_rotation) {
-
-  // Calculate frame to frame transformation
-
   // -----------------------------------------------------------
   // Rotation(R) estimation using Nister's Five Points Algorithm
   // -----------------------------------------------------------
@@ -325,7 +197,7 @@ void displayTracking(cv::Mat &imageLeft_t1,
   // -----------------------------------------
   // Display feature racking
   // -----------------------------------------
-  cv::namedWindow("vis", cv::WINDOW_NORMAL);
+
   int radius = 2;
   cv::Mat vis;
 
@@ -345,5 +217,8 @@ void displayTracking(cv::Mat &imageLeft_t1,
     cv::line(vis, pointsLeft_t0[i], pointsLeft_t1[i], CV_RGB(0, 255, 0));
   }
 
-  cv::imshow("vis", vis);
+  if (Conf().display_image) {
+    cv::namedWindow("vis", cv::WINDOW_NORMAL);
+    cv::imshow("vis", vis);
+  }
 }
