@@ -2,23 +2,14 @@
 
 <launch>
 
-<rosparam command="load" file="$(find stereo_visual_odom)/launch/config/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/params/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
 
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/left.yaml" ns="stereo_odom/left"/>
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/right.yaml" ns="stereo_odom/right"/>
+<rosparam command="load" file="$(find lsd_slam_ros)/params/camera_calibrations/PointGreyLeft.yaml" ns="stereo_odom/left"/>
+<rosparam command="load" file="$(find lsd_slam_ros)/params/camera_calibrations/PointGreyRight.yaml" ns="stereo_odom/right"/>
 
 <node name="stereo_odom" pkg="stereo_visual_odom" type="stereo_odom" output="screen" >
   <remap from="/left/image" to="/camera/left/image_rect" />
   <remap from="/right/image" to="/camera/right/image_rect" />
 </node>
-
-<!-- <group ns="camera">
-  <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
-    <param name="approximate_sync" value="true" />
-    <param name="queue_size" value="20" />
-  </node>
-</group> -->
-
-
 
 </launch>

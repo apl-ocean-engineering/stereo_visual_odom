@@ -1,7 +1,7 @@
 global_frame: "map"
 
-image_downsample: 1
-optical_flow_win_size: 21
+image_downsample: 1 #Downsample to be done IN LINE. Set to '1' if downsample is done elsewhere
+optical_flow_win_size: 21 
 
 edge_threshold: 31
 patch_size: 31
