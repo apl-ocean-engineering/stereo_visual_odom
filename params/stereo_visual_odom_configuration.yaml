@@ -1,5 +1,10 @@
 global_frame: "map"
 
+input_image:
+  width: 2048 #Full image size. DOWNSAMPLED image must be divisable by 32
+  height: 1536
+  decimation: 4
+
 image_downsample: 1
 optical_flow_win_size: 21
 

@@ -2,22 +2,52 @@
 
 <launch>
 
-<rosparam command="load" file="$(find stereo_visual_odom)/launch/config/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/params/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
+<arg name="broadcast_info" default="true" doc="Wether to broadcase info seperatly" />
 
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/left.yaml" ns="stereo_odom/left"/>
-<rosparam command="load" file="$(find stereo_visual_odom)/calibration/right.yaml" ns="stereo_odom/right"/>
+<arg name="crop_image_output" value="camera_crop/image_crop" />
+<arg name="crop_info_output" value="camera_crop/camera_info" />
+
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyLeft.yaml" ns="stereo_odom/left"/>
+<rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyRight.yaml" ns="stereo_odom/right"/>
 
 <node name="stereo_odom" pkg="stereo_visual_odom" type="stereo_odom" output="screen" >
-  <remap from="/left/image" to="/camera/left/image_rect" />
-  <remap from="/right/image" to="/camera/right/image_rect" />
+  <!-- <remap from="/left/image" to="/camera/left/image_rect" />
+  <remap from="/right/image" to="/camera/right/image_rect" /> -->
+
+  <remap from="/left/image" to="/camera/left/$(arg crop_image_output)" />
+  <remap from="/right/image" to="/camera/right/$(arg crop_image_output)" />
+
 </node>
 
-<!-- <group ns="camera">
+<!-- Broadcast Info -->
+<include file="$(find lsd_slam_ros)/launch/info_pub2.xml" if="$(arg broadcast_info)">
+  <arg name="do_stereo" value="true"/>
+  <arg name="ns" value="stereo_odom"/>
+</include>
+
+
+<group ns="camera">
   <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
     <param name="approximate_sync" value="true" />
     <param name="queue_size" value="20" />
+    <remap from="left/image_raw" to="left/$(arg crop_image_output)" />
+    <remap from="right/image_raw" to="right/$(arg crop_image_output)" />
+    <remap from="left/camera_info" to="left/$(arg crop_info_output)" />
+    <remap from="right/camera_info" to="right/$(arg crop_info_output)" />
   </node>
-</group> -->
+</group>
+
+<include file="$(find lsd_slam_ros)/launch/crop_decimate.xml">
+  <arg name="local_ns" value="left" />
+  <arg name="crop_image_output" value="$(arg crop_image_output)" />
+  <arg name="crop_info_output" value="$(arg crop_info_output)" />
+</include>
+<include file="$(find lsd_slam_ros)/launch/crop_decimate.xml">
+  <arg name="local_ns" value="right" />
+  <arg name="crop_image_output" value="$(arg crop_image_output)" />
+  <arg name="crop_info_output" value="$(arg crop_info_output)" />
+</include>
 
 
 
