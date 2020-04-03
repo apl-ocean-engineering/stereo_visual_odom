@@ -2,29 +2,53 @@ import argparse
 import rospy
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 from geometry_msgs.msg import TwistWithCovarianceStamped
+from nav_msgs.msg import Odometry
 
 
 class PoseRecorder:
     def __init__(self, save_folder):
         self.save_folder = save_folder
-        self.name1 = "lsd_slam"
-        self.name2 = "stereo_odom"
+        self.name1 = "lsd_slam_raw"
+        self.name2 = "filtered_odom"
+        self.name3 = "stereo_odom"
 
-        so = Subscriber(
-            "/stereo_odometry/twist", TwistWithCovarianceStamped)
+        self.odomList = [0]
+
+        filtered = Subscriber(
+            "/odometry/filtered", Odometry)
         lsd = Subscriber(
             "/lsd_slam/twist", TwistWithCovarianceStamped)
+        so = Subscriber(
+            "/stereo_odometry/twist", TwistWithCovarianceStamped)
 
-        ats = ApproximateTimeSynchronizer([so, lsd],
-                queue_size=5, slop=0.1)
+        ats = ApproximateTimeSynchronizer([filtered, lsd, so],
+                                          queue_size=5, slop=0.1)
 
         ats.registerCallback(self.twist_callback)
 
         rospy.spin()
 
-    def twist_callback(self, msg1, msg2):
+    def odom2twsitStamped(self, odom):
+        odomTwist = TwistWithCovarianceStamped()
+        odomTwist.twist = odom.twist
+        odomTwist.twist = odom.twist
+        odomTwist.header = odom.header
+
+        return odomTwist
+
+    def twist_callback(self, msg1, msg2, msg3):
+        print('here')
+        if self.odomList is not None:
+            if 0 in self.odomList:
+                msg1 = self.odom2twsitStamped(msg1)
+            if 1 in self.odomList:
+                msg2 = self.odom2twsitStamped(msg2)
+            if 2 in self.odomList:
+                msg2 = self.odom2twsitStamped(msg3)
+
         self.save(msg1, self.name1)
         self.save(msg2, self.name2)
+        self.save(msg3, self.name3)
 
     def save(self, msg, name):
         current_secs = msg.header.stamp.secs
