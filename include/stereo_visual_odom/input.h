@@ -97,4 +97,6 @@ private:
   bool new_image = false;
 
   int frame_id;
+
+  ros::Time previous_time;
 };

@@ -1,3 +1,7 @@
+#ifndef PI
+#define PI 3.14159
+#endif
+
 #include "stereo_visual_odom/input.h"
 
 #include "g3_to_ros_logger/ROSLogSink.h"
@@ -14,6 +18,8 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
     : projMatrl(projleft), projMatrr(projright), Kl(Kleft), Kr(Kright),
       dl(dleft), dr(dright), pose_matrix_gt(gt), frame_id(0), initalized(false),
       display_ground_truth(display_gt) {
+  previous_time = ros::Time::now();
+
   trajectory = cv::Mat::zeros(600, 1200, CV_8UC3);
   rotation = cv::Mat::eye(3, 3, CV_64F);
   translation = cv::Mat::zeros(3, 1, CV_64F);
@@ -235,13 +241,12 @@ void Input::run() {
   cv::Mat rigid_body_transformation;
 
   if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
-      abs(rotation_euler[2]) < 0.1 && abs(translation.at<double>(0, 0)) < 0.1 &&
-      abs(translation.at<double>(0, 1)) < 0.1 &&
-      abs(translation.at<double>(0, 2)) < 0.1) {
+      abs(rotation_euler[2]) < 0.1) {
     integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
                             rotation, translation);
   } else {
     LOG(WARNING) << "Translation too large" << std::endl;
+    return;
   }
   t_b = clock();
   float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
@@ -269,19 +274,65 @@ void Input::run() {
   poseStamped.pose.orientation.z = q.z();
   poseStamped.pose.orientation.w = q.w();
 
+  // Quaternionf q(mat);
+
   Eigen::Vector3f ea = twist_R.eulerAngles(2, 1, 0);
+
+  // Regularize twists
+  float v1 = PI - abs(ea(2));
+  if (ea(2) < 0) {
+    v1 *= -1;
+  }
+  float v2 = PI - abs(ea(1));
+  if (ea(1) < 0) {
+    v2 *= -1;
+  }
+  float v3 = PI - abs(ea(0));
+  if (ea(0) < 0) {
+    v3 *= -1;
+  }
+
+  if (abs(v1) > abs(ea(2))) {
+    v1 = ea(2);
+  }
+  if (abs(v2) > abs(ea(1))) {
+    v2 = ea(1);
+  }
+  if (abs(v3) > abs(ea(0))) {
+    v3 = ea(0);
+  }
+
+  // LOG(WARNING) << "twist_R: " << std::endl
+  //              << twist_R << "angles: " << std::endl
+  //              << ea;
+  // LOG(WARNING) << "adjusted angles: " << std::endl
+  //              << v3 << std::endl
+  //              << v2 << std::endl
+  //              << v1;
+
+  ros::Time current_time = ros::Time::now();
+  ros::Duration duration = current_time - previous_time;
 
   geometry_msgs::TwistWithCovarianceStamped twistStamped;
   twistStamped.header.frame_id = "map";
   twistStamped.header.stamp = ros::Time::now();
 
-  twistStamped.twist.twist.linear.x = twist_t(0);
-  twistStamped.twist.twist.linear.y = twist_t(1);
-  twistStamped.twist.twist.linear.z = twist_t(2);
+  twistStamped.twist.twist.linear.x = twist_t(0) / duration.toSec();
+  twistStamped.twist.twist.linear.y = twist_t(1) / duration.toSec();
+  twistStamped.twist.twist.linear.z = twist_t(2) / duration.toSec();
 
-  twistStamped.twist.twist.angular.x = ea(2);
-  twistStamped.twist.twist.angular.y = ea(1);
-  twistStamped.twist.twist.angular.z = ea(0);
+  twistStamped.twist.twist.angular.x = v1 / duration.toSec();
+  twistStamped.twist.twist.angular.y = v2 / duration.toSec();
+  twistStamped.twist.twist.angular.z = v3 / duration.toSec();
+
+  twistStamped.twist.covariance[0] = 1e-3;
+  twistStamped.twist.covariance[7] = 1e-3;
+  twistStamped.twist.covariance[14] = 1e-3;
+  twistStamped.twist.covariance[21] = 1e-3;
+  twistStamped.twist.covariance[28] = 1e-3;
+  twistStamped.twist.covariance[35] = 1e-3;
+
+  previous_time = current_time;
 
   twist_publisher.publish(twistStamped);
 
