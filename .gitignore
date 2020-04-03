@@ -3,3 +3,4 @@ build/
 calibration/left.yaml
 calibration/right.yaml
 data/*
+helper_nodes/*.png
