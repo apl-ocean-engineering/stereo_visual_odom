@@ -5,3 +5,4 @@ calibration/right.yaml
 calibration/PointGreyLeft.yaml
 calibration/PointGreyRight.yaml
 data/*
+helper_nodes/*.png

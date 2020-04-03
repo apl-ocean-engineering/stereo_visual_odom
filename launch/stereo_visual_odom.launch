@@ -3,6 +3,7 @@
 <launch>
 
 <rosparam command="load" file="$(find stereo_visual_odom)/params/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
+
 <arg name="broadcast_info" default="true" doc="Wether to broadcase info seperatly" />
 
 <arg name="crop_image_output" value="camera_crop/image_crop" />
@@ -10,6 +11,7 @@
 
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyLeft.yaml" ns="stereo_odom/left"/>
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyRight.yaml" ns="stereo_odom/right"/>
+
 
 <node name="stereo_odom" pkg="stereo_visual_odom" type="stereo_odom" output="screen" >
   <!-- <remap from="/left/image" to="/camera/left/image_rect" />
@@ -39,16 +41,18 @@
 </group>
 
 <include file="$(find lsd_slam_ros)/launch/crop_decimate.xml">
+  <arg name="global_ns" value="stereo_odom"/>
   <arg name="local_ns" value="left" />
   <arg name="crop_image_output" value="$(arg crop_image_output)" />
   <arg name="crop_info_output" value="$(arg crop_info_output)" />
 </include>
+
 <include file="$(find lsd_slam_ros)/launch/crop_decimate.xml">
+  <arg name="global_ns" value="stereo_odom"/>
   <arg name="local_ns" value="right" />
   <arg name="crop_image_output" value="$(arg crop_image_output)" />
   <arg name="crop_info_output" value="$(arg crop_info_output)" />
 </include>
-
 
 
 </launch>

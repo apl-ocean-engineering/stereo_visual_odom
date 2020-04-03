@@ -68,11 +68,14 @@ def check_error_val(error, idx, ind, max_val, min_val):
     return error, idx, ind
 
 
-def plot(idx_list, v1, v2, title=" ",
-         label1="1", label2="2", dump=False, y_min=None, y_max=None):
+def plot(idx_list, v1, v2, v3=None, title=" ",
+         label1="1", label2="2", label3="3", dump=False, y_min=None,
+         y_max=None):
     fig1, ax1 = plt.subplots()
     ax1.scatter(idx_list, v1, c='k', label=label1)
     ax1.scatter(idx_list, v2, c='g', label=label2)
+    if v3 is not None:
+        ax1.scatter(idx_list, v3, c='b', label=label3)
     ax1.set_title(title)
     if y_min is not None and y_max is not None:
         ax1.set_ylim((y_min, y_max))
@@ -99,12 +102,16 @@ def integrate(lst):
     return total
 
 
-def main(fname1, fname2, display_integration=False):
+def main(fname1, fname2, display_integration=False, fname3 = None):
+    print(fname1, fname2, fname3)
     f1 = open(fname1, 'r')
     f2 = open(fname2, 'r')
+    if fname3 is not None:
+        f3 = open(fname3, 'r')
     idx1, time1, x1, y1, z1, roll1, pitch1, yaw1 = get_data(f1)
     idx2, time2, x2, y2, z2, roll2, pitch2, yaw2 = get_data(f2)
-
+    if fname3 is not None:
+        idx3, time3, x3, y3, z3, roll3, pitch3, yaw3 = get_data(f3)
     error = get_eucld_error(x1, x2, y1, y2, z1, z2)
 
     idx_x = copy.deepcopy(idx1)
@@ -112,19 +119,19 @@ def main(fname1, fname2, display_integration=False):
     idx_z = copy.deepcopy(idx1)
     idx_error = copy.deepcopy(idx1)
 
-    i = 0
-    while i < len(x1):
-        x1, x2, idx_x, i = check_val(x1, x2, idx_x, i, 1.0, -1.0)
-    i = 0
-    while i < len(y1):
-        y1, y2, idx_y, i = check_val(y1, y2, idx_y, i, 1.0, -1.0)
-    i = 0
-    while i < len(z1):
-        z1, z2, idx_z, i = check_val(z1, z2, idx_z, i, 1.0, -1.0)
-    i = 0
-    while i < len(error):
-        error, idx_error, i = check_error_val(error,
-                                              idx_error, i, 1.0, -1.0)
+    # i = 0
+    # while i < len(x1):
+    #     x1, x2, idx_x, i = check_val(x1, x2, idx_x, i, 100.0, -100.0)
+    # i = 0
+    # while i < len(y1):
+    #     y1, y2, idx_y, i = check_val(y1, y2, idx_y, i, 100.0, -100.0)
+    # i = 0
+    # while i < len(z1):
+    #     z1, z2, idx_z, i = check_val(z1, z2, idx_z, i, 100.0, -100.0)
+    # i = 0
+    # while i < len(error):
+    #     error, idx_error, i = check_error_val(error,
+    #                                           idx_error, i, 100.0, -100.0)
 
     if display_integration:
         print('X')
@@ -136,18 +143,22 @@ def main(fname1, fname2, display_integration=False):
         print('Error')
         print(integrate(error)/len(error))
 
-    plot(idx_x, x1, x2, title="x",
+
+    plot(idx_x, x1, x2, v3=x3, title="x",
          label1=fname1.split('/')[-1].replace('.txt', ''),
          label2=fname2.split('/')[-1].replace('.txt', ''),
-         dump=True, y_min=-1, y_max=1)
-    plot(idx_y, y1, y2, title="y",
+         label3=fname3.split('/')[-1].replace('.txt', ''),
+         dump=True)
+    plot(idx_y, y1, y2, v3=y3, title="y",
          label1=fname1.split('/')[-1].replace('.txt', ''),
          label2=fname2.split('/')[-1].replace('.txt', ''),
-         dump=True, y_min=-1, y_max=1)
-    plot(idx_z, z1, z2, title="z",
+         label3=fname3.split('/')[-1].replace('.txt', ''),
+         dump=True)
+    plot(idx_z, z1, z2, v3=z3, title="z",
          label1=fname1.split('/')[-1].replace('.txt', ''),
          label2=fname2.split('/')[-1].replace('.txt', ''),
-         dump=True, y_min=-1, y_max=1)
+         label3=fname3.split('/')[-1].replace('.txt', ''),
+         dump=True)
     plot_error(idx_error, error)
 
     plt.show()
@@ -157,8 +168,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('Display twist')
     parser.add_argument('file1')
     parser.add_argument('file2')
+    parser.add_argument('--file3')
     parser.add_argument('--show_final_pose', type=bool, default=False)
 
     args = parser.parse_args()
 
-    main(args.file1, args.file2, args.show_final_pose)
+    main(args.file1, args.file2, args.show_final_pose, fname3=args.file3)

@@ -129,8 +129,9 @@ int main(int argc, char **argv) {
   cv::Mat_<float> projMatrl(3, 4);
   cv::Mat_<float> projMatrr(3, 4);
 
+
   loadCalibration(Kl, projMatrl, dl, "/" + name + "/left", nh_);
-  loadCalibration(Kr, projMatrr, dr, "/" + name + "/right", nh_);
+loadCalibration(Kr, projMatrr, dr, "/" + name + "/right", nh_);
 
   Input input(projMatrl, projMatrr, Kl, Kr, dl, dr, pose_matrix_gt,
               display_ground_truth);
