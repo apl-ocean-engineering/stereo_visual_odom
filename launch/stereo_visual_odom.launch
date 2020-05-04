@@ -2,6 +2,8 @@
 
 <launch>
 
+<arg name="EKF_params_name" default="ekf.yaml" doc="EKF filter twist estimation streams" />
+
 <rosparam command="load" file="$(find stereo_visual_odom)/params/stereo_visual_odom_configuration.yaml" ns="stereo_odom"/>
 
 <arg name="broadcast_info" default="true" doc="Wether to broadcase info seperatly" />
@@ -9,8 +11,12 @@
 <arg name="crop_image_output" value="camera_crop/image_crop" />
 <arg name="crop_info_output" value="camera_crop/camera_info" />
 
+
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyLeft.yaml" ns="stereo_odom/left"/>
 <rosparam command="load" file="$(find stereo_visual_odom)/calibration/PointGreyRight.yaml" ns="stereo_odom/right"/>
+
+<node pkg="tf" type="static_transform_publisher" name="odom_to_base" args="0 0 0 0 0 0 1 odom base_link 100" />
+<node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom 100" />
 
 
 <node name="stereo_odom" pkg="stereo_visual_odom" type="stereo_odom" output="screen" >
@@ -23,11 +29,15 @@
 </node>
 
 <!-- Broadcast Info -->
-<include file="$(find lsd_slam_ros)/launch/info_pub2.xml" if="$(arg broadcast_info)">
+<include file="$(find lsd_slam_ros)/launch/broadcast_info.xml" if="$(arg broadcast_info)">
   <arg name="do_stereo" value="true"/>
-  <arg name="ns" value="stereo_odom"/>
+  <arg name="ns" value="/stereo_odom"/>
 </include>
 
+<include file="$(find lsd_slam_ros)/launch/ekf.xml" >
+  <arg name="param_name" value="$(arg EKF_params_name)" />
+  <arg name="odom_topic" value="/lsd_slam/twist" />
+</include>
 
 <group ns="camera">
   <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">

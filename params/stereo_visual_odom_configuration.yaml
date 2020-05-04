@@ -3,14 +3,18 @@ global_frame: "map"
 input_image:
   width: 2048 #Full image size. DOWNSAMPLED image must be divisable by 32
   height: 1536
-  decimation: 4
-
-image_downsample: 1
-optical_flow_win_size: 21
+  decimation: 1
 
 
-edge_threshold: 31
-patch_size: 31
+# left_info: PointGreyLeft
+# right_info: PointGreyRight
+
+image_downsample: 2
+optical_flow_win_size: 41
+
+
+edge_threshold: 15
+patch_size: 15
 
 bucket_size: 25
 features_per_bucket: 1
