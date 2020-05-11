@@ -217,8 +217,9 @@ void displayTracking(cv::Mat &imageLeft_t1,
 				cv::line(vis, pointsLeft_t0[i], pointsLeft_t1[i], CV_RGB(0, 255, 0));
 		}
 
-		if (Conf().display_image) {
-				cv::namedWindow("vis", cv::WINDOW_NORMAL);
-				cv::imshow("vis", vis);
-		}
+		// if (Conf().display_image) {
+		// LOG(INFO) << "vis size: " << vis.size();
+		// cv::namedWindow("vis", cv::WINDOW_NORMAL);
+		cv::imshow("vis", vis);
+		// }
 }

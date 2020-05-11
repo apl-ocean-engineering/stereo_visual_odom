@@ -1,15 +1,15 @@
 global_frame: "map"
 
 input_image:
-  width: 2048 #Full image size. DOWNSAMPLED image must be divisable by 32
-  height: 1536
+  width: 1024 #Full image size. DOWNSAMPLED image must be divisable by 32
+  height: 768
   decimation: 1
 
 
-# left_info: PointGreyLeft
-# right_info: PointGreyRight
+left_info: PointGreyLeftDownsample
+right_info: PointGreyRightDownsample
 
-image_downsample: 2
+image_downsample: 1
 optical_flow_win_size: 41
 
 

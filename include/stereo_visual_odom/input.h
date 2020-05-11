@@ -98,6 +98,9 @@ ros::Publisher twist_publisher;
 std::string odom_channel;
 ros::Publisher odom_publisher;
 
+
+
+
 bool new_image = false;
 
 int frame_id;

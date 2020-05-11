@@ -182,6 +182,11 @@ void Input::run() {
 
 		std::vector<cv::Point3f> Tpoints3D_t0V, Tpoints3D_t1V;
 
+		LOG(INFO) << "projMatrl\n" << projMatrl;
+		LOG(INFO) << "projMatrr\n" << projMatrr;
+		LOG(INFO) << "Kl\n" << Kl;
+		LOG(INFO) << "imageLeft_t0.size(): " << imageLeft_t0.size();
+
 		int idx = 0;
 		int size = pointsLeft_t0.size();
 		for (int i = 0; i < size; ++i) {
@@ -191,6 +196,31 @@ void Input::run() {
 				cv::Point3f p_3 = points3D_t0V.at(i);
 				cv::Point3f p_31 = points3D_t1V.at(i);
 				bool valid = bool(mask.at<unsigned char>(int(p0.x), int(p1.y)));
+
+				LOG(INFO) << "p0\n" << p0;
+				LOG(INFO) << "p1\n" << p1;
+				LOG(INFO) << "p_3\n" << p_3;
+
+				// cv::Mat p3_Mat(p_3);
+				// cv::Mat projPoint;
+
+				std::vector<cv::Point3f> input;
+				std::vector<cv::Point2f> output;
+
+				input.push_back(p_3);
+
+				cv::Mat rvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
+				cv::Mat tvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
+
+
+
+				cv::projectPoints(input, rvec, tvec, Kl, dl, output);
+
+				// cv::Mat projPoint = Kl*p3_Mat;
+				// projPoint.at<float>(0,0) = projPoint.at<float>(0,0)/projPoint.at<float>(2,0);
+				// projPoint.at<float>(1,0) = projPoint.at<float>(1,0)/projPoint.at<float>(2,0);
+				// projPoint.at<float>(2,0) = 1;
+				LOG(INFO) << "projPoint\n" <<output.at(0);
 
 				if (cv::norm(p_31 - p_3) > Conf().motion_threshold || !valid) {
 				} else {
