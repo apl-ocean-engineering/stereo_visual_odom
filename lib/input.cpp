@@ -10,6 +10,8 @@
 #include "stereo_visual_odom/configuration.h"
 #include <math.h>
 
+#include <tf/transform_datatypes.h>
+
 using namespace std;
 
 Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
@@ -38,6 +40,10 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
 		twist_channel = nh_.resolveName("stereo_odometry/twist");
 		twist_publisher = nh_.advertise<geometry_msgs::TwistWithCovarianceStamped>(
 				twist_channel, 1);
+
+		odom_channel = nh_.resolveName("stereo_odometry/odom");
+		odom_publisher = nh_.advertise<nav_msgs::Odometry>(
+				odom_channel, 1);
 }
 
 void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
@@ -214,17 +220,24 @@ void Input::run() {
 
 		cv::Mat_<double> RBT = FindRigidTransform(points3D_t1, points3D_t0);
 
+
 		rotation = RBT(cv::Range(0, 3), cv::Range(0, 3));
 		// LOG(WARNING) << "rot" << rotation;
-		translation.at<double>(0, 0) = -RBT.at<double>(0, 3);
-		translation.at<double>(1, 0) = -RBT.at<double>(1, 3);
-		translation.at<double>(2, 0) = -RBT.at<double>(2, 3);
+		translation.at<double>(0, 0) = RBT.at<double>(0, 3);
+		translation.at<double>(1, 0) = RBT.at<double>(1, 3);
+		translation.at<double>(2, 0) = RBT.at<double>(2, 3);
 
 		Eigen::Matrix3f twist_R;
 		Eigen::Vector3f twist_t;
 
 		cv2eigen(rotation, twist_R);
 		cv2eigen(translation, twist_t);
+
+		//inverse
+		// twist_R = twist_R.transpose();
+		// twist_t = -twist_R*twist_t;
+
+
 
 		//
 		// LOG(WARNING) << "translation norm: "
@@ -277,42 +290,53 @@ void Input::run() {
 		// poseStamped.pose.orientation.z = q.z();
 		// poseStamped.pose.orientation.w = q.w();
 
-		poseStamped.pose.position.x = xyz.at<double>(1);
-		poseStamped.pose.position.y = -xyz.at<double>(0);
-		poseStamped.pose.position.z = xyz.at<double>(2);
+		poseStamped.pose.position.x = xyz.at<double>(2);
+		poseStamped.pose.position.y = xyz.at<double>(1);
+		poseStamped.pose.position.z = xyz.at<double>(0);
 		//
-		poseStamped.pose.orientation.x = q.y();
-		poseStamped.pose.orientation.y = q.x();
-		poseStamped.pose.orientation.z = q.z();
+		poseStamped.pose.orientation.x = q.z();
+		poseStamped.pose.orientation.y = q.y();
+		poseStamped.pose.orientation.z = q.x();
 		poseStamped.pose.orientation.w = q.w();
 
+		Eigen::Quaternionf twist_quat(twist_R);
+
+
+		tf::Quaternion tfQuat(twist_quat.x(),
+		                      twist_quat.y(),
+		                      twist_quat.z(),
+		                      twist_quat.w());
+
+		tf::Matrix3x3 m(tfQuat);
+		double roll, pitch, yaw;
+		m.getRPY(roll, pitch, yaw);
 		// Quaternionf q(mat);
 
-		Eigen::Vector3f ea = twist_R.eulerAngles(2, 1, 0);
-
-		// Regularize twists
-		float v1 = PI - abs(ea(2));
-		if (ea(2) < 0) {
-				v1 *= -1;
-		}
-		float v2 = PI - abs(ea(1));
-		if (ea(1) < 0) {
-				v2 *= -1;
-		}
-		float v3 = PI - abs(ea(0));
-		if (ea(0) < 0) {
-				v3 *= -1;
-		}
-
-		if (abs(v1) > abs(ea(2))) {
-				v1 = ea(2);
-		}
-		if (abs(v2) > abs(ea(1))) {
-				v2 = ea(1);
-		}
-		if (abs(v3) > abs(ea(0))) {
-				v3 = ea(0);
-		}
+		// Eigen::Vector3f ea = twist_R.eulerAngles(2, 1, 0);
+		//
+		// // Regularize twists
+		// float v1 = PI - abs(ea(2));
+		// if (ea(2) < 0) {
+		//      v1 *= -1;
+		// }
+		// float v2 = PI - abs(ea(1));
+		// if (ea(1) < 0) {
+		//      v2 *= -1;
+		// }
+		// float v3 = PI - abs(ea(0));
+		// if (ea(0) < 0) {
+		//      v3 *= -1;
+		// }
+		//
+		// if (abs(v1) > abs(ea(2))) {
+		//      v1 = ea(2);
+		// }
+		// if (abs(v2) > abs(ea(1))) {
+		//      v2 = ea(1);
+		// }
+		// if (abs(v3) > abs(ea(0))) {
+		//      v3 = ea(0);
+		// }
 
 		// LOG(WARNING) << "twist_R: " << std::endl
 		//              << twist_R << "angles: " << std::endl
@@ -329,24 +353,32 @@ void Input::run() {
 		twistStamped.header.frame_id = "base_link";
 		twistStamped.header.stamp = ros::Time::now();
 
-		twistStamped.twist.twist.linear.x = twist_t(0) / duration.toSec();
+		twistStamped.twist.twist.linear.x = twist_t(2) / duration.toSec();
 		twistStamped.twist.twist.linear.y = twist_t(1) / duration.toSec();
-		twistStamped.twist.twist.linear.z = twist_t(2) / duration.toSec();
+		twistStamped.twist.twist.linear.z = twist_t(0) / duration.toSec();
 
-		twistStamped.twist.twist.angular.x = v1 / duration.toSec();
-		twistStamped.twist.twist.angular.y = v2 / duration.toSec();
-		twistStamped.twist.twist.angular.z = v3 / duration.toSec();
+		twistStamped.twist.twist.angular.x =  yaw / duration.toSec();
+		twistStamped.twist.twist.angular.y = pitch / duration.toSec();
+		twistStamped.twist.twist.angular.z =  roll / duration.toSec();
 
-		twistStamped.twist.covariance[0] = 1e-3;
-		twistStamped.twist.covariance[7] = 1e-3;
-		twistStamped.twist.covariance[14] = 1e-3;
-		twistStamped.twist.covariance[21] = 1e-3;
-		twistStamped.twist.covariance[28] = 1e-3;
-		twistStamped.twist.covariance[35] = 1e-3;
+		twistStamped.twist.covariance[0] = 1e-15;
+		twistStamped.twist.covariance[7] = 1e-15;
+		twistStamped.twist.covariance[14] = 1e-15;
+		twistStamped.twist.covariance[21] = 1e-15;
+		twistStamped.twist.covariance[28] = 1e-15;
+		twistStamped.twist.covariance[35] = 1e-15;
 
 		previous_time = current_time;
 
 		twist_publisher.publish(twistStamped);
+
+		nav_msgs::Odometry odom;
+		odom.header = twistStamped.header;
+		odom.child_frame_id = "odom";
+		odom.pose.pose = poseStamped.pose;
+		odom.twist = twistStamped.twist;
+
+		odom_publisher.publish(odom);
 
 		pose_publisher.publish(poseStamped);
 		display(frame_id, trajectory, xyz, pose_matrix_gt, fps, display_ground_truth);

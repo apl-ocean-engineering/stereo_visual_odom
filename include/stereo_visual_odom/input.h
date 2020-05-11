@@ -30,6 +30,7 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/TwistWithCovarianceStamped.h"
 #include "sensor_msgs/Image.h"
+#include "nav_msgs/Odometry.h"
 
 #include "stereo_visual_odom/StereoVisualOdomConfig.h"
 #include <dynamic_reconfigure/server.h>
@@ -42,61 +43,64 @@
 
 class Input {
 public:
-  Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
-        cv::Mat dleft, cv::Mat dright, std::vector<Matrix> gt, bool display_gt);
-  void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
-                         const sensor_msgs::ImageConstPtr &imgR);
-  void detectionBoxesCallback(
-      const image_detection_msgs::DetectionBoxesListConstPtr &leftBoxes,
-      const image_detection_msgs::DetectionBoxesListConstPtr &rightBoxes);
+Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
+      cv::Mat dleft, cv::Mat dright, std::vector<Matrix> gt, bool display_gt);
+void imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
+                       const sensor_msgs::ImageConstPtr &imgR);
+void detectionBoxesCallback(
+		const image_detection_msgs::DetectionBoxesListConstPtr &leftBoxes,
+		const image_detection_msgs::DetectionBoxesListConstPtr &rightBoxes);
 
-  void readImages(std::string filepath);
-  cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
-  void run();
-  void
-  reconfigureCallback(const stereo_visual_odom::StereoVisualOdomConfig &config,
-                      uint32_t level);
+void readImages(std::string filepath);
+cv::Mat rosImage2CvMat(sensor_msgs::ImageConstPtr img);
+void run();
+void
+reconfigureCallback(const stereo_visual_odom::StereoVisualOdomConfig &config,
+                    uint32_t level);
 
-  void construct_mask(image_detection_msgs::DetectionBox box);
-  void detection_object_pose(image_detection_msgs::DetectionBox left_box,
-                             image_detection_msgs::DetectionBox right_box);
+void construct_mask(image_detection_msgs::DetectionBox box);
+void detection_object_pose(image_detection_msgs::DetectionBox left_box,
+                           image_detection_msgs::DetectionBox right_box);
 
 private:
-  clock_t t_a, t_b;
-  cv::Mat imageLeft_t0, imageLeft_t1, imageRight_t0, imageRight_t1;
-  bool initalized;
-  FeatureSet currentVOFeatures;
-  cv::Mat projMatrl, projMatrr;
-  cv::Mat Kl, Kr;
-  cv::Mat dl, dr;
+clock_t t_a, t_b;
+cv::Mat imageLeft_t0, imageLeft_t1, imageRight_t0, imageRight_t1;
+bool initalized;
+FeatureSet currentVOFeatures;
+cv::Mat projMatrl, projMatrr;
+cv::Mat Kl, Kr;
+cv::Mat dl, dr;
 
-  cv::Mat points4D, points3D;
-  int init_frame_id = 0;
-  cv::Mat trajectory;
-  std::vector<Matrix> pose_matrix_gt;
+cv::Mat points4D, points3D;
+int init_frame_id = 0;
+cv::Mat trajectory;
+std::vector<Matrix> pose_matrix_gt;
 
-  bool display_ground_truth;
-  cv::Mat rotation;
-  cv::Mat translation;
+bool display_ground_truth;
+cv::Mat rotation;
+cv::Mat translation;
 
-  cv::Mat pose;
-  cv::Mat Rpose;
+cv::Mat pose;
+cv::Mat Rpose;
 
-  cv::Mat frame_pose;
-  cv::Mat frame_pose32;
-  cv::Mat mask;
+cv::Mat frame_pose;
+cv::Mat frame_pose32;
+cv::Mat mask;
 
-  ros::NodeHandle nh_;
+ros::NodeHandle nh_;
 
-  std::string pose_channel;
-  ros::Publisher pose_publisher;
+std::string pose_channel;
+ros::Publisher pose_publisher;
 
-  std::string twist_channel;
-  ros::Publisher twist_publisher;
+std::string twist_channel;
+ros::Publisher twist_publisher;
 
-  bool new_image = false;
+std::string odom_channel;
+ros::Publisher odom_publisher;
 
-  int frame_id;
+bool new_image = false;
 
-  ros::Time previous_time;
+int frame_id;
+
+ros::Time previous_time;
 };

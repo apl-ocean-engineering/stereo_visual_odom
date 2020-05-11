@@ -46,6 +46,7 @@
 
   <depend>g3log_catkin</depend>
   <depend>image_detection_msgs</depend>
+
   <!--depend>pcl_ros</depend>
   <depend>pcl</depend-->
 

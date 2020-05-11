@@ -28,7 +28,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES stereo_visual_odom
 CATKIN_DEPENDS g3log_catkin image_detection_msgs
-#pcl_ros pcl 
+#pcl_ros pcl
 #  DEPENDS system_lib
 )
 

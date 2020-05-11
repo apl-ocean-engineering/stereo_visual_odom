@@ -49,7 +49,7 @@ void displayMatches(cv::Mat img1, cv::Mat img2,
 
 		cv::hconcat(img1, img2, dst);
 		cv::cvtColor(dst, dst, CV_GRAY2BGR);
-		Conf().display_matched_features = true;
+		// Conf().display_matched_features = true;
 		cv::RNG rng(12345);
 		for (int i = 0; i < points1.size(); i++) {
 				cv::Scalar color = cv::Scalar(rng.uniform(0, 255), rng.uniform(0, 255),
