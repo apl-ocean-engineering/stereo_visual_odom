@@ -39,6 +39,8 @@ void loadConfig(ros::NodeHandle nh_) {
 		ros::param::param<bool>(nh_.resolveName("display_matched_features"),
 		                        display_matched_features, false);
 
+		LOG(INFO) << "Downsample: " << downsample;
+
 		Conf().downsample = downsample;
 		Conf().optical_flow_win_size = optical_flow_win_size;
 		Conf().ORB_edge_threshold = ORB_edge_threshold;
@@ -127,8 +129,8 @@ int main(int argc, char **argv) {
 		cv::Mat_<float> Kr(3, 3);
 		cv::Mat_<float> dl(5, 1);
 		cv::Mat_<float> dr(5, 1);
-		cv::Mat_<float> projMatrl(3, 4);
-		cv::Mat_<float> projMatrr(3, 4);
+		cv::Mat projMatrl(3, 4, CV_32F);
+		cv::Mat projMatrr(3, 4, CV_32F);
 
 
 		loadCalibration(Kl, projMatrl, dl, "/" + name + "/left", nh_);

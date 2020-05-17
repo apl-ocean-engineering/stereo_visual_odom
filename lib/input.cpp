@@ -32,7 +32,7 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
 		frame_pose = cv::Mat::eye(4, 4, CV_64F);
 		frame_pose32 = cv::Mat::eye(4, 4, CV_32F);
 
-		LOG(INFO) << "frame_pose " << frame_pose;
+		// LOG(INFO) << "frame_pose " << frame_pose;
 
 		pose_channel = nh_.resolveName("stereo_odometry/pose");
 		pose_publisher = nh_.advertise<geometry_msgs::PoseStamped>(pose_channel, 1);
@@ -48,15 +48,15 @@ Input::Input(cv::Mat projleft, cv::Mat projright, cv::Mat Kleft, cv::Mat Kright,
 
 void Input::imageSyncCallback(const sensor_msgs::ImageConstPtr &imgL,
                               const sensor_msgs::ImageConstPtr &imgR) {
-		LOG(INFO) << "imageLeft_t1 size 1: " << imgL->height << " " << imgL->width;
+		// LOG(INFO) << "imageLeft_t1 size 1: " << imgL->height << " " << imgL->width;
 		imageLeft_t1 = rosImage2CvMat(imgL);
-		LOG(INFO) << "imageLeft_t1 size 2: " << imageLeft_t1.size();
+		// LOG(INFO) << "imageLeft_t1 size 2: " << imageLeft_t1.size();
 		imageRight_t1 = rosImage2CvMat(imgR);
 
 		if (!initalized) {
 				mask = cv::Mat(imageLeft_t1.size(), CV_8UC3, cv::Scalar(1, 1, 1));
 		}
-
+		// LOG(INFO) << "Conf().downsample " << Conf().downsample;
 		if (Conf().downsample != 1) {
 				cv::resize(imageLeft_t1, imageLeft_t1,
 				           cv::Size(imageLeft_t1.cols / Conf().downsample,
@@ -130,7 +130,7 @@ cv::Mat Input::rosImage2CvMat(sensor_msgs::ImageConstPtr img) {
 
 void Input::run() {
 		// if (new_image) {
-		LOG(INFO) << std::endl << "frame_id " << frame_id;
+		// LOG(INFO) << std::endl << "frame_id " << frame_id;
 		t_a = clock();
 		std::vector<cv::Point2f> oldPointsLeft_t0 = currentVOFeatures.left_points;
 
@@ -147,6 +147,7 @@ void Input::run() {
 		                 pointsLeft_t1, pointsRight_t1);
 
 		if (pointsLeft_t0.size() < 6) {
+				LOG(INFO) << "NOT ENOUGH POINTS";
 				return;
 		}
 
@@ -163,6 +164,7 @@ void Input::run() {
 		// ---------------------
 		cv::Mat points4D_t0;
 		std::vector<cv::Point3f> points3D_t0V;
+
 
 		cv::triangulatePoints(projMatrl, projMatrr, pointsLeft_t0, pointsRight_t0,
 		                      points4D_t0);
@@ -182,10 +184,42 @@ void Input::run() {
 
 		std::vector<cv::Point3f> Tpoints3D_t0V, Tpoints3D_t1V;
 
-		LOG(INFO) << "projMatrl\n" << projMatrl;
-		LOG(INFO) << "projMatrr\n" << projMatrr;
-		LOG(INFO) << "Kl\n" << Kl;
-		LOG(INFO) << "imageLeft_t0.size(): " << imageLeft_t0.size();
+		// LOG(INFO) << "projMatrl\n" << projMatrl;
+		// LOG(INFO) << "projMatrr\n" << projMatrr;
+		// LOG(INFO) << "Kl\n" << Kl;
+		// LOG(INFO) << "imageLeft_t0.size(): " << imageLeft_t0.size();
+
+		// cv::Mat Kl_adj = projMatrl(cv::Range(0, 3), cv::Range(0,3));
+
+		cv::Mat Kl_adj = cv::Mat(3,3,cv::DataType<float>::type); // intrinsic parameter matrix
+		// Kl_adj = cv::Mat(3,3,cv::DataType<float>::type); // intrinsic parameter matrix
+		cv::Mat rvec = cv::Mat(3,1,cv::DataType<float>::type);
+		cv::Mat tvec = cv::Mat(3,1,cv::DataType<float>::type);
+		cv::Mat d = cv::Mat(5,1,cv::DataType<float>::type);
+
+		Kl_adj.at<float>(0,0) = projMatrl.at<float>(0,0);
+		Kl_adj.at<float>(0,1) = projMatrl.at<float>(0,1);
+		Kl_adj.at<float>(0,2) = projMatrl.at<float>(0,2);
+		Kl_adj.at<float>(1,0) = projMatrl.at<float>(1,0);
+		Kl_adj.at<float>(1,1) = projMatrl.at<float>(1,1);
+		Kl_adj.at<float>(1,2) = projMatrl.at<float>(1,2);
+		Kl_adj.at<float>(2,0) = projMatrl.at<float>(2,0);
+		Kl_adj.at<float>(2,1) = projMatrl.at<float>(2,1);
+		Kl_adj.at<float>(2,2) = projMatrl.at<float>(2,2);
+
+		rvec.at<float>(0,0) = 0.0;
+		rvec.at<float>(1,0) = 0.0;
+		rvec.at<float>(2,0) = 0.0;
+
+		tvec.at<float>(0,0) = 0.0;
+		tvec.at<float>(1,0) = 0.0;
+		tvec.at<float>(2,0) = 0.0;
+
+		d.at<float>(0,0) = dl.at<float>(0,0);
+		d.at<float>(1,0) = dl.at<float>(1,0);
+		d.at<float>(2,0) = dl.at<float>(2,0);
+		d.at<float>(3,0) = dl.at<float>(3,0);
+		d.at<float>(4,0) = dl.at<float>(4,0);
 
 		int idx = 0;
 		int size = pointsLeft_t0.size();
@@ -197,9 +231,11 @@ void Input::run() {
 				cv::Point3f p_31 = points3D_t1V.at(i);
 				bool valid = bool(mask.at<unsigned char>(int(p0.x), int(p1.y)));
 
-				LOG(INFO) << "p0\n" << p0;
-				LOG(INFO) << "p1\n" << p1;
-				LOG(INFO) << "p_3\n" << p_3;
+
+				// LOG(INFO) << "p0\n" << p0;
+				// LOG(INFO) << "p1\n" << p1;
+				// LOG(INFO) << "p_3\n" << p_3;
+
 
 				// cv::Mat p3_Mat(p_3);
 				// cv::Mat projPoint;
@@ -209,21 +245,39 @@ void Input::run() {
 
 				input.push_back(p_3);
 
-				cv::Mat rvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
-				cv::Mat tvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
+				// cv::Mat rvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
+				// cv::Mat tvec = (cv::Mat_<float>(3, 1) << (0, 0, 0));
 
 
-
-				cv::projectPoints(input, rvec, tvec, Kl, dl, output);
+				// LOG(INFO) << "Kl_adj\n" << Kl_adj;
+				cv::projectPoints(input, rvec, tvec, Kl_adj, d, output);
 
 				// cv::Mat projPoint = Kl*p3_Mat;
 				// projPoint.at<float>(0,0) = projPoint.at<float>(0,0)/projPoint.at<float>(2,0);
 				// projPoint.at<float>(1,0) = projPoint.at<float>(1,0)/projPoint.at<float>(2,0);
 				// projPoint.at<float>(2,0) = 1;
-				LOG(INFO) << "projPoint\n" <<output.at(0);
 
-				if (cv::norm(p_31 - p_3) > Conf().motion_threshold || !valid) {
-				} else {
+
+				// LOG(INFO) << "projPoint\n" <<output.at(0);
+				Eigen::Vector2d error(output.at(0).x - p0.x, output.at(0).y - p0.y);
+				// LOG(INFO) << "error: " << error;
+				if (error.norm() < 100) {
+						// LOG(INFO) << "p0\n" << p0;
+						// LOG(INFO) << "p1\n" << p1;
+						// LOG(INFO) << "p_3\n" << p_3;
+						// LOG(INFO) << "error.norm(): " <<error.norm();
+
+
+				}
+
+				if (!valid || error.norm() > 100) {
+						// LOG(INFO) << "p0\n" << p0;
+						// LOG(INFO) << "p1\n" << p1;
+						// LOG(INFO) << "p_3\n" << p_3;
+						// LOG(INFO) << "projPoint\n" <<output.at(0);
+						// LOG(INFO) << "error.norm(): " <<error.norm();
+				}
+				else {
 						TpointsLeft_t0.push_back(pointsLeft_t0.at(i));
 						TpointsRight_t0.push_back(pointsRight_t0.at(i));
 						TpointsLeft_t1.push_back(pointsLeft_t1.at(i));
@@ -281,13 +335,13 @@ void Input::run() {
 		// ------------------------------------------------
 		// Intergrating and display
 		// ------------------------------------------------
-		LOG(INFO) << "translation\n" << translation;
+		// LOG(INFO) << "translation.norm()\n" << cv::norm(translation);
 		cv::Vec3f rotation_euler = rotationMatrixToEulerAngles(rotation);
 
 		cv::Mat rigid_body_transformation;
 
 		if (abs(rotation_euler[1]) < 0.1 && abs(rotation_euler[0]) < 0.1 &&
-		    abs(rotation_euler[2]) < 0.1) {
+		    abs(rotation_euler[2]) < 0.1 &&  cv::norm(translation)<0.1) {
 				integrateOdometryStereo(frame_id, rigid_body_transformation, frame_pose,
 				                        rotation, translation);
 		} else {
@@ -297,8 +351,8 @@ void Input::run() {
 		t_b = clock();
 		float frame_time = 1000 * (double)(t_b - t_a) / CLOCKS_PER_SEC;
 		float fps = 1000 / frame_time;
-		LOG(INFO) << "frame times (ms): " << frame_time;
-		LOG(INFO) << "FPS: " << fps;
+		// LOG(INFO) << "frame times (ms): " << frame_time;
+		// LOG(INFO) << "FPS: " << fps;
 
 		Eigen::Matrix4f eigen_fp;
 
@@ -320,13 +374,13 @@ void Input::run() {
 		// poseStamped.pose.orientation.z = q.z();
 		// poseStamped.pose.orientation.w = q.w();
 
-		poseStamped.pose.position.x = xyz.at<double>(2);
+		poseStamped.pose.position.x = xyz.at<double>(0);
 		poseStamped.pose.position.y = xyz.at<double>(1);
-		poseStamped.pose.position.z = xyz.at<double>(0);
+		poseStamped.pose.position.z = xyz.at<double>(2);
 		//
-		poseStamped.pose.orientation.x = q.z();
+		poseStamped.pose.orientation.x = q.x();
 		poseStamped.pose.orientation.y = q.y();
-		poseStamped.pose.orientation.z = q.x();
+		poseStamped.pose.orientation.z = q.z();
 		poseStamped.pose.orientation.w = q.w();
 
 		Eigen::Quaternionf twist_quat(twist_R);
@@ -383,13 +437,15 @@ void Input::run() {
 		twistStamped.header.frame_id = "base_link";
 		twistStamped.header.stamp = ros::Time::now();
 
-		twistStamped.twist.twist.linear.x = twist_t(2) / duration.toSec();
-		twistStamped.twist.twist.linear.y = twist_t(1) / duration.toSec();
-		twistStamped.twist.twist.linear.z = twist_t(0) / duration.toSec();
 
-		twistStamped.twist.twist.angular.x =  yaw / duration.toSec();
+		twistStamped.twist.twist.linear.x = twist_t(0) / duration.toSec();
+		twistStamped.twist.twist.linear.y = twist_t(1) / duration.toSec();
+		twistStamped.twist.twist.linear.z = twist_t(2) / duration.toSec();
+
+
+		twistStamped.twist.twist.angular.x =  roll / duration.toSec();
 		twistStamped.twist.twist.angular.y = pitch / duration.toSec();
-		twistStamped.twist.twist.angular.z =  roll / duration.toSec();
+		twistStamped.twist.twist.angular.z =   yaw / duration.toSec();
 
 		twistStamped.twist.covariance[0] = 1e-15;
 		twistStamped.twist.covariance[7] = 1e-15;
