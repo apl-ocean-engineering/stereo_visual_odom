@@ -13,7 +13,7 @@ void drawFeaturePoints(cv::Mat image, std::vector<cv::Point2f> &points) {
 		int radius = 2;
 
 		for (int i = 0; i < points.size(); i++) {
-				circle(image, cvPoint(points[i].x, points[i].y), radius,
+				circle(image, cv::Point(points[i].x, points[i].y), radius,
 				       CV_RGB(255, 255, 255));
 		}
 }
@@ -48,7 +48,7 @@ void displayMatches(cv::Mat img1, cv::Mat img2,
 		cv::Mat dst;
 
 		cv::hconcat(img1, img2, dst);
-		cv::cvtColor(dst, dst, CV_GRAY2BGR);
+		cv::cvtColor(dst, dst, cv::COLOR_GRAY2BGR);
 		// Conf().display_matched_features = true;
 		cv::RNG rng(12345);
 		for (int i = 0; i < points1.size(); i++) {
@@ -89,7 +89,7 @@ void integrateOdometryStereo(cv::Mat &frame_pose, const cv::Mat rotation,
 
 cv::Vec3d CalculateMean(const cv::Mat_<cv::Vec3d> &points) {
 		cv::Mat_<cv::Vec3d> result;
-		cv::reduce(points, result, 0, CV_REDUCE_AVG);
+		cv::reduce(points, result, 0, cv::REDUCE_AVG);
 		return result(0, 0);
 }
 

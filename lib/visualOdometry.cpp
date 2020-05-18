@@ -201,15 +201,15 @@ void displayTracking(cv::Mat &imageLeft_t1,
 		int radius = 2;
 		cv::Mat vis;
 
-		cv::cvtColor(imageLeft_t1, vis, CV_GRAY2BGR, 3);
+		cv::cvtColor(imageLeft_t1, vis, cv::COLOR_GRAY2BGR, 3);
 
 		for (int i = 0; i < pointsLeft_t0.size(); i++) {
-				cv::circle(vis, cvPoint(pointsLeft_t0[i].x, pointsLeft_t0[i].y), radius,
+				cv::circle(vis, cv::Point(pointsLeft_t0[i].x, pointsLeft_t0[i].y), radius,
 				           CV_RGB(0, 255, 0));
 		}
 
 		for (int i = 0; i < pointsLeft_t1.size(); i++) {
-				cv::circle(vis, cvPoint(pointsLeft_t1[i].x, pointsLeft_t1[i].y), radius,
+				cv::circle(vis, cv::Point(pointsLeft_t1[i].x, pointsLeft_t1[i].y), radius,
 				           CV_RGB(255, 0, 0));
 		}
 
